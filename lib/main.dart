@@ -1,32 +1,12 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget {//페이지는 무조건 statelessWidget 으로 만들어져야함
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter app 이름', // 어플리테이션 이름
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: MyHomePage(title: 'Flutter ~ Home Page'),
+    return Scaffold(
+      appBar: AppBar(title: Text('Flutter app 이름')),
+      body: MyHomePage(title:'진짜 타이틀')
     );
   }
 }
@@ -63,8 +43,10 @@ class _MyHomePageState extends State<MyHomePage> {
       _counter++;
     });
   }
-  void _changePage() {
+
+  void _changePage(context) {
     print("call _changePage()");
+    Navigator.pushNamed(context, "/second");
   }
 
   @override
@@ -113,6 +95,7 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 FloatingActionButton(
+                    heroTag: "btn1",
                     child: Icon(Icons.add),
                     onPressed: () => {
                           print("add"),
@@ -122,6 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           })
                         }),
                 FloatingActionButton(
+                    heroTag: "btn2",// 기본 위젯 이동 애니메이션에서 hero 태그로 구분, 같은 위젯이 있는경우 hero 태그가 다르게 존재해야하는데 미 선언시 동일 태그로 오류 발생
                     child: Icon(Icons.remove),
                     onPressed: () => {
                           print("minus"),
@@ -140,13 +124,11 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () => {
           print("버튼 클릭"),
           print("이요"),
-          _changePage(),
+          _changePage(context),
         },
         tooltip: 'Increment',
         child: Icon(Icons.change_history),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
-
-
 }
