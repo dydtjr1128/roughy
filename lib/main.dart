@@ -9,7 +9,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Flutter app 이름', // 어플리테이션 이름
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Flutter ~ Home Page'),
     );
   }
 }
@@ -44,6 +44,7 @@ class MyHomePage extends StatefulWidget {
   // always marked "final".
 
   final String title;
+  int titleValue = 100;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -62,6 +63,9 @@ class _MyHomePageState extends State<MyHomePage> {
       _counter++;
     });
   }
+  void _changePage() {
+    print("call _changePage()");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,8 +79,9 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text(widget.title + widget.titleValue.toString()),
       ),
+      backgroundColor: Colors.deepOrange,
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
@@ -98,20 +103,50 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'You have pushed the button this many times:',
+              'Floating action 버튼을 클릭해 보세요',
             ),
             Text(
-              '$_counter',
+              '$_counter 번 눌렸어요',
               style: Theme.of(context).textTheme.headline4,
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                FloatingActionButton(
+                    child: Icon(Icons.add),
+                    onPressed: () => {
+                          print("add"),
+                          setState(() {
+                            _counter++;
+                            widget.titleValue = _counter;
+                          })
+                        }),
+                FloatingActionButton(
+                    child: Icon(Icons.remove),
+                    onPressed: () => {
+                          print("minus"),
+                          setState(() {
+                            --_counter;
+                            widget.titleValue = _counter;
+                          })
+                        })
+              ],
+            )
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        //onPressed: _incrementCounter,
+        onPressed: () => {
+          print("버튼 클릭"),
+          print("이요"),
+          _changePage(),
+        },
         tooltip: 'Increment',
-        child: Icon(Icons.add),
+        child: Icon(Icons.change_history),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+
+
 }
