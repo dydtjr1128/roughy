@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_example/second.dart';
 
-class MyApp extends StatelessWidget {//페이지는 무조건 statelessWidget 으로 만들어져야함
+class MyApp extends StatelessWidget {
+  //페이지는 무조건 statelessWidget 으로 만들어져야함
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Flutter app 이름')),
-      body: MyHomePage(title:'진짜 타이틀')
-    );
+        appBar: AppBar(title: Text('Flutter app 이름')),
+        body: MyHomePage(title: '진짜 타이틀'));
   }
 }
 
@@ -46,7 +47,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _changePage(context) {
     print("call _changePage()");
-    Navigator.pushNamed(context, "/second");
+    //Navigator.pushNamed(context, "/second");
+    Navigator.push(context, MaterialPageRoute(builder: (_) {
+      return SecondApp();
+    }));
   }
 
   @override
@@ -95,17 +99,16 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 FloatingActionButton(
-                    heroTag: "btn1",
-                    child: Icon(Icons.add),
-                    onPressed: () => {
-                          print("add"),
-                          setState(() {
-                            _counter++;
-                            widget.titleValue = _counter;
-                          })
-                        }),
+                  heroTag: "btn1",
+                  child: Icon(Icons.add),
+                  onPressed: () {
+                    print("add");
+                    _incrementCounter();
+                  },
+                ),
                 FloatingActionButton(
-                    heroTag: "btn2",// 기본 위젯 이동 애니메이션에서 hero 태그로 구분, 같은 위젯이 있는경우 hero 태그가 다르게 존재해야하는데 미 선언시 동일 태그로 오류 발생
+                    heroTag: "btn2",
+                    // 기본 위젯 이동 애니메이션에서 hero 태그로 구분, 같은 위젯이 있는경우 hero 태그가 다르게 존재해야하는데 미 선언시 동일 태그로 오류 발생
                     child: Icon(Icons.remove),
                     onPressed: () => {
                           print("minus"),

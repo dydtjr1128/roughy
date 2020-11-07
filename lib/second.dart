@@ -9,7 +9,10 @@ class SecondApp extends StatelessWidget {
       body: Center(
         child: RaisedButton(
           child: Text('이전페이지로'),
-          onPressed: () => {Navigator.pop(context)},
+          onPressed: () => {
+            print('이 버튼 누를때만 이전페이지로 이동!'),
+            Navigator.pop(context)
+          },
         ),
       ),
     );
