@@ -1,0 +1,112 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_example/second.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+
+class FirstPage extends StatelessWidget {
+  //페이지는 무조건 statelessWidget 으로 만들어져야함
+  FirstPage(this.toggleBrightness);
+
+  final void Function() toggleBrightness;
+
+  @override
+  Widget build(BuildContext context) {
+    return FirstPageWidget(title: '진짜 타이틀');
+  }
+}
+
+class FirstPageWidget extends StatefulWidget {
+  FirstPageWidget({Key key, this.title}) : super(key: key);
+  final String title;
+  int titleValue = 100;
+
+  @override
+  _FirstPageWidgetState createState() => _FirstPageWidgetState();
+}
+
+class _FirstPageWidgetState extends State<FirstPageWidget> {
+  final Brightness brightness = Brightness.light;
+  int _counter = 0;
+
+  void _changePage(context) {
+    print("call _changePage()");
+    //Navigator.pushNamed(context, "/second");
+    Navigator.push(context, MaterialPageRoute(builder: (_) {
+      return SecondPage();
+    }));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return PlatformScaffold(
+      appBar: PlatformAppBar(
+        title: Text(widget.title + widget.titleValue.toString()),
+      ),
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'Floating action 버튼을 클릭해 보세요',
+            ),
+            Text(
+              '$_counter 번 눌렸어요',
+              style: Theme.of(context).textTheme.headline4,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                PlatformButton(
+                  child: Icon(Icons.add),
+                  onPressed: () {
+                    // Column is also a layout widget. It takes a list of children and
+                    print("add");
+                    setState(() {
+                      ++_counter;
+                      widget.titleValue = _counter;
+                    });
+                  },
+                ),
+                PlatformButton(
+                    // 기본 위젯 이동 애니메이션에서 hero 태그로 구분, 같은 위젯이 있는경우 hero 태그가 다르게 존재해야하는데 미 선언시 동일 태그로 오류 발생
+                    child: Icon(Icons.remove),
+                    onPressed: () => {
+                          print("minus"),
+                          setState(() {
+                            --_counter;
+                            widget.titleValue = _counter;
+                          })
+                        }),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                PlatformButton(
+                  child: PlatformText('테마 변경'),
+                  onPressed: () => {
+                    if (isMaterial(context))
+                      {PlatformProvider.of(context).changeToCupertinoPlatform()}
+                    else
+                      {PlatformProvider.of(context).changeToMaterialPlatform()}
+                  },
+                )
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                PlatformButton(
+                    child: Text("페이지 이동"),
+                    onPressed: () => {
+                          _changePage(context),
+                        })
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
