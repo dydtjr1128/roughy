@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_example/second.dart';
-import 'package:flutter_example/tab.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class FirstPage extends StatelessWidget {
@@ -12,13 +11,15 @@ class FirstPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FirstPageWidget(title: '진짜 타이틀');
+    return FirstPageWidget(title: '진짜 타이틀', toggleBrightness: toggleBrightness);
   }
 }
 
 class FirstPageWidget extends StatefulWidget {
-  FirstPageWidget({Key key, this.title}) : super(key: key);
+  FirstPageWidget({Key key, this.title, this.toggleBrightness})
+      : super(key: key);
   final String title;
+  final void Function() toggleBrightness;
   int titleValue = 100;
 
   @override
@@ -28,6 +29,7 @@ class FirstPageWidget extends StatefulWidget {
 class _FirstPageWidgetState extends State<FirstPageWidget> {
   final Brightness brightness = Brightness.light;
   int _counter = 0;
+  bool isSelectedDarkTheme = false;
 
   void _changePage(context) {
     print("call _changePage()");
@@ -40,9 +42,6 @@ class _FirstPageWidgetState extends State<FirstPageWidget> {
   @override
   Widget build(BuildContext context) {
     return PlatformScaffold(
-      appBar: PlatformAppBar(
-        title: Text(widget.title + widget.titleValue.toString()),
-      ),
       backgroundColor: Colors.white,
       body: Center(
         child: Column(
@@ -103,6 +102,20 @@ class _FirstPageWidgetState extends State<FirstPageWidget> {
                     onPressed: () => {
                           _changePage(context),
                         })
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                PlatformSwitch(
+                  onChanged: (isOpen) {
+                    setState(() {
+                      isSelectedDarkTheme = isOpen;
+                    });
+                    widget.toggleBrightness();
+                  },
+                  value: isSelectedDarkTheme,
+                )
               ],
             )
           ],
