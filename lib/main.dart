@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_example/tab.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 import 'first.dart';
@@ -68,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
           cupertino: (_, __) => new CupertinoAppData(
             theme: cupertinoTheme,
           ),
-          home: FirstPage(() {
+          home: OriginalTabbedPage(() {
             setState(() {
               brightness = brightness == Brightness.light
                   ? Brightness.dark
