@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_example/page/secondTab.dart';
+import 'package:flutter_example/tab/secondTab.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class FirstTabPage extends StatelessWidget {

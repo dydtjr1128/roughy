@@ -1,18 +1,18 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_example/page/firstTab.dart';
-import 'package:flutter_example/page/secondTab.dart';
+import 'package:flutter_example/tab/firstTab.dart';
+import 'package:flutter_example/tab/secondTab.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
-class OriginalTabbedPage extends StatefulWidget {
-  OriginalTabbedPage(this.toggleBrightness);
+class MainTabbedPage extends StatefulWidget {
+  MainTabbedPage(this.toggleBrightness);
 
   final void Function() toggleBrightness;
 
   @override
-  _OriginalTabbedPageState createState() => _OriginalTabbedPageState();
+  _MainTabbedPageState createState() => _MainTabbedPageState();
 }
 
-class _OriginalTabbedPageState extends State<OriginalTabbedPage> {
+class _MainTabbedPageState extends State<MainTabbedPage> {
   static final titles = ['템플릿', '앨범', '설정'];
   final items = (BuildContext context) => [
         BottomNavigationBarItem(

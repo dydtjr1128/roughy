@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter_example/page/tab.dart';
+import 'package:flutter_example/page/mainTabbedPage.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class SplashPage extends StatefulWidget {
@@ -34,9 +34,10 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
         CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn);
     _controller.forward();
     _animation.addStatusListener((state) {
-      print(state);
       if (state == AnimationStatus.completed) {}
     });
+    //애니메이션이 끝나고 대기시간 걸리는 부자연스러움을 없애기 위해
+    // 애니메이션 끝나기 전에 이동하는 코드 추가.
     _delayedSplashPage().then((status) => {
           if (status) {_navigateToMainPage()}
         });
@@ -59,7 +60,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
         platformPageRoute(
             context: context,
             builder: (BuildContext context) =>
-                OriginalTabbedPage(toggleBrightness)));
+                MainTabbedPage(toggleBrightness)));
   }
 
   @override
