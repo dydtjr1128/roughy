@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_example/second.dart';
+import 'package:flutter_example/page/secondTab.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
-class FirstPage extends StatelessWidget {
+class FirstTabPage extends StatelessWidget {
   //페이지는 무조건 statelessWidget 으로 만들어져야함
-  FirstPage(this.toggleBrightness);
+  FirstTabPage(this.toggleBrightness);
 
   final void Function() toggleBrightness;
 
@@ -34,9 +34,13 @@ class _FirstPageWidgetState extends State<FirstPageWidget> {
   void _changePage(context) {
     print("call _changePage()");
     //Navigator.pushNamed(context, "/second");
-    Navigator.push(context, MaterialPageRoute(builder: (_) {
-      return SecondPage();
-    }));
+    Navigator.push(
+        context,
+        platformPageRoute(
+            builder: (_) {
+              return SecondTabPage();
+            },
+            context: context));
   }
 
   @override

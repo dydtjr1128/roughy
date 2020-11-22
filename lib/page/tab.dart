@@ -1,7 +1,6 @@
-
 import 'package:flutter/widgets.dart';
-import 'package:flutter_example/first.dart';
-import 'package:flutter_example/second.dart';
+import 'package:flutter_example/page/firstTab.dart';
+import 'package:flutter_example/page/secondTab.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class OriginalTabbedPage extends StatefulWidget {
@@ -62,13 +61,13 @@ class _OriginalTabbedPageState extends State<OriginalTabbedPage> {
         print(index);
         switch (index) {
           case 0:
-            return FirstPage(widget.toggleBrightness);
+            return FirstTabPage(widget.toggleBrightness);
             break;
           case 1:
-            return FirstPage(widget.toggleBrightness);
+            return FirstTabPage(widget.toggleBrightness);
             break;
           case 2:
-            return SecondPage();
+            return SecondTabPage();
             break;
         }
         return null;
