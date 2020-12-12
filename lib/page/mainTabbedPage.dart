@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_example/tab/firstTab.dart';
 import 'package:flutter_example/tab/secondTab.dart';
+import 'package:flutter_example/tab/templateSelectTab.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class MainTabbedPage extends StatefulWidget {
@@ -50,18 +51,20 @@ class _MainTabbedPageState extends State<MainTabbedPage> {
       iosContentPadding: true,
       tabController: tabController,
       appBarBuilder: (_, index) => PlatformAppBar(
-        title: Text('Page Title'),
-        cupertino: (_, __) => CupertinoNavigationBarData(
+        title:
+            PlatformText("ROUGHY",
+                style: TextStyle(fontFamily: 'Macadamia',fontSize: 30))
+/*        cupertino: (_, __) => CupertinoNavigationBarData(
           title: Text('Title: ${titles[index]}'),
           //   only required if useCupertinoTabView = false,
           transitionBetweenRoutes: false,
-        ),
+        ),*/
       ),
       bodyBuilder: ((context, index) {
         print(index);
         switch (index) {
           case 0:
-            return FirstTabPage(widget.toggleBrightness);
+            return TemplateSelectWidget();
             break;
           case 1:
             return FirstTabPage(widget.toggleBrightness);
