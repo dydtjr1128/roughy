@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_example/component/roughyAppBar.dart';
 import 'package:flutter_example/component/templateContainer.dart';
 import 'package:flutter_example/tab/ImageViewPage.dart';
-import 'package:flutter_example/tab/secondTab.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class TemplateSelectWidget extends StatelessWidget {
@@ -45,6 +44,10 @@ class TemplateSelectWidget extends StatelessWidget {
             context: context));
   }
 
+  void _onFavoriteButtonClicked(bool isFavoriteSelected) {
+    print(isFavoriteSelected.toString() + "입니다.");
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -52,23 +55,13 @@ class TemplateSelectWidget extends StatelessWidget {
     final double itemWidth = size.width / 2;
 
     return Scaffold(
-      appBar: RoughyAppBar(),
+      appBar: RoughyAppBar(onClickedCallback: _onFavoriteButtonClicked),
       body: new GridView.count(
         crossAxisCount: 2,
         childAspectRatio: (itemWidth / itemHeight),
         children: new List.generate(templateList.length, (index) {
           return new GridTile(
-            child: templateList[
-                index], /*new Card(
-              color: Colors.teal.shade200,
-              margin: EdgeInsets.symmetric(vertical: 7.0, horizontal: 7.0),
-              child: new Center(
-                child: new Text(
-                  'Tile $index',
-                  style: TextStyle(fontFamily: 'Macadamia'),
-                ),
-              ),
-            ),*/
+            child: templateList[index],
           );
         }),
       ),
