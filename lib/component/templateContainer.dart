@@ -7,10 +7,13 @@ class TemplateContainer extends StatelessWidget {
   final int containerIndex;
   final BorderRadius _baseBorderRadius = BorderRadius.circular(8);
 
+  var templateImage;
+
   TemplateContainer(
       {@required this.onTap,
       @required this.child,
-      @required this.containerIndex});
+      @required this.containerIndex/*,
+      @required this.templateImage*/});
 
   @override
   Widget build(BuildContext context) {
