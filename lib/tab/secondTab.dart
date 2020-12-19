@@ -5,7 +5,6 @@ class SecondTabPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PlatformScaffold(
-      appBar: PlatformAppBar(title: Text('Flutter app 이름')),
       body: Center(
         child: PlatformButton(
           child: PlatformText('이전페이지로'),

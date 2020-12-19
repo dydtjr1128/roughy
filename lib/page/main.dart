@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_example/page/splashPage.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
@@ -30,6 +31,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     final materialTheme = new ThemeData(
       primarySwatch: Colors.purple,
     );

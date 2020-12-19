@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_example/tab/DynamicTabbedPage.dart';
 import 'package:flutter_example/tab/firstTab.dart';
 import 'package:flutter_example/tab/secondTab.dart';
 import 'package:flutter_example/tab/templateSelectTab.dart';
@@ -48,18 +50,17 @@ class _MainTabbedPageState extends State<MainTabbedPage> {
   @override
   Widget build(BuildContext context) {
     return PlatformTabScaffold(
-      iosContentPadding: true,
+      pageBackgroundColor: Colors.red,
       tabController: tabController,
-      appBarBuilder: (_, index) => PlatformAppBar(
-        title:
-            PlatformText("ROUGHY",
-                style: TextStyle(fontFamily: 'Macadamia',fontSize: 30))
-/*        cupertino: (_, __) => CupertinoNavigationBarData(
+      /*appBarBuilder: (_, index) => PlatformAppBar(
+        title: PlatformText("ROUGHY",
+            style: TextStyle(fontFamily: 'Macadamia', fontSize: 30)),
+*//*        cupertino: (_, __) => CupertinoNavigationBarData(
           title: Text('Title: ${titles[index]}'),
           //   only required if useCupertinoTabView = false,
           transitionBetweenRoutes: false,
-        ),*/
-      ),
+        ),*//*
+      ),*/
       bodyBuilder: ((context, index) {
         print(index);
         switch (index) {
@@ -70,17 +71,17 @@ class _MainTabbedPageState extends State<MainTabbedPage> {
             return FirstTabPage(widget.toggleBrightness);
             break;
           case 2:
-            return SecondTabPage();
+            return DynamicTabbedPage();
             break;
         }
         return null;
       }),
       items: items(context),
-      cupertino: (_, __) => CupertinoTabScaffoldData(
+      /*cupertino: (_, __) => CupertinoTabScaffoldData(
         //   Having this property as false (default true) forces it not to use CupertinoTabView which will show
         //   the back button, but does required transitionBetweenRoutes set to false (see above)
         useCupertinoTabView: false,
-      ),
+      ),*/
     );
   }
 }

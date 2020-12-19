@@ -3,17 +3,14 @@ import 'package:flutter/widgets.dart';
 
 class TemplateContainer extends StatelessWidget {
   final Function onTap;
-  final Widget child;
   final int containerIndex;
   final BorderRadius _baseBorderRadius = BorderRadius.circular(8);
-
-  var templateImage;
+  final String templateImagePath;
 
   TemplateContainer(
       {@required this.onTap,
-      @required this.child,
-      @required this.containerIndex/*,
-      @required this.templateImage*/});
+      @required this.containerIndex,
+      @required this.templateImagePath});
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +23,19 @@ class TemplateContainer extends StatelessWidget {
         borderRadius: _baseBorderRadius,
         onTap: () => onTap(containerIndex, context),
         child: Container(
-          decoration: BoxDecoration(
-            borderRadius: _baseBorderRadius,
-            color: Colors.transparent,
-          ),
-          child: child,
-        ),
+            decoration: BoxDecoration(
+              borderRadius: _baseBorderRadius,
+              color: Colors.transparent,
+            ),
+            child: Column(children: [
+              new Text(
+                'Tile $containerIndex',
+                style: TextStyle(fontFamily: 'Macadamia'),
+              ),
+              ClipRRect(
+                child: Image.asset(templateImagePath, fit: BoxFit.cover),
+              )
+            ])),
       ),
     );
   }

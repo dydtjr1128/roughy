@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_example/tab/ImageViewPage.dart';
 import 'package:flutter_example/tab/secondTab.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
@@ -34,19 +35,19 @@ class _FirstPageWidgetState extends State<FirstPageWidget> {
   void _changePage(context) {
     print("call _changePage()");
     //Navigator.pushNamed(context, "/second");
+
     Navigator.push(
         context,
         platformPageRoute(
-            builder: (_) {
+            context: context,
+            builder: (context) {
               return SecondTabPage();
-            },
-            context: context));
+            }));
   }
 
   @override
   Widget build(BuildContext context) {
     return PlatformScaffold(
-      backgroundColor: Colors.white,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -111,6 +112,24 @@ class _FirstPageWidgetState extends State<FirstPageWidget> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                PlatformButton(
+                    child: Text("이미지 확인"),
+                    onPressed: () => {
+                          Navigator.push(
+                              context,
+                              platformPageRoute(
+                                  context: context,
+                                  builder: (context) {
+                                    return ImageViewPage(
+                                        path:
+                                            "assets/templates/base.png");
+                                  }))
+                        })
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
                 PlatformSwitch(
                   onChanged: (isOpen) {
                     setState(() {
@@ -121,7 +140,7 @@ class _FirstPageWidgetState extends State<FirstPageWidget> {
                   value: isSelectedDarkTheme,
                 )
               ],
-            )
+            ),
           ],
         ),
       ),
