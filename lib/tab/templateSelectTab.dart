@@ -6,15 +6,15 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class TemplateSelectWidget extends StatelessWidget {
   void _onTemplateSelect(int index, BuildContext context) {
-    print("call _onTemplateSelect()");
-    //Navigator.pushNamed(context, "/second");
-/*    Navigator.push(
+    print("call _onTemplateSelect() $index page");
+
+    Navigator.push(
         context,
         platformPageRoute(
             builder: (_) {
               return SecondTabPage();
             },
-            context: context));*/
+            context: context));
   }
 
   @override
