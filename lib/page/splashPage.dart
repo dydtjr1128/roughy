@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter_example/page/mainTabbedPage.dart';
+import 'package:Roughy/page/mainTabbedPage.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class SplashPage extends StatefulWidget {

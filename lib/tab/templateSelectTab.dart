@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_example/component/roughyAppBar.dart';
-import 'package:flutter_example/component/templateContainer.dart';
-import 'package:flutter_example/tab/ImageViewPage.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:Roughy/component/roughyAppBar.dart';
+import 'package:Roughy/component/templateContainer.dart';
+import 'package:Roughy/tab/ImageViewPage.dart';
 
 class TemplateSelectWidget extends StatelessWidget {
   List<TemplateContainer> templateList;

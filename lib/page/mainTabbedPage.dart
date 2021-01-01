@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_example/tab/DynamicTabbedPage.dart';
-import 'package:flutter_example/tab/firstTab.dart';
-import 'package:flutter_example/tab/secondTab.dart';
-import 'package:flutter_example/tab/templateSelectTab.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:Roughy/tab/DynamicTabbedPage.dart';
+import 'package:Roughy/tab/firstTab.dart';
+import 'package:Roughy/tab/templateSelectTab.dart';
 
 class MainTabbedPage extends StatefulWidget {
   MainTabbedPage(this.toggleBrightness);
@@ -55,11 +54,11 @@ class _MainTabbedPageState extends State<MainTabbedPage> {
       /*appBarBuilder: (_, index) => PlatformAppBar(
         title: PlatformText("ROUGHY",
             style: TextStyle(fontFamily: 'Macadamia', fontSize: 30)),
-*//*        cupertino: (_, __) => CupertinoNavigationBarData(
+*/ /*        cupertino: (_, __) => CupertinoNavigationBarData(
           title: Text('Title: ${titles[index]}'),
           //   only required if useCupertinoTabView = false,
           transitionBetweenRoutes: false,
-        ),*//*
+        ),*/ /*
       ),*/
       bodyBuilder: ((context, index) {
         print(index);
