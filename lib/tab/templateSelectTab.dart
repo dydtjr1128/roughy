@@ -15,7 +15,7 @@ class TemplateSelectWidget extends StatelessWidget {
 
   void initializeTemplateContainers() {
     //임의 템플릿
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 9; i++) {
       imageList.add("base.png");
     }
     imageList.add("base2.jpg");
@@ -51,7 +51,7 @@ class TemplateSelectWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     final double itemHeight = (size.height) / 3;
-    final double itemWidth = size.width / 3;
+    final double itemWidth = size.width / 2;
 
     return Scaffold(
       appBar: RoughyAppBar(onClickedCallback: _onFavoriteButtonClicked),

@@ -42,37 +42,38 @@ class _TemplateContainerState extends State<TemplateContainer> {
               child: new Stack(
                 children: <Widget>[
                   ClipRRect(
-                    //child: Image.asset(templateImagePath, fit: BoxFit.fitWidth),
+                      child: Center(
                     child: Container(
                       child: Image.asset(widget.templateImagePath,
                           fit: BoxFit.fill),
-                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      margin:
+                          EdgeInsets.symmetric(vertical: 15.0, horizontal: 0.0),
                     ),
-                  ),
+                  )),
                   new Positioned(
-                      left: 10.0,
-                      top: 10.0,
+                      left: 5.0,
+                      top: 5.0,
                       child: new Container(
-                          /*decoration: new BoxDecoration(color: Colors.red),*/
-                          child: new Row(children: <Widget>[
-                        new IconButton(
-                          icon: _isFavoriteSelected
-                              ? Icon(context.platformIcons.favoriteSolid)
-                              : Icon(context.platformIcons.favoriteOutline),
-                          tooltip: "favorite",
-                          onPressed: () {
-                            setState(() {
-                              _isFavoriteSelected = !_isFavoriteSelected;
-                              print(_isFavoriteSelected);
-                            });
-                          },
-                          color: Colors.red,
-                        ),
-                        new Text(
-                          'Tile $index',
-                          style: TextStyle(fontFamily: 'Macadamia'),
-                        ),
-                      ]))),
+                          //decoration: new BoxDecoration(color: Colors.red),
+                          child: new Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                            GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _isFavoriteSelected = !_isFavoriteSelected;
+                                    print(_isFavoriteSelected);
+                                  });
+                                },
+                                child: _isFavoriteSelected
+                                    ? Icon(context.platformIcons.favoriteSolid,
+                                        color: Colors.red)
+                                    : Icon(
+                                        context.platformIcons.favoriteOutline,
+                                        color: Colors.red)),
+                          ]))),
                 ],
               ))),
     );
