@@ -57,6 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
             DefaultCupertinoLocalizations.delegate,
           ],
           title: "플루터 라우터 연습",
+          debugShowCheckedModeBanner: false,//디버그용 체크 코드
           material: (_, __) {
             return new MaterialAppData(
               theme: materialTheme,

@@ -1,8 +1,8 @@
+import 'package:Roughy/page/ImageViewPage.dart';
+import 'package:Roughy/tab/secondTab.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:Roughy/tab/ImageViewPage.dart';
-import 'package:Roughy/tab/secondTab.dart';
 
 class FirstTabPage extends StatelessWidget {
   //페이지는 무조건 statelessWidget 으로 만들어져야함

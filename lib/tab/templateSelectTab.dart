@@ -1,12 +1,12 @@
+import 'package:Roughy/page/ImageViewPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:Roughy/component/roughyAppBar.dart';
 import 'package:Roughy/component/templateContainer.dart';
-import 'package:Roughy/tab/ImageViewPage.dart';
 
 class TemplateSelectWidget extends StatelessWidget {
-  List<TemplateContainer> templateList;
+  final List<TemplateContainer> templateList = List();
   final List<String> imageList = List();
 
   TemplateSelectWidget() {
@@ -20,7 +20,6 @@ class TemplateSelectWidget extends StatelessWidget {
     }
     imageList.add("base2.jpg");
 
-    templateList = List();
     for (int i = 0; i < imageList.length; i++) {
       templateList.add(new TemplateContainer(
         onTap: _onTemplateSelect,
@@ -51,8 +50,8 @@ class TemplateSelectWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    final double itemHeight = (size.height) / 2;
-    final double itemWidth = size.width / 2;
+    final double itemHeight = (size.height) / 3;
+    final double itemWidth = size.width / 3;
 
     return Scaffold(
       appBar: RoughyAppBar(onClickedCallback: _onFavoriteButtonClicked),
