@@ -1,9 +1,10 @@
+import 'package:Roughy/tab/firstTab.dart';
+import 'package:Roughy/tab/templateSelectTab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+
 import 'file:///F:/dev/Mobile/roughy/lib/example/DynamicTabbedPage.dart';
-import 'package:Roughy/tab/firstTab.dart';
-import 'package:Roughy/tab/templateSelectTab.dart';
 
 class MainTabbedPage extends StatefulWidget {
   MainTabbedPage(this.toggleBrightness);
@@ -51,15 +52,6 @@ class _MainTabbedPageState extends State<MainTabbedPage> {
     return PlatformTabScaffold(
       pageBackgroundColor: Colors.red,
       tabController: tabController,
-      /*appBarBuilder: (_, index) => PlatformAppBar(
-        title: PlatformText("ROUGHY",
-            style: TextStyle(fontFamily: 'Macadamia', fontSize: 30)),
-*/ /*        cupertino: (_, __) => CupertinoNavigationBarData(
-          title: Text('Title: ${titles[index]}'),
-          //   only required if useCupertinoTabView = false,
-          transitionBetweenRoutes: false,
-        ),*/ /*
-      ),*/
       bodyBuilder: ((context, index) {
         print(index);
         switch (index) {
