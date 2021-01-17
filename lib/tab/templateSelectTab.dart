@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:Roughy/component/roughyAppBar.dart';
@@ -10,14 +11,17 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TemplateSelectWidget extends StatefulWidget {
+  final _TemplateSelectWidgetState parentState = _TemplateSelectWidgetState();
+
   @override
-  _TemplateSelectWidgetState createState() => _TemplateSelectWidgetState();
+  _TemplateSelectWidgetState createState() => parentState;
 }
 
 class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
   final String templateKey = "TEMPLATE_LISTS";
   final List<TemplateContainer> templateContainerList = List();
-  final List<Template> templateList = List();
+  final List<String> templateList = List();
+  final Set<int> templateFavoriteIndexSet = LinkedHashSet();
 
   @override
   void initState() {
@@ -25,60 +29,58 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
     loadTemplates();
   }
 
+  // TODO: 템플릿 업데이트 되었을 경우 이거 문제가 있음 한번 저장되면 템플릿 추가된거 못불러올듯
   void loadTemplates() async {
-    print("@@111");
     final prefs = await SharedPreferences.getInstance();
 
-    List<String> myList = prefs.getStringList(templateKey);
-    if (myList == null) {
-      print("null~@");
-      myList = List();
-      Template template;
-      for (int i = 0; i < 9; i++) {
-        template = new Template(imagePath: "base.png", isFavorite: false);
-        myList.add(jsonEncode(template));
-        templateList.add(template);
-      }
-      template = new Template(imagePath: "base2.jpg", isFavorite: false);
-      myList.add(jsonEncode(template));
-      templateList.add(template);
-      prefs.setStringList(templateKey, myList);
-    } else {
-      print("null이 아님~@" + myList.length.toString());
-      for (String jsonTemplate in myList) {
-        templateList.add(Template.fromJson(jsonDecode(jsonTemplate)));
-      }
+    for (int i = 0; i < 9; i++) {
+      templateList.add("base.png");
     }
-    print(templateList.length.toString() + "@@@개 입니다.");
+    templateList.add("base2.jpg");
+    loadTemplateFavoritePrefs();
+    loadAllTemplates();
+  }
+
+  void loadAllTemplates() {
     setState(() {
       for (int i = 0; i < templateList.length; i++) {
-        print(templateList[i].isFavorite.toString() + "입니당..");
         templateContainerList.add(new TemplateContainer(
           onTap: _onTemplateSelect,
           onFavoriteTap: _onTemplateFavoriteSelect,
           containerIndex: i,
-          templateImagePath: "assets/templates/${templateList[i].imagePath}",
-          isFavorite: templateList[i].isFavorite,
+          templateImagePath: "assets/templates/${templateList[i]}",
+          isFavorite: templateFavoriteIndexSet.contains(i),
         ));
       }
     });
   }
 
-  void saveTemplatePrefs() async {
+  void saveTemplateFavoritePrefs() async {
     final prefs = await SharedPreferences.getInstance();
-    List<String> myList = List();
-    for (Template template in templateList) {
-      myList.add(jsonEncode(template));
+    prefs.setStringList(templateKey,
+        templateFavoriteIndexSet.map((value) => value.toString()).toList());
+  }
+
+  void loadTemplateFavoritePrefs() async {
+    templateFavoriteIndexSet.clear();
+    final prefs = await SharedPreferences.getInstance();
+    List<String> _templateFavoriteIndexList = prefs.getStringList(templateKey);
+    if (_templateFavoriteIndexList != null) {
+      templateFavoriteIndexSet.addAll(
+          _templateFavoriteIndexList.toSet().map((value) => int.parse(value)));
     }
-    prefs.setStringList(templateKey, myList);
   }
 
   void _onTemplateFavoriteSelect(
       int index, bool isSelected, BuildContext context) {
     print("call _onTemplateFavoriteSelect() $index page " +
         isSelected.toString());
-    templateList[index].isFavorite = isSelected;
-    saveTemplatePrefs();
+    if (isSelected) {
+      templateFavoriteIndexSet.remove(index);
+    } else {
+      templateFavoriteIndexSet.add(index);
+    }
+    saveTemplateFavoritePrefs();
   }
 
   void _onTemplateSelect(int index, BuildContext context) {
@@ -89,13 +91,32 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
         platformPageRoute(
             builder: (_) {
               return ImageViewPage(
-                path: "assets/templates/${templateList[index].imagePath}",
+                path: "assets/templates/${templateList[index]}",
               );
             },
             context: context));
   }
 
-  void _onFavoriteButtonClicked(bool isFavoriteSelected) {
+  void _onFavoriteButtonClicked(bool isFavoriteSelected) async {
+    templateContainerList.clear();
+    if (isFavoriteSelected) {
+      setState(() {
+        List<int> _templateFavoriteIndexList =
+            templateFavoriteIndexSet.toList();
+        for (int i = 0; i < _templateFavoriteIndexList.length; i++) {
+          templateContainerList.add(new TemplateContainer(
+            onTap: _onTemplateSelect,
+            onFavoriteTap: _onTemplateFavoriteSelect,
+            containerIndex: i,
+            templateImagePath:
+                "assets/templates/${templateList[_templateFavoriteIndexList[i]]}",
+            isFavorite: true,
+          ));
+        }
+      });
+    } else {
+      loadAllTemplates();
+    }
     print(isFavoriteSelected.toString() + "입니다.");
   }
 
@@ -110,11 +131,16 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
       body: new GridView.count(
         crossAxisCount: 2,
         childAspectRatio: (itemWidth / itemHeight),
-        children: new List.generate(templateContainerList.length, (index) {
+        children: templateContainerList
+            .map((container) => new GridTile(
+                  child: container,
+                ))
+            .toList(),
+        /*children: new List.generate(templateContainerList.length, (index) {
           return new GridTile(
             child: templateContainerList[index],
           );
-        }),
+        }),*/
       ),
     );
   }
