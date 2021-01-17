@@ -1,4 +1,4 @@
-import 'package:Roughy/page/ImageViewPage.dart';
+import 'package:Roughy/page/decorating/ImageViewPage.dart';
 import 'package:Roughy/tab/secondTab.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

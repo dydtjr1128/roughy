@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:Roughy/page/mainTabbedPage.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SplashPage extends StatefulWidget {
   SplashPage(this.toggleBrightness);
@@ -50,7 +51,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   }
 
   Future<bool> _delayedSplashPage() async {
-    await Future.delayed(Duration(milliseconds: 1200), () {});
+    await Future.delayed(Duration(milliseconds: 1500), () {});
     return true;
   }
 
@@ -71,7 +72,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
             opacity: _animation,
             // The green box must be a child of the AnimatedOpacity widget.
             child: Container(
-              child: Image.asset('assets/images/logo.png'),
+              child: SvgPicture.asset('assets/images/logo.svg', height: 100, width: 100),
             )),
       ),
     );
