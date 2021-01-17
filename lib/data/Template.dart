@@ -1,17 +1,9 @@
 class Template {
-  String imagePath;
+  String uniqueName;
+  String imageName;
   bool isFavorite;
 
-  Template({this.imagePath, this.isFavorite}) {
+  Template({this.uniqueName, this.imageName, this.isFavorite}) {
     this.isFavorite = false;
   }
-
-  Template.fromJson(Map<String, dynamic> json)
-      : imagePath = json['imagePath'],
-        isFavorite = json['isFavorite'];
-
-  Map<String, dynamic> toJson() => {
-        'imagePath': imagePath,
-        'isFavorite': isFavorite,
-      };
 }

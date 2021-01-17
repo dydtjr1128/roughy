@@ -1,6 +1,3 @@
-import 'dart:collection';
-import 'dart:convert';
-
 import 'package:Roughy/component/roughyAppBar.dart';
 import 'package:Roughy/component/templateContainer.dart';
 import 'package:Roughy/data/Template.dart';
@@ -20,68 +17,58 @@ class TemplateSelectWidget extends StatefulWidget {
 class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
   final String templateKey = "TEMPLATE_LISTS";
   final List<TemplateContainer> templateContainerList = List();
-  final List<String> templateList = List();
-  final Set<int> templateFavoriteIndexSet = LinkedHashSet();
+  final List<Template> templateList = List();
+  bool _isFavoriteSelected = false;
 
   @override
   void initState() {
     super.initState();
-    loadTemplates();
+    initializeTemplates();
   }
 
-  // TODO: 템플릿 업데이트 되었을 경우 이거 문제가 있음 한번 저장되면 템플릿 추가된거 못불러올듯
-  void loadTemplates() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    for (int i = 0; i < 9; i++) {
-      templateList.add("base.png");
+  Future<void> initializeTemplates() async {
+    for (int i = 0; i < 7; i++) {
+      templateList.add(new Template(
+          uniqueName: "base" + i.toString(), imageName: "base.png"));
     }
-    templateList.add("base2.jpg");
-    loadTemplateFavoritePrefs();
-    loadAllTemplates();
-  }
+    templateList.add(new Template(uniqueName: "base2", imageName: "base2.jpg"));
 
-  void loadAllTemplates() {
+    final prefs = await SharedPreferences.getInstance();
+    templateList.forEach((template) {
+      bool temp = prefs.getBool(templateKey + template.uniqueName);
+      if (temp != null && temp == true) {
+        template.isFavorite = true;
+      }
+    });
+
     setState(() {
       for (int i = 0; i < templateList.length; i++) {
         templateContainerList.add(new TemplateContainer(
           onTap: _onTemplateSelect,
           onFavoriteTap: _onTemplateFavoriteSelect,
           containerIndex: i,
-          templateImagePath: "assets/templates/${templateList[i]}",
-          isFavorite: templateFavoriteIndexSet.contains(i),
+          templateImagePath: "assets/templates/${templateList[i].imageName}",
+          isFavorite: templateList[i].isFavorite,
         ));
       }
     });
   }
 
-  void saveTemplateFavoritePrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setStringList(templateKey,
-        templateFavoriteIndexSet.map((value) => value.toString()).toList());
-  }
-
-  void loadTemplateFavoritePrefs() async {
-    templateFavoriteIndexSet.clear();
-    final prefs = await SharedPreferences.getInstance();
-    List<String> _templateFavoriteIndexList = prefs.getStringList(templateKey);
-    if (_templateFavoriteIndexList != null) {
-      templateFavoriteIndexSet.addAll(
-          _templateFavoriteIndexList.toSet().map((value) => int.parse(value)));
-    }
-  }
-
   void _onTemplateFavoriteSelect(
-      int index, bool isSelected, BuildContext context) {
+      int index, bool isSelected, BuildContext context) async {
     print("call _onTemplateFavoriteSelect() $index page " +
         isSelected.toString());
+
+    templateList[index].isFavorite = isSelected;
+    final prefs = await SharedPreferences.getInstance();
     if (isSelected) {
-      templateFavoriteIndexSet.remove(index);
+      prefs.setBool(templateKey + templateList[index].uniqueName, true);
     } else {
-      templateFavoriteIndexSet.add(index);
+      prefs.remove(templateKey + templateList[index].uniqueName);
     }
-    saveTemplateFavoritePrefs();
   }
+
+  void saveTemplateFavoritePrefs(bool isFavorite) {}
 
   void _onTemplateSelect(int index, BuildContext context) {
     print("call _onTemplateSelect() $index page");
@@ -91,32 +78,17 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
         platformPageRoute(
             builder: (_) {
               return ImageViewPage(
-                path: "assets/templates/${templateList[index]}",
+                path: "assets/templates/${templateList[index].imageName}",
               );
             },
             context: context));
   }
 
   void _onFavoriteButtonClicked(bool isFavoriteSelected) async {
-    templateContainerList.clear();
-    if (isFavoriteSelected) {
-      setState(() {
-        List<int> _templateFavoriteIndexList =
-            templateFavoriteIndexSet.toList();
-        for (int i = 0; i < _templateFavoriteIndexList.length; i++) {
-          templateContainerList.add(new TemplateContainer(
-            onTap: _onTemplateSelect,
-            onFavoriteTap: _onTemplateFavoriteSelect,
-            containerIndex: i,
-            templateImagePath:
-                "assets/templates/${templateList[_templateFavoriteIndexList[i]]}",
-            isFavorite: true,
-          ));
-        }
-      });
-    } else {
-      loadAllTemplates();
-    }
+    print(templateContainerList.length.toString() + "길이!");
+    setState(() {
+      _isFavoriteSelected = isFavoriteSelected;
+    });
     print(isFavoriteSelected.toString() + "입니다.");
   }
 
@@ -126,22 +98,25 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
     final double itemHeight = (size.height) / 3.5;
     final double itemWidth = size.width / 2;
 
+    var gridTileList = _isFavoriteSelected
+        ? templateContainerList
+            .where((template) => template.isFavorite)
+            .map((template) => new GridTile(
+                  child: template,
+                ))
+            .toList()
+        : templateContainerList
+            .map((template) => new GridTile(
+                  child: template,
+                ))
+            .toList();
+
     return Scaffold(
       appBar: RoughyAppBar(onClickedCallback: _onFavoriteButtonClicked),
       body: new GridView.count(
-        crossAxisCount: 2,
-        childAspectRatio: (itemWidth / itemHeight),
-        children: templateContainerList
-            .map((container) => new GridTile(
-                  child: container,
-                ))
-            .toList(),
-        /*children: new List.generate(templateContainerList.length, (index) {
-          return new GridTile(
-            child: templateContainerList[index],
-          );
-        }),*/
-      ),
+          crossAxisCount: 2,
+          childAspectRatio: (itemWidth / itemHeight),
+          children: gridTileList),
     );
   }
 }
