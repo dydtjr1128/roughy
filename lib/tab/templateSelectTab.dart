@@ -17,7 +17,6 @@ class TemplateSelectWidget extends StatefulWidget {
 class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
   final String templateKey = "TEMPLATE_LISTS";
   final List<TemplateContainer> templateContainerList = List();
-  final List<Template> templateList = List();
   bool _isFavoriteSelected = false;
 
   @override
@@ -27,12 +26,16 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
   }
 
   Future<void> initializeTemplates() async {
-    for (int i = 0; i < 7; i++) {
+    final List<Template> templateList = List();
+    // 템플릿 셋팅 부분
+    for (int i = 0; i < 2; i++) {
       templateList.add(new Template(
           uniqueName: "base" + i.toString(), imageName: "base.png"));
     }
-    templateList.add(new Template(uniqueName: "base2", imageName: "base2.jpg"));
+    templateList
+        .add(new Template(uniqueName: "base2.jpg", imageName: "base2.jpg"));
 
+    // 사용자가 설정한 Favorite 값 로드
     final prefs = await SharedPreferences.getInstance();
     templateList.forEach((template) {
       bool temp = prefs.getBool(templateKey + template.uniqueName);
@@ -47,8 +50,7 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
           onTap: _onTemplateSelect,
           onFavoriteTap: _onTemplateFavoriteSelect,
           containerIndex: i,
-          templateImagePath: "assets/templates/${templateList[i].imageName}",
-          isFavorite: templateList[i].isFavorite,
+          template: templateList[i],
         ));
       }
     });
@@ -59,16 +61,18 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
     print("call _onTemplateFavoriteSelect() $index page " +
         isSelected.toString());
 
-    templateList[index].isFavorite = isSelected;
+    setState(() {
+      templateContainerList[index].template.isFavorite = isSelected;
+    });
     final prefs = await SharedPreferences.getInstance();
     if (isSelected) {
-      prefs.setBool(templateKey + templateList[index].uniqueName, true);
+      prefs.setBool(
+          templateKey + templateContainerList[index].template.uniqueName, true);
     } else {
-      prefs.remove(templateKey + templateList[index].uniqueName);
+      prefs.remove(
+          templateKey + templateContainerList[index].template.uniqueName);
     }
   }
-
-  void saveTemplateFavoritePrefs(bool isFavorite) {}
 
   void _onTemplateSelect(int index, BuildContext context) {
     print("call _onTemplateSelect() $index page");
@@ -78,14 +82,13 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
         platformPageRoute(
             builder: (_) {
               return ImageViewPage(
-                path: "assets/templates/${templateList[index].imageName}",
+                path: "assets/templates/${templateContainerList[index].template.imageName}",
               );
             },
             context: context));
   }
 
   void _onFavoriteButtonClicked(bool isFavoriteSelected) async {
-    print(templateContainerList.length.toString() + "길이!");
     setState(() {
       _isFavoriteSelected = isFavoriteSelected;
     });
@@ -100,14 +103,14 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
 
     var gridTileList = _isFavoriteSelected
         ? templateContainerList
-            .where((template) => template.isFavorite)
-            .map((template) => new GridTile(
-                  child: template,
+            .where((container) => container.template.isFavorite)
+            .map((container) => new GridTile(
+                  child: container,
                 ))
             .toList()
         : templateContainerList
-            .map((template) => new GridTile(
-                  child: template,
+            .map((container) => new GridTile(
+                  child: container,
                 ))
             .toList();
 

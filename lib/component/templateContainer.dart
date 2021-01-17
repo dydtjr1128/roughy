@@ -1,3 +1,4 @@
+import 'package:Roughy/data/Template.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -7,25 +8,24 @@ class TemplateContainer extends StatefulWidget {
   final Function onFavoriteTap;
   final int containerIndex;
   final BorderRadius _baseBorderRadius = BorderRadius.circular(8);
-  final String templateImagePath;
-  final bool isFavorite;
+  final Template template;
 
   TemplateContainer(
       {@required this.onTap,
       @required this.containerIndex,
-      @required this.templateImagePath,
       @required this.onFavoriteTap,
-      @required this.isFavorite});
+      @required this.template});
+
+/*  void setFavorite(bool isFavorite) {
+    templateContainerState.setFavorite(isFavorite);
+  }*/
 
   @override
-  _TemplateContainerState createState() =>
-      _TemplateContainerState(this.isFavorite);
+  _TemplateContainerState createState() => _TemplateContainerState();
 }
 
 class _TemplateContainerState extends State<TemplateContainer> {
   bool _isFavoriteSelected;
-
-  _TemplateContainerState(this._isFavoriteSelected);
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +33,8 @@ class _TemplateContainerState extends State<TemplateContainer> {
     final double itemHeight = (size.height) / 2;
     final double itemWidth = size.width / 2;
     final index = widget.containerIndex;
+    _isFavoriteSelected = widget.template.isFavorite;
+
     return Card(
       elevation: 0,
       color: Color.fromRGBO(235, 235, 235, 1),
@@ -51,7 +53,8 @@ class _TemplateContainerState extends State<TemplateContainer> {
                   ClipRRect(
                       child: Center(
                     child: Container(
-                      child: Image.asset(widget.templateImagePath,
+                      child: Image.asset(
+                          "assets/templates/${widget.template.imageName}",
                           fit: BoxFit.fill),
                       height: MediaQuery.of(context).size.height,
                       margin:
