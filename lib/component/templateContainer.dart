@@ -16,10 +16,6 @@ class TemplateContainer extends StatefulWidget {
       @required this.onFavoriteTap,
       @required this.template});
 
-/*  void setFavorite(bool isFavorite) {
-    templateContainerState.setFavorite(isFavorite);
-  }*/
-
   @override
   _TemplateContainerState createState() => _TemplateContainerState();
 }

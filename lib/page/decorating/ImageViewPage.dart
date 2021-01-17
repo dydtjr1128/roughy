@@ -1,11 +1,13 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:Roughy/component/OutlineCircleButton.dart';
 import 'package:Roughy/component/roughyCenterAppBar.dart';
-import 'package:Roughy/page/SelectedImageViewPage.dart';
+import 'package:Roughy/page/decorating/SelectedImageViewPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImageViewPage extends StatefulWidget {
@@ -23,26 +25,38 @@ class _ImageViewPageState extends State<ImageViewPage> {
     _showPicker(context);
   }
 
-  File _image;
+  File _changedImage;
   final ImagePicker imagePicker = ImagePicker();
 
   _getImage({@required source}) async {
     final pickedFile =
-        await imagePicker.getImage(source: source, imageQuality: 50);
+        await imagePicker.getImage(source: source, imageQuality: 100);
 
     if (pickedFile != null) {
-      _image = File(pickedFile.path);
-      Navigator.push(
+      File croppedImage = await ImageCropper.cropImage(
+        sourcePath: pickedFile.path,
+        aspectRatio: CropAspectRatio(ratioX: 68, ratioY: 108.4),
+        compressQuality: 100,
+        //maxHeight: 700,
+        //maxWidth: 700,
+        compressFormat: ImageCompressFormat.png,
+      );
+
+      _changedImage = await Navigator.push(
           context,
           platformPageRoute(
               builder: (_) {
-                return SelectedImageViewPage(image: _image);
+                return SelectedImageViewPage(
+                    croppedImage: croppedImage,
+                    templateImage: File(widget.path));
               },
               context: context));
     } else {
       print('No image selected.');
     }
   }
+
+  void mergeImage({bottomImage, topImage}) {}
 
   void _showPicker(context) {
     showModalBottomSheet(
@@ -54,14 +68,14 @@ class _ImageViewPageState extends State<ImageViewPage> {
                 children: <Widget>[
                   new ListTile(
                       leading: new Icon(Icons.photo_library),
-                      title: new Text('Photo Library'),
+                      title: new Text('앨범'),
                       onTap: () {
                         _getImage(source: ImageSource.gallery);
                         Navigator.of(context).pop();
                       }),
                   new ListTile(
                     leading: new Icon(Icons.photo_camera),
-                    title: new Text('Camera'),
+                    title: new Text('카메라'),
                     onTap: () {
                       _getImage(source: ImageSource.camera);
                       Navigator.of(context).pop();
@@ -86,14 +100,19 @@ class _ImageViewPageState extends State<ImageViewPage> {
         ),
         body: Center(
             child: Container(
-          height: itemHeight,
-          width: itemWidth,
-          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 0.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-          ),
-          child: Image.asset(widget.path, fit: BoxFit.fitHeight),
-        )),
+                height: itemHeight,
+                width: itemWidth,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 15, horizontal: 0.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                ),
+                child: Stack(
+                  children: [
+                    Center(
+                        child: Image.asset(widget.path, fit: BoxFit.fitHeight)),
+                  ],
+                ))),
         bottomNavigationBar: BottomAppBar(
           color: Colors.black,
           child: Padding(
