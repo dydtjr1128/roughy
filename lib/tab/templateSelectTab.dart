@@ -1,7 +1,7 @@
 import 'package:Roughy/component/roughyAppBar.dart';
 import 'package:Roughy/component/templateContainer.dart';
 import 'package:Roughy/data/Template.dart';
-import 'package:Roughy/page/ImageViewPage.dart';
+import 'file:///F:/dev/Mobile/roughy/lib/page/decorating/ImageViewPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -26,8 +26,10 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
   }
 
   Future<void> initializeTemplates() async {
-    final List<Template> templateList = List();
-    // 템플릿 셋팅 부분
+    final List<Template> templateList = [];
+    // 템플릿 셋팅 부분, 하트 정렬은 uniqueName 으로 셋팅하기 때문에 이미지 이름이 같아도 됨.
+    templateList.add(new Template(
+        uniqueName: "main_template", imageName: "template.png"));
     for (int i = 0; i < 2; i++) {
       templateList.add(new Template(
           uniqueName: "base" + i.toString(), imageName: "base.png"));
@@ -92,7 +94,7 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
     setState(() {
       _isFavoriteSelected = isFavoriteSelected;
     });
-    print(isFavoriteSelected.toString() + "입니다.");
+    print("_onFavoriteButtonClicked : " + isFavoriteSelected.toString());
   }
 
   @override
