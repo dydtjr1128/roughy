@@ -69,14 +69,13 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         ),
         body: Column(
           children: [
-            Row(
+            Expanded(
+                child: Row(
               children: [
                 widget.croppedImage == null || widget.templateImage == null
                     ? Text('No image selected.')
                     : Container(
                         decoration: new BoxDecoration(color: Colors.white),
-                        width: itemWidth,
-                        height: itemHeight - 150,
                         child: CustomPaint(
                             size: Size(_templateImage.width.toDouble(),
                                 _templateImage.height.toDouble()),
@@ -84,7 +83,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                                 croppedImage: _croppedImage,
                                 templateImage: _templateImage)))
               ],
-            ),
+            )),
             Row(
               children: [
                 Container(
