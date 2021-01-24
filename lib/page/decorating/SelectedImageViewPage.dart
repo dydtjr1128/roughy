@@ -67,87 +67,89 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         appBar: RoughyCenterAppBar(
           title: "template",
         ),
-        body: Container(
-            height: itemHeight,
-            width: itemWidth,
-            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 0.0),
-            decoration: BoxDecoration(
-              color: Colors.red,
-            ),
-            child: Center(
-                child: Container(
-                    decoration: new BoxDecoration(color: Colors.white),
-                    width: itemWidth * 0.7,
-                    height: itemHeight * 0.65,
-                    child: widget.croppedImage == null ||
-                            widget.templateImage == null
-                        ? Text('No image selected.')
-                        : CustomPaint(
+        body: Column(
+          children: [
+            Row(
+              children: [
+                widget.croppedImage == null || widget.templateImage == null
+                    ? Text('No image selected.')
+                    : Container(
+                        decoration: new BoxDecoration(color: Colors.white),
+                        width: itemWidth,
+                        height: itemHeight - 150,
+                        child: CustomPaint(
                             size: Size(_templateImage.width.toDouble(),
                                 _templateImage.height.toDouble()),
                             painter: RoughyBackgroundPainter(
                                 croppedImage: _croppedImage,
-                                templateImage: _templateImage))))),
+                                templateImage: _templateImage)))
+              ],
+            ),
+            Row(
+              children: [
+                Container(
+                    width: itemWidth,
+                    height: 50.0,
+                    decoration: new BoxDecoration(color: Colors.black),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
+                      child: Row(children: <Widget>[
+                        Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              OutlineCircleButton(
+                                  radius: 45.0,
+                                  foregroundColor: Colors.black,
+                                  onTap: () => onTextEditButtonClicked(context),
+                                  child: Center(
+                                      child: Text(
+                                    "T",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 30),
+                                  )))
+                            ]),
+                        Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              OutlineCircleButton(
+                                  radius: 45.0,
+                                  foregroundColor: Colors.black,
+                                  onTap: () => onDrawEditButtonClicked(context),
+                                  child: Center(
+                                      child: SvgPicture.asset(
+                                          'assets/images/logo.svg',
+                                          color: Colors.white,
+                                          height: 25,
+                                          width: 25)))
+                            ]),
+                        Expanded(
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: <Widget>[
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  OutlineRoundButton(
+                                      radius: 15.0,
+                                      foregroundColor: Colors.black,
+                                      onTap: () =>
+                                          onImageSettingButtonClicked(context),
+                                      child: Center(
+                                          child: Text(
+                                        "되돌리기",
+                                        style: TextStyle(color: Colors.white),
+                                      )))
+                                ],
+                              )
+                            ])),
+                      ]),
+                    ))
+              ],
+            )
+          ],
+        ));
 /*                child: widget.image == null
                     ? Text('No image selected.')
                     : Image.file(widget.image))),*/
-        bottomNavigationBar: BottomAppBar(
-          color: Colors.black,
-          child: Container(
-              height: 50.0,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
-                child: Row(children: <Widget>[
-                  Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        OutlineCircleButton(
-                            radius: 45.0,
-                            foregroundColor: Colors.black,
-                            onTap: () => onTextEditButtonClicked(context),
-                            child: Center(
-                                child: Text(
-                              "T",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 30),
-                            )))
-                      ]),
-                  Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        OutlineCircleButton(
-                            radius: 45.0,
-                            foregroundColor: Colors.black,
-                            onTap: () => onDrawEditButtonClicked(context),
-                            child: Center(
-                                child: SvgPicture.asset(
-                                    'assets/images/logo.svg',
-                                    color: Colors.white,
-                                    height: 25,
-                                    width: 25)))
-                      ]),
-                  Expanded(
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            OutlineRoundButton(
-                                radius: 15.0,
-                                foregroundColor: Colors.black,
-                                onTap: () =>
-                                    onImageSettingButtonClicked(context),
-                                child: Center(
-                                    child: Text(
-                                  "되돌리기",
-                                  style: TextStyle(color: Colors.white),
-                                )))
-                          ],
-                        )
-                      ])),
-                ]),
-              )),
-        ));
   }
 }
