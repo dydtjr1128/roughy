@@ -31,7 +31,6 @@ class _ImageViewPageState extends State<ImageViewPage> {
   _getImage({@required source}) async {
     final pickedFile =
         await imagePicker.getImage(source: source, imageQuality: 100);
-
     if (pickedFile != null) {
       File croppedImage = await ImageCropper.cropImage(
         sourcePath: pickedFile.path,

@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:Roughy/page/decorating/ImageViewPage.dart';
+import 'package:Roughy/page/decorating/SelectedImageViewPage.dart';
 import 'package:Roughy/tab/secondTab.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -107,6 +110,22 @@ class _FirstPageWidgetState extends State<FirstPageWidget> {
                     onPressed: () => {
                           _changePage(context),
                         })
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                PlatformButton(
+                    child: Text("테스트"),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          platformPageRoute(
+                              context: context,
+                              builder: (context) {
+                                return SelectedImageViewPage(croppedImage: File("assets/images/test.jpg"), templateImage: File("assets/templates/template.png"));
+                              }));
+                    })
               ],
             ),
             Row(
