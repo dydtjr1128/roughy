@@ -32,11 +32,14 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   _SelectedImageViewPageState() {
     this.isDrawingPanelVisible = true;
     this.isTextEditPanelVisible = false;
-    this.drawingColors..add(Color.fromRGBO(255, 255, 255, 1))..add(
-        Color.fromRGBO(126, 126, 126, 1))..add(Color.fromRGBO(0, 0, 0, 1))..add(
-        Color.fromRGBO(229, 36, 36, 1))..add(
-        Color.fromRGBO(255, 169, 36, 1))..add(
-        Color.fromRGBO(12, 178, 101, 1))..add(Color.fromRGBO(0, 26, 197, 1));
+    this.drawingColors
+      ..add(Color.fromRGBO(255, 255, 255, 1))
+      ..add(Color.fromRGBO(126, 126, 126, 1))
+      ..add(Color.fromRGBO(0, 0, 0, 1))
+      ..add(Color.fromRGBO(229, 36, 36, 1))
+      ..add(Color.fromRGBO(255, 169, 36, 1))
+      ..add(Color.fromRGBO(12, 178, 101, 1))
+      ..add(Color.fromRGBO(0, 26, 197, 1));
     drawingLineDepths..add(1)..add(3)..add(5)..add(7)..add(9);
   }
 
@@ -94,37 +97,34 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     for (var myColor in drawingColors) {
       list.add(ClipOval(
           child: Container(
-            width: 15,
-            height: 15,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.black, width: 1),
-              color: myColor,
-              shape: BoxShape.circle,
-            ),
-            child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-                child: SizedBox(),
-                onTap: () async {
+              width: 15,
+              height: 15,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black, width: 1),
+                color: myColor,
+                shape: BoxShape.circle,
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                    child: SizedBox(),
+                    onTap: () async {
 /*                  if(onTap != null) {
                     onTap();
                   }*/
-                }
-            ),
-          )
-      )));
+                    }),
+              ))));
     }
     return Row(
-    children: [
-    Container(
-    height: 50,
-    decoration: new BoxDecoration(
-    color: Colors.white,
-    border:
-    Border.all(color: Color.fromRGBO(9, 9, 9, 1), width: 1)),
-    child: Row(children: list))
-    ]
-    ,
+      children: [
+        Container(
+            height: 50,
+            decoration: new BoxDecoration(
+                color: Colors.white,
+                border:
+                    Border.all(color: Color.fromRGBO(9, 9, 9, 1), width: 1)),
+            child: Row(children: list))
+      ],
     );
   }
 
@@ -148,7 +148,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
             decoration: new BoxDecoration(
                 color: Colors.white,
                 border:
-                Border.all(color: Color.fromRGBO(9, 9, 9, 1), width: 1)),
+                    Border.all(color: Color.fromRGBO(9, 9, 9, 1), width: 1)),
             child: Row(children: list))
       ],
     );
@@ -156,9 +156,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery
-        .of(context)
-        .size;
+    var size = MediaQuery.of(context).size;
     final double itemHeight = size.height;
     final double itemWidth = size.width;
     return Scaffold(
@@ -177,11 +175,10 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
               children: [
                 Expanded(
                     child: Row(
-                      children: [
-                        widget.croppedImage == null ||
-                            widget.templateImage == null
-                            ? Text('No image selected.')
-                            : Container(
+                  children: [
+                    widget.croppedImage == null || widget.templateImage == null
+                        ? Text('No image selected.')
+                        : Container(
                             decoration: new BoxDecoration(
                               color: Colors.white,
                               border: Border.all(width: 1),
@@ -192,8 +189,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                                 painter: RoughyBackgroundPainter(
                                     croppedImage: _croppedImage,
                                     templateImage: _templateImage)))
-                      ],
-                    )),
+                  ],
+                )),
                 isDrawingPanelVisible
                     ? getDrawingPanelWidgets()
                     : new Container(),
@@ -219,11 +216,10 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                                           onTextEditButtonClicked(context),
                                       child: Center(
                                           child: Text(
-                                            "T",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 30),
-                                          )))
+                                        "T",
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 30),
+                                      )))
                                 ]),
                             Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -244,26 +240,24 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                                 child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: <Widget>[
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment
-                                            .end,
-                                        children: [
-                                          OutlineRoundButton(
-                                              radius: 15.0,
-                                              foregroundColor: Colors.black,
-                                              onTap: () =>
-                                                  onImageSettingButtonClicked(
-                                                      context),
-                                              child: Center(
-                                                  child: Text(
-                                                    "되돌리기",
-                                                    style:
-                                                    TextStyle(
-                                                        color: Colors.white),
-                                                  )))
-                                        ],
-                                      )
-                                    ])),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      OutlineRoundButton(
+                                          radius: 15.0,
+                                          foregroundColor: Colors.black,
+                                          onTap: () =>
+                                              onImageSettingButtonClicked(
+                                                  context),
+                                          child: Center(
+                                              child: Text(
+                                            "되돌리기",
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          )))
+                                    ],
+                                  )
+                                ])),
                           ]),
                         ))
                   ],
