@@ -9,6 +9,7 @@ import 'package:Roughy/component/roughyCenterAppBar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class SelectedImageViewPage extends StatefulWidget {
@@ -92,16 +93,20 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     });
   }
 
-  Widget getDrawingPanelWidgets() {
+  void onSelectDrawingColor(ui.Color drawingColor, int index) {}
+
+  void onSelectDrawingDepth(int depth, int index) {}
+
+  Widget getDrawingPanelWidgets(double itemWidth) {
     List<Widget> list = [];
-    for (var myColor in drawingColors) {
+    for (int i = 0; i < drawingColors.length; i++) {
       list.add(ClipOval(
           child: Container(
               width: 15,
               height: 15,
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.black, width: 1),
-                color: myColor,
+                color: drawingColors[i],
                 shape: BoxShape.circle,
               ),
               child: Material(
@@ -109,28 +114,25 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                 child: InkWell(
                     child: SizedBox(),
                     onTap: () async {
-/*                  if(onTap != null) {
-                    onTap();
-                  }*/
+                      onSelectDrawingColor(drawingColors[i], i);
                     }),
               ))));
     }
-    return Row(
-      children: [
-        Container(
-            height: 50,
-            decoration: new BoxDecoration(
-                color: Colors.white,
-                border:
-                    Border.all(color: Color.fromRGBO(9, 9, 9, 1), width: 1)),
-            child: Row(children: list))
-      ],
-    );
+    return Container(
+        height: 50,
+        decoration: new BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: Color.fromRGBO(9, 9, 9, 1), width: 1)),
+        child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: list)));
   }
 
-  Widget getDrawingLineDepthPanelWidgets() {
+  Widget getDrawingLineDepthPanelWidgets(double itemWidth) {
     List<Widget> list = [];
-    for (var myColor in drawingLineDepths) {
+    for (int i = 0; i < drawingLineDepths.length; i++) {
       list.add(ClipOval(
           child: Container(
               width: 15,
@@ -139,19 +141,27 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                 border: Border.all(color: Colors.black, width: 1),
                 color: Colors.black,
                 shape: BoxShape.circle,
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                    child: SizedBox(),
+                    onTap: () async {
+                      onSelectDrawingDepth(drawingLineDepths[i], i);
+                    }),
               ))));
     }
-    return Row(
-      children: [
-        Container(
-            height: 50,
-            decoration: new BoxDecoration(
-                color: Colors.white,
-                border:
-                    Border.all(color: Color.fromRGBO(9, 9, 9, 1), width: 1)),
-            child: Row(children: list))
-      ],
-    );
+    return Container(
+        height: 50,
+        decoration: new BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: Color.fromRGBO(9, 9, 9, 1), width: 1)),
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: list),
+        ));
   }
 
   @override
@@ -165,16 +175,16 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
           title: "template",
         ),
         body: Container(
-            width: itemWidth,
-            height: itemHeight,
             decoration: new BoxDecoration(
               color: Colors.red,
-              border: Border.all(width: 1),
             ),
             child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Expanded(
                     child: Row(
+                  mainAxisSize: MainAxisSize.max,
                   children: [
                     widget.croppedImage == null || widget.templateImage == null
                         ? Text('No image selected.')
@@ -192,11 +202,11 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                   ],
                 )),
                 isDrawingPanelVisible
-                    ? getDrawingPanelWidgets()
-                    : new Container(),
+                    ? getDrawingPanelWidgets(itemWidth)
+                    : new Row(),
                 isDrawingPanelVisible
-                    ? getDrawingLineDepthPanelWidgets()
-                    : new Container(),
+                    ? getDrawingLineDepthPanelWidgets(itemWidth)
+                    : new Row(),
                 Row(
                   children: [
                     Container(
