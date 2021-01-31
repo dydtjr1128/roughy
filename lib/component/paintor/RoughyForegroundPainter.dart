@@ -1,42 +1,38 @@
 import 'dart:ui' as ui;
 
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class RoughyForegroundPainter extends CustomPainter {
-  final ui.Image templateImage, croppedImage;
+  Color drawingColor;
+  double drawingDepth;
+
+  List<ui.Offset> points;
 
   RoughyForegroundPainter({
-    @required this.templateImage,
-    @required this.croppedImage,
+    @required this.points,
+    @required this.drawingColor,
+    @required this.drawingDepth,
   });
 
   @override
   void paint(Canvas canvas, Size size) async {
-    // TODO: implement paint
-    print("사이즈는요~ " + size.width.toString() + " " + size.height.toString());
-    final double width = size.width.toDouble();
-    final double height = size.height.toDouble();
-    canvas.drawLine(Offset(0,height/2), Offset(1000,1000), Paint());
-    if (croppedImage != null) {
-      canvas.drawImageRect(
-          croppedImage,
-          Rect.fromLTRB(0, 0, croppedImage.width.toDouble(),
-              croppedImage.height.toDouble()),
-          Rect.fromLTRB(0, 0, width, height),
-          Paint());
-    }
-    if (templateImage != null) {
-      canvas.drawImageRect(
-          templateImage,
-          Rect.fromLTRB(0, 0, templateImage.width.toDouble(),
-              templateImage.height.toDouble()),
-          Rect.fromLTRB(0, 0, width, height),
-          Paint());
+    ui.Paint paint = new ui.Paint()
+      ..color = drawingColor
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = drawingDepth;
+
+    for (int i = 0; i < points.length - 1; i++) {
+      if (points[i] != null && points[i + 1] != null) {
+        canvas.drawLine(points[i], points[i + 1], paint);
+      } else if (points[i] != null && points[i + 1] == null) {
+        canvas.drawPoints(ui.PointMode.points, [points[i]], paint);
+      }
     }
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
+  bool shouldRepaint(covariant RoughyForegroundPainter oldDelegate) {
+    return true;
   }
 }
