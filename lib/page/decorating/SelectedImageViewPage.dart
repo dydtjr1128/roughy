@@ -5,6 +5,7 @@ import 'dart:ui' as ui;
 import 'package:Roughy/component/OutlineCircleButton.dart';
 import 'package:Roughy/component/OutlineRoundButton.dart';
 import 'package:Roughy/component/paintor/RoughyBackgroundPainter.dart';
+import 'package:Roughy/component/paintor/RoughyForegroundPainter.dart';
 import 'package:Roughy/component/roughyCenterAppBar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,13 +23,23 @@ class SelectedImageViewPage extends StatefulWidget {
   _SelectedImageViewPageState createState() => _SelectedImageViewPageState();
 }
 
+class RoughyPoint {
+  ui.Offset offset;
+  ui.Color color;
+  double depth;
+  RoughyPoint({@required this.offset, @required this.color, @required this.depth});
+}
+
 class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   File changedImage;
   ui.Image _templateImage, _croppedImage;
   bool isDrawingPanelVisible;
   bool isTextEditPanelVisible;
+  List<RoughyPoint> points = [];
+  Color selectedDrawingColor;
+  double selectedDrawingLineDepth;
   final List<ui.Color> drawingColors = [];
-  final List<int> drawingLineDepths = [];
+  final List<double> drawingLineDepths = [];
 
   _SelectedImageViewPageState() {
     this.isDrawingPanelVisible = true;
@@ -42,6 +53,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       ..add(Color.fromRGBO(12, 178, 101, 1))
       ..add(Color.fromRGBO(0, 26, 197, 1));
     drawingLineDepths..add(1)..add(3)..add(5)..add(7)..add(9);
+    selectedDrawingColor = drawingColors[2];
+    selectedDrawingLineDepth = drawingLineDepths[2];
   }
 
   @override
@@ -93,13 +106,17 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     });
   }
 
-  void onSelectDrawingColor(ui.Color drawingColor, int index) {
-    print("색상 선택 : " + drawingColors.toString() + " " + index.toString());
+  void onSelectDrawingColor(ui.Color selectedDrawingColor, int index) {
+    print("색상 선택 : " + selectedDrawingColor.toString() + " " + index.toString());
+    this.selectedDrawingColor = selectedDrawingColor;
   }
 
-  void onSelectDrawingDepth(int depth, int index) {}
+  void onSelectDrawingDepth(double selectedDrawingLineDepth, int index) {
+    print("두께 선택 : " + selectedDrawingLineDepth.toString() + " " + index.toString());
+    this.selectedDrawingLineDepth = selectedDrawingLineDepth;
+  }
 
-  Widget getDrawingPanelWidgets(double itemWidth) {
+  Widget getDrawingPanelWidgets() {
     List<Widget> list = [];
     for (int i = 0; i < drawingColors.length; i++) {
       list.add(ClipOval(
@@ -134,7 +151,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                 children: list)));
   }
 
-  Widget getDrawingLineDepthPanelWidgets(double itemWidth) {
+  Widget getDrawingLineDepthPanelWidgets() {
     List<Widget> list = [];
     for (int i = 0; i < drawingLineDepths.length; i++) {
       list.add(
@@ -174,6 +191,10 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     var size = MediaQuery.of(context).size;
     final double itemHeight = size.height;
     final double itemWidth = size.width;
+    final double templateHeight = (itemHeight - 150) * 0.7;
+    final double templateWidth = templateHeight *
+        _templateImage.width.toDouble() /
+        _templateImage.height.toDouble();
     return Scaffold(
         backgroundColor: Color.fromRGBO(235, 235, 235, 1),
         appBar: RoughyCenterAppBar(
@@ -189,28 +210,56 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
               children: [
                 Expanded(
                     child: Row(
-                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     widget.croppedImage == null || widget.templateImage == null
                         ? Text('No image selected.')
                         : Container(
+                            width: templateWidth,
+                            height: templateHeight,
                             decoration: new BoxDecoration(
                               color: Colors.white,
                               border: Border.all(width: 1),
                             ),
-                            child: CustomPaint(
-                                size: Size(_templateImage.width.toDouble(),
-                                    _templateImage.height.toDouble()),
-                                painter: RoughyBackgroundPainter(
-                                    croppedImage: _croppedImage,
-                                    templateImage: _templateImage)))
+                            child: GestureDetector(
+                                onPanDown: (details) {
+                                  setState(() {
+                                    RenderBox object =
+                                        context.findRenderObject();
+                                    ui.Offset offset = object
+                                        .globalToLocal(details.globalPosition);
+                                    print("onPanDown" + offset.toString());
+                                    points..add(null)..add(RoughyPoint(offset: offset, color: selectedDrawingColor, depth: selectedDrawingLineDepth));
+                                  });
+                                },
+                                onPanUpdate: (details) {
+                                  setState(() {
+                                    RenderBox object =
+                                        context.findRenderObject();
+                                    ui.Offset offset = object
+                                        .globalToLocal(details.globalPosition);
+                                    print("onPanUpdate" + offset.toString());
+                                    points.add(RoughyPoint(offset: offset, color: selectedDrawingColor, depth: selectedDrawingLineDepth));
+                                  });
+                                },
+                                onPanEnd: (details) => points.add(null),
+                                child: CustomPaint(
+                                  size: Size(templateWidth, templateHeight),
+                                  //size: Size(_templateImage.width.toDouble(), _templateImage.height.toDouble()),
+                                  painter: RoughyBackgroundPainter(
+                                      croppedImage: _croppedImage,
+                                      templateImage: _templateImage),
+                                  foregroundPainter: RoughyForegroundPainter(
+                                      points: points,
+                                      drawingColor: selectedDrawingColor,
+                                      drawingDepth: selectedDrawingLineDepth),
+                                )),
+                          )
                   ],
                 )),
+                isDrawingPanelVisible ? getDrawingPanelWidgets() : new Row(),
                 isDrawingPanelVisible
-                    ? getDrawingPanelWidgets(itemWidth)
-                    : new Row(),
-                isDrawingPanelVisible
-                    ? getDrawingLineDepthPanelWidgets(itemWidth)
+                    ? getDrawingLineDepthPanelWidgets()
                     : new Row(),
                 Row(
                   children: [
