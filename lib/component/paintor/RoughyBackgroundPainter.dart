@@ -15,7 +15,6 @@ class RoughyBackgroundPainter extends CustomPainter {
     //print("사이즈는요~ " + size.width.toString() + " " + size.height.toString());
     final double width = size.width.toDouble();
     final double height = size.height.toDouble();
-    canvas.drawLine(Offset(0,height/2), Offset(1000,1000), Paint());
     if (croppedImage != null) {
       canvas.drawImageRect(
           croppedImage,
