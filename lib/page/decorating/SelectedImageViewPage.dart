@@ -93,7 +93,9 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     });
   }
 
-  void onSelectDrawingColor(ui.Color drawingColor, int index) {}
+  void onSelectDrawingColor(ui.Color drawingColor, int index) {
+    print("색상 선택 : " + drawingColors.toString() + " " + index.toString());
+  }
 
   void onSelectDrawingDepth(int depth, int index) {}
 
@@ -105,7 +107,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
               width: 15,
               height: 15,
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.black, width: 1),
+                border: Border.all(
+                    color: Color.fromRGBO(228, 231, 233, 1), width: 1),
                 color: drawingColors[i],
                 shape: BoxShape.circle,
               ),
@@ -122,7 +125,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         height: 50,
         decoration: new BoxDecoration(
             color: Colors.white,
-            border: Border.all(color: Color.fromRGBO(9, 9, 9, 1), width: 1)),
+            border:
+                Border.all(color: Color.fromRGBO(245, 245, 245, 1), width: 1)),
         child: Padding(
             padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
             child: Row(
@@ -133,29 +137,30 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   Widget getDrawingLineDepthPanelWidgets(double itemWidth) {
     List<Widget> list = [];
     for (int i = 0; i < drawingLineDepths.length; i++) {
-      list.add(ClipOval(
-          child: Container(
-              width: 15,
-              height: 15,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black, width: 1),
-                color: Colors.black,
-                shape: BoxShape.circle,
-              ),
+      list.add(
+        Container(
+          width: 25,
+          height: 25,
+          child: ClipOval(
               child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                    child: SizedBox(),
-                    onTap: () async {
-                      onSelectDrawingDepth(drawingLineDepths[i], i);
-                    }),
-              ))));
+            child: InkWell(
+                child: SvgPicture.asset(
+                  'assets/images/logo_depth' + (i + 1).toString() + '.svg',
+                  color: Colors.black,
+                ),
+                onTap: () async {
+                  onSelectDrawingDepth(drawingLineDepths[i], i);
+                }),
+          )),
+        ),
+      );
     }
     return Container(
         height: 50,
         decoration: new BoxDecoration(
             color: Colors.white,
-            border: Border.all(color: Color.fromRGBO(9, 9, 9, 1), width: 1)),
+            border:
+                Border.all(color: Color.fromRGBO(245, 245, 245, 1), width: 1)),
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
           child: Row(
