@@ -12,8 +12,7 @@ class RoughyBackgroundPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) async {
-    // TODO: implement paint
-    print("사이즈는요~ " + size.width.toString() + " " + size.height.toString());
+    //print("사이즈는요~ " + size.width.toString() + " " + size.height.toString());
     final double width = size.width.toDouble();
     final double height = size.height.toDouble();
     canvas.drawLine(Offset(0,height/2), Offset(1000,1000), Paint());
