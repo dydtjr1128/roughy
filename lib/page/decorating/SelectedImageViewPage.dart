@@ -27,7 +27,9 @@ class RoughyPoint {
   ui.Offset offset;
   ui.Color color;
   double depth;
-  RoughyPoint({@required this.offset, @required this.color, @required this.depth});
+
+  RoughyPoint(
+      {@required this.offset, @required this.color, @required this.depth});
 }
 
 class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
@@ -107,12 +109,16 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   }
 
   void onSelectDrawingColor(ui.Color selectedDrawingColor, int index) {
-    print("색상 선택 : " + selectedDrawingColor.toString() + " " + index.toString());
+    print(
+        "색상 선택 : " + selectedDrawingColor.toString() + " " + index.toString());
     this.selectedDrawingColor = selectedDrawingColor;
   }
 
   void onSelectDrawingDepth(double selectedDrawingLineDepth, int index) {
-    print("두께 선택 : " + selectedDrawingLineDepth.toString() + " " + index.toString());
+    print("두께 선택 : " +
+        selectedDrawingLineDepth.toString() +
+        " " +
+        index.toString());
     this.selectedDrawingLineDepth = selectedDrawingLineDepth;
   }
 
@@ -143,9 +149,9 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         decoration: new BoxDecoration(
             color: Colors.white,
             border:
-                Border.all(color: Color.fromRGBO(245, 245, 245, 1), width: 1)),
+                Border.all(color: Color.fromRGBO(245, 245, 245, 1), width: 2)),
         child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+            padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: list)));
@@ -154,23 +160,19 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   Widget getDrawingLineDepthPanelWidgets() {
     List<Widget> list = [];
     for (int i = 0; i < drawingLineDepths.length; i++) {
-      list.add(
-        Container(
-          width: 25,
-          height: 25,
-          child: ClipOval(
-              child: Material(
-            child: InkWell(
-                child: SvgPicture.asset(
-                  'assets/images/logo_depth' + (i + 1).toString() + '.svg',
-                  color: Colors.black,
-                ),
-                onTap: () async {
-                  onSelectDrawingDepth(drawingLineDepths[i], i);
-                }),
-          )),
+      list.add(ClipOval(
+          child: Container(
+        child: Material(
+          child: InkWell(
+              child: SvgPicture.asset(
+                'assets/images/logo_depth' + (i + 1).toString() + '.svg',
+                color: Colors.black,
+              ),
+              onTap: () async {
+                onSelectDrawingDepth(drawingLineDepths[i], i);
+              }),
         ),
-      );
+      )));
     }
     return Container(
         height: 50,
@@ -179,7 +181,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
             border:
                 Border.all(color: Color.fromRGBO(245, 245, 245, 1), width: 1)),
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+          padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
           child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: list),
@@ -202,7 +204,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         ),
         body: Container(
             decoration: new BoxDecoration(
-              color: Colors.red,
+              color: Colors.white,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.max,
@@ -226,10 +228,16 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                                   setState(() {
                                     RenderBox object =
                                         context.findRenderObject();
+
                                     ui.Offset offset = object
                                         .globalToLocal(details.globalPosition);
                                     print("onPanDown" + offset.toString());
-                                    points..add(null)..add(RoughyPoint(offset: offset, color: selectedDrawingColor, depth: selectedDrawingLineDepth));
+                                    points
+                                      ..add(null)
+                                      ..add(RoughyPoint(
+                                          offset: offset,
+                                          color: selectedDrawingColor,
+                                          depth: selectedDrawingLineDepth));
                                   });
                                 },
                                 onPanUpdate: (details) {
@@ -239,7 +247,10 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                                     ui.Offset offset = object
                                         .globalToLocal(details.globalPosition);
                                     print("onPanUpdate" + offset.toString());
-                                    points.add(RoughyPoint(offset: offset, color: selectedDrawingColor, depth: selectedDrawingLineDepth));
+                                    points.add(RoughyPoint(
+                                        offset: offset,
+                                        color: selectedDrawingColor,
+                                        depth: selectedDrawingLineDepth));
                                   });
                                 },
                                 onPanEnd: (details) => points.add(null),
@@ -268,7 +279,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                         height: 50.0,
                         decoration: new BoxDecoration(color: Colors.black),
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(15.0, 0, 15.0, 0),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 0, horizontal: 20),
                           child: Row(children: <Widget>[
                             Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -316,8 +328,9 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                                           child: Center(
                                               child: Text(
                                             "되돌리기",
-                                            style:
-                                                TextStyle(color: Colors.white),
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16),
                                           )))
                                     ],
                                   )
