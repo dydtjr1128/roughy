@@ -188,6 +188,13 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         ));
   }
 
+  bool isInsideOffset(ui.Offset offset, double width, double height) {
+    return offset.dx >= 0 &&
+        offset.dy >= 0 &&
+        offset.dx <= width &&
+        offset.dy <= height;
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -220,51 +227,53 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                             width: templateWidth,
                             height: templateHeight,
                             decoration: new BoxDecoration(
-                              color: Colors.white,
-                              border: Border.all(width: 1),
+                              color: Colors.black,
                             ),
                             child: GestureDetector(
                                 onPanDown: (details) {
                                   setState(() {
-                                    RenderBox object =
-                                        context.findRenderObject();
-
-                                    ui.Offset offset = object
-                                        .globalToLocal(details.globalPosition);
-                                    print("onPanDown" + offset.toString());
-                                    points
-                                      ..add(null)
-                                      ..add(RoughyPoint(
-                                          offset: offset,
+                                    ui.Offset localOffset =
+                                        details.localPosition;
+                                    if (isInsideOffset(localOffset,
+                                        templateWidth, templateHeight)) {
+                                      points.add(RoughyPoint(
+                                          offset: details.localPosition,
                                           color: selectedDrawingColor,
                                           depth: selectedDrawingLineDepth));
+                                    }
                                   });
                                 },
                                 onPanUpdate: (details) {
                                   setState(() {
-                                    RenderBox object =
-                                        context.findRenderObject();
-                                    ui.Offset offset = object
-                                        .globalToLocal(details.globalPosition);
-                                    print("onPanUpdate" + offset.toString());
-                                    points.add(RoughyPoint(
-                                        offset: offset,
-                                        color: selectedDrawingColor,
-                                        depth: selectedDrawingLineDepth));
+                                    ui.Offset localOffset =
+                                        details.localPosition;
+                                    if (isInsideOffset(localOffset,
+                                        templateWidth, templateHeight)) {
+                                      points.add(RoughyPoint(
+                                          offset: details.localPosition,
+                                          color: selectedDrawingColor,
+                                          depth: selectedDrawingLineDepth));
+                                    }
                                   });
                                 },
                                 onPanEnd: (details) => points.add(null),
-                                child: CustomPaint(
-                                  size: Size(templateWidth, templateHeight),
-                                  //size: Size(_templateImage.width.toDouble(), _templateImage.height.toDouble()),
-                                  painter: RoughyBackgroundPainter(
-                                      croppedImage: _croppedImage,
-                                      templateImage: _templateImage),
-                                  foregroundPainter: RoughyForegroundPainter(
-                                      points: points,
-                                      drawingColor: selectedDrawingColor,
-                                      drawingDepth: selectedDrawingLineDepth),
-                                )),
+                                child: Container(
+                                    width: templateWidth,
+                                    height: templateHeight,
+                                    child: CustomPaint(
+                                      //size: Size(templateWidth, templateHeight),
+                                      //size: Size(_templateImage.width.toDouble(), _templateImage.height.toDouble()),
+                                      painter: RoughyBackgroundPainter(
+                                          croppedImage: _croppedImage,
+                                          templateImage: _templateImage),
+                                      foregroundPainter:
+                                          RoughyForegroundPainter(
+                                              points: points,
+                                              drawingColor:
+                                                  selectedDrawingColor,
+                                              drawingDepth:
+                                                  selectedDrawingLineDepth),
+                                    ))),
                           )
                   ],
                 )),
