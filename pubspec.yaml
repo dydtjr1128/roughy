@@ -53,6 +53,16 @@ flutter:
     - family: Macadamia
       fonts:
         - asset: assets/fonts/Macadamia.otf
+    - family: AlphaClouds
+      fonts:
+        - asset: assets/fonts/AlphaClouds.otf
+    - family: SimplicityRegular
+      fonts:
+        - asset: assets/fonts/Simplicity-Regular.otf
+    - family: Janitor
+      fonts:
+        - asset: assets/fonts/Janitor.otf
+
   assets:
     - assets/images/
     - assets/templates/
