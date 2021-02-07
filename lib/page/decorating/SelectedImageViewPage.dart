@@ -23,13 +23,22 @@ class SelectedImageViewPage extends StatefulWidget {
   _SelectedImageViewPageState createState() => _SelectedImageViewPageState();
 }
 
-class RoughyPoint {
+class RoughyDrawingPoint {
   ui.Offset offset;
   ui.Color color;
   double depth;
 
-  RoughyPoint(
+  RoughyDrawingPoint(
       {@required this.offset, @required this.color, @required this.depth});
+}
+
+class RoughyTextPoint {
+  ui.Offset offset;
+  ui.Color color;
+  String text;
+
+  RoughyTextPoint(
+      {@required this.offset, @required this.color, @required this.text});
 }
 
 class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
@@ -37,7 +46,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   ui.Image _templateImage, _croppedImage;
   bool isDrawingPanelVisible;
   bool isTextEditPanelVisible;
-  List<RoughyPoint> points = [];
+  List<RoughyDrawingPoint> points = [];
   Color selectedDrawingColor;
   double selectedDrawingLineDepth;
   final List<ui.Color> drawingColors = [];
@@ -46,14 +55,11 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   _SelectedImageViewPageState() {
     this.isDrawingPanelVisible = true;
     this.isTextEditPanelVisible = false;
-    this.drawingColors
-      ..add(Color.fromRGBO(255, 255, 255, 1))
-      ..add(Color.fromRGBO(126, 126, 126, 1))
-      ..add(Color.fromRGBO(0, 0, 0, 1))
-      ..add(Color.fromRGBO(229, 36, 36, 1))
-      ..add(Color.fromRGBO(255, 169, 36, 1))
-      ..add(Color.fromRGBO(12, 178, 101, 1))
-      ..add(Color.fromRGBO(0, 26, 197, 1));
+    this.drawingColors..add(Color.fromRGBO(255, 255, 255, 1))..add(
+        Color.fromRGBO(126, 126, 126, 1))..add(Color.fromRGBO(0, 0, 0, 1))..add(
+        Color.fromRGBO(229, 36, 36, 1))..add(
+        Color.fromRGBO(255, 169, 36, 1))..add(
+        Color.fromRGBO(12, 178, 101, 1))..add(Color.fromRGBO(0, 26, 197, 1));
     drawingLineDepths..add(1)..add(3)..add(5)..add(7)..add(9);
     selectedDrawingColor = drawingColors[2];
     selectedDrawingLineDepth = drawingLineDepths[2];
@@ -149,7 +155,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         decoration: new BoxDecoration(
             color: Colors.white,
             border:
-                Border.all(color: Color.fromRGBO(245, 245, 245, 1), width: 2)),
+            Border.all(color: Color.fromRGBO(245, 245, 245, 1), width: 2)),
         child: Padding(
             padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
             child: Row(
@@ -162,24 +168,24 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     for (int i = 0; i < drawingLineDepths.length; i++) {
       list.add(ClipOval(
           child: Container(
-        child: Material(
-          child: InkWell(
-              child: SvgPicture.asset(
-                'assets/images/logo_depth' + (i + 1).toString() + '.svg',
-                color: Colors.black,
-              ),
-              onTap: () async {
-                onSelectDrawingDepth(drawingLineDepths[i], i);
-              }),
-        ),
-      )));
+            child: Material(
+              child: InkWell(
+                  child: SvgPicture.asset(
+                    'assets/images/logo_depth' + (i + 1).toString() + '.svg',
+                    color: Colors.black,
+                  ),
+                  onTap: () async {
+                    onSelectDrawingDepth(drawingLineDepths[i], i);
+                  }),
+            ),
+          )));
     }
     return Container(
         height: 50,
         decoration: new BoxDecoration(
             color: Colors.white,
             border:
-                Border.all(color: Color.fromRGBO(245, 245, 245, 1), width: 1)),
+            Border.all(color: Color.fromRGBO(245, 245, 245, 1), width: 1)),
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
           child: Row(
@@ -187,6 +193,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
               children: list),
         ));
   }
+
 
   bool isInsideOffset(ui.Offset offset, double width, double height) {
     return offset.dx >= 0 &&
@@ -197,13 +204,32 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+    var size = MediaQuery
+        .of(context)
+        .size;
     final double itemHeight = size.height;
     final double itemWidth = size.width;
     final double templateHeight = (itemHeight - 150) * 0.7;
     final double templateWidth = templateHeight *
         _templateImage.width.toDouble() /
         _templateImage.height.toDouble();
+
+    void updateDrawingPosition(DragDownDetails details) {
+      if (isDrawingPanelVisible) {
+        setState(() {
+          ui.Offset localOffset =
+              details.localPosition;
+          if (isInsideOffset(localOffset,
+              templateWidth, templateHeight)) {
+            points.add(RoughyDrawingPoint(
+                offset: details.localPosition,
+                color: selectedDrawingColor,
+                depth: selectedDrawingLineDepth));
+          }
+        });
+      }
+    }
+
     return Scaffold(
         backgroundColor: Color.fromRGBO(235, 235, 235, 1),
         appBar: RoughyCenterAppBar(
@@ -219,64 +245,49 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
               children: [
                 Expanded(
                     child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    widget.croppedImage == null || widget.templateImage == null
-                        ? Text('No image selected.')
-                        : Container(
-                            width: templateWidth,
-                            height: templateHeight,
-                            decoration: new BoxDecoration(
-                              color: Colors.black,
-                            ),
-                            child: GestureDetector(
-                                onPanDown: (details) {
-                                  setState(() {
-                                    ui.Offset localOffset =
-                                        details.localPosition;
-                                    if (isInsideOffset(localOffset,
-                                        templateWidth, templateHeight)) {
-                                      points.add(RoughyPoint(
-                                          offset: details.localPosition,
-                                          color: selectedDrawingColor,
-                                          depth: selectedDrawingLineDepth));
-                                    }
-                                  });
-                                },
-                                onPanUpdate: (details) {
-                                  setState(() {
-                                    ui.Offset localOffset =
-                                        details.localPosition;
-                                    if (isInsideOffset(localOffset,
-                                        templateWidth, templateHeight)) {
-                                      points.add(RoughyPoint(
-                                          offset: details.localPosition,
-                                          color: selectedDrawingColor,
-                                          depth: selectedDrawingLineDepth));
-                                    }
-                                  });
-                                },
-                                onPanEnd: (details) => points.add(null),
-                                child: Container(
-                                    width: templateWidth,
-                                    height: templateHeight,
-                                    child: CustomPaint(
-                                      //size: Size(templateWidth, templateHeight),
-                                      //size: Size(_templateImage.width.toDouble(), _templateImage.height.toDouble()),
-                                      painter: RoughyBackgroundPainter(
-                                          croppedImage: _croppedImage,
-                                          templateImage: _templateImage),
-                                      foregroundPainter:
-                                          RoughyForegroundPainter(
-                                              points: points,
-                                              drawingColor:
-                                                  selectedDrawingColor,
-                                              drawingDepth:
-                                                  selectedDrawingLineDepth),
-                                    ))),
-                          )
-                  ],
-                )),
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        widget.croppedImage == null ||
+                            widget.templateImage == null
+                            ? Text('No image selected.')
+                            : Container(
+                          width: templateWidth,
+                          height: templateHeight,
+                          decoration: new BoxDecoration(
+                            color: Colors.black,
+                          ),
+                          child: GestureDetector(
+                              onPanDown: (details) {
+                                updateDrawingPosition(details)
+                              },
+                              onPanUpdate: (details) {
+                                updateDrawingPosition(details);
+                              },
+                              onPanEnd: (details) => points.add(null),
+                              child: Container(
+                                  width: templateWidth,
+                                  height: templateHeight,
+                                  child: CustomPaint(
+                                    //size: Size(templateWidth, templateHeight),
+                                    //size: Size(_templateImage.width.toDouble(), _templateImage.height.toDouble()),
+                                    painter: RoughyBackgroundPainter(
+                                        croppedImage: _croppedImage,
+                                        templateImage: _templateImage),
+                                    foregroundPainter:
+                                    RoughyForegroundPainter(
+                                        points: points,
+                                        drawingColor:
+                                        selectedDrawingColor,
+                                        drawingDepth:
+                                        selectedDrawingLineDepth),
+                                  ))),
+                        )
+                      ],
+                    )),
+                isTextEditPanelVisible ? getDrawingPanelWidgets() : new Row(),
+                isTextEditPanelVisible
+                    ? getDrawingLineDepthPanelWidgets()
+                    : new Row(),
                 isDrawingPanelVisible ? getDrawingPanelWidgets() : new Row(),
                 isDrawingPanelVisible
                     ? getDrawingLineDepthPanelWidgets()
@@ -301,10 +312,11 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                                           onTextEditButtonClicked(context),
                                       child: Center(
                                           child: Text(
-                                        "T",
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 30),
-                                      )))
+                                            "T",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 30),
+                                          )))
                                 ]),
                             Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -325,25 +337,26 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                                 child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: <Widget>[
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      OutlineRoundButton(
-                                          radius: 15.0,
-                                          foregroundColor: Colors.black,
-                                          onTap: () =>
-                                              onImageSettingButtonClicked(
-                                                  context),
-                                          child: Center(
-                                              child: Text(
-                                            "되돌리기",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16),
-                                          )))
-                                    ],
-                                  )
-                                ])),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment
+                                            .end,
+                                        children: [
+                                          OutlineRoundButton(
+                                              radius: 15.0,
+                                              foregroundColor: Colors.black,
+                                              onTap: () =>
+                                                  onImageSettingButtonClicked(
+                                                      context),
+                                              child: Center(
+                                                  child: Text(
+                                                    "되돌리기",
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 16),
+                                                  )))
+                                        ],
+                                      )
+                                    ])),
                           ]),
                         ))
                   ],
