@@ -89,7 +89,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+    var size = MediaQuery.maybeOf(context).size;
     final double itemHeight = size.height * 0.65;
     final double itemWidth = size.width;
     return Scaffold(
