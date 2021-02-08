@@ -8,7 +8,7 @@ class RoughyForegroundPainter extends CustomPainter {
   Color drawingColor;
   double drawingDepth;
 
-  List<RoughyPoint> points;
+  List<RoughyDrawingPoint> points;
 
   RoughyForegroundPainter({
     @required this.points,
