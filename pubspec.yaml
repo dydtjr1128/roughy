@@ -50,18 +50,21 @@ flutter:
   uses-material-design: true
 
   fonts:
-    - family: Macadamia
+    - family: AdobeHebrewRegular
       fonts:
-        - asset: assets/fonts/Macadamia.otf
+        - asset: assets/fonts/AdobeHebrewRegular.otf
     - family: AlphaClouds
       fonts:
-        - asset: assets/fonts/AlphaClouds.otf
-    - family: SimplicityRegular
+        - asset: assets/fonts/AlphaClouds.ttf
+    - family: AppleSDGothicNeoB
       fonts:
-        - asset: assets/fonts/Simplicity-Regular.otf
+        - asset: assets/fonts/AppleSDGothicNeoB.ttf
     - family: Janitor
       fonts:
         - asset: assets/fonts/Janitor.otf
+    - family: SimplicityRegular
+      fonts:
+        - asset: assets/fonts/Simplicity-Regular.otf
 
   assets:
     - assets/images/

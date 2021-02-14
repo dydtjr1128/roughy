@@ -33,7 +33,7 @@ class _RoughyCenterAppBarState extends State<RoughyCenterAppBar> {
             toolbarHeight: _appBarHeight,
             title: PlatformText(widget.title,
                 style: TextStyle(
-                    fontFamily: 'Macadamia',
+                    fontFamily: 'Simplicity-Regular',
                     fontSize: 30,
                     color: Colors.black)),
             backgroundColor: Colors.white,

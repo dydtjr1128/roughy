@@ -25,7 +25,7 @@ class _TemplateContainerState extends State<TemplateContainer> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.maybeOf(context).size;
+    var size = MediaQuery.of(context).size;
     final double itemHeight = (size.height) / 2;
     final double itemWidth = size.width / 2;
     final index = widget.containerIndex;
@@ -52,7 +52,7 @@ class _TemplateContainerState extends State<TemplateContainer> {
                       child: Image.asset(
                           "assets/templates/${widget.template.imageName}",
                           fit: BoxFit.fill),
-                      height: MediaQuery.maybeOf(context).size.height,
+                      height: MediaQuery.of(context).size.height,
                       margin:
                           EdgeInsets.symmetric(vertical: 15.0, horizontal: 0.0),
                     ),
