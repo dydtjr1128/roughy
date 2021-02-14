@@ -246,7 +246,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.maybeOf(context).size;
+    var size = MediaQuery.of(context).size;
     final double itemHeight = size.height;
     final double itemWidth = size.width;
     final double templateHeight = (itemHeight - 150) * 0.7;

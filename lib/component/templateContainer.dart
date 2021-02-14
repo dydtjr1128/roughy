@@ -25,10 +25,6 @@ class _TemplateContainerState extends State<TemplateContainer> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    final double itemHeight = (size.height) / 2;
-    final double itemWidth = size.width / 2;
-    final index = widget.containerIndex;
     _isFavoriteSelected = widget.template.isFavorite;
 
     return Card(

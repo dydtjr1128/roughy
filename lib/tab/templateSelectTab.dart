@@ -99,7 +99,7 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.maybeOf(context).size;
+    var size = MediaQuery.of(context).size;
     final double itemHeight = (size.height) / 3.5;
     final double itemWidth = size.width / 2;
 
