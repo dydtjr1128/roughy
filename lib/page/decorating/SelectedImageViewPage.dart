@@ -7,6 +7,8 @@ import 'package:Roughy/component/OutlineRoundButton.dart';
 import 'package:Roughy/component/paintor/RoughyBackgroundPainter.dart';
 import 'package:Roughy/component/paintor/RoughyForegroundPainter.dart';
 import 'package:Roughy/component/roughyCenterAppBar.dart';
+import 'package:Roughy/data/RoughyData.dart';
+import 'package:Roughy/tab/secondTab.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,35 +26,18 @@ class SelectedImageViewPage extends StatefulWidget {
   _SelectedImageViewPageState createState() => _SelectedImageViewPageState();
 }
 
-class RoughyDrawingPoint {
-  ui.Offset offset;
-  ui.Color color;
-  double depth;
-
-  RoughyDrawingPoint(
-      {@required this.offset, @required this.color, @required this.depth});
-}
-
-class RoughyTextPoint {
-  ui.Offset offset;
-  ui.Color color;
-  String text;
-
-  RoughyTextPoint(
-      {@required this.offset, @required this.color, @required this.text});
-}
-
 class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   File changedImage;
   ui.Image _templateImage, _croppedImage;
   bool isDrawingPanelVisible;
   bool isTextEditPanelVisible;
-  List<RoughyDrawingPoint> points = [];
+  final List<dynamic> points = [RoughyDrawingPoint, RoughyTextPoint];
+  final List<RoughyFont> textFontList = [];
+  RoughyFont selectedTextRoughyFont;
   Color selectedDrawingColor;
   double selectedDrawingLineDepth;
   final List<ui.Color> drawingColors = [];
   final List<double> drawingLineDepths = [];
-  final List<String> textFontList = [];
 
   _SelectedImageViewPageState() {
     this.isDrawingPanelVisible = true;
@@ -67,11 +52,12 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       ..add(Color.fromRGBO(0, 26, 197, 1));
     drawingLineDepths..add(1)..add(3)..add(5)..add(7)..add(9);
     textFontList
-      ..add("AlphaClouds")
-      ..add("AlphaClouds")
-      ..add("AlphaClouds")
-      ..add("SimplicityRegular")
-      ..add("Janitor");
+      ..add(new RoughyFont(fontName: "AdobeHebrewRegular", fontSize: 13))
+      ..add(new RoughyFont(fontName: "AppleSDGothicNeoB", fontSize: 13))
+      ..add(new RoughyFont(fontName: "AlphaClouds", fontSize: 13))
+      ..add(new RoughyFont(fontName: "SimplicityRegular", fontSize: 19))
+      ..add(new RoughyFont(fontName: "Janitor", fontSize: 13));
+    selectedTextRoughyFont = textFontList[1];
     selectedDrawingColor = drawingColors[2];
     selectedDrawingLineDepth = drawingLineDepths[2];
   }
@@ -123,6 +109,11 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       isTextEditPanelVisible = !isTextEditPanelVisible;
       isDrawingPanelVisible = false;
     });
+  }
+
+  void onSelectTextFont(String selectedFontString, int index) {
+    print("폰트 선택 : " + selectedFontString.toString() + " " + index.toString());
+    this.selectedTextRoughyFont.fontName = selectedFontString;
   }
 
   void onSelectDrawingColor(ui.Color selectedDrawingColor, int index) {
@@ -208,20 +199,21 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   Widget getTextPanelWidgets() {
     List<Widget> list = [];
     for (int i = 0; i < textFontList.length; i++) {
-      list.add(ClipOval(
-          child: Container(
-        child: Material(
-          child: InkWell(
-              child: PlatformText("ABCabc",
-                  style: TextStyle(
-                      fontFamily: textFontList[i],
-                      fontSize: 15,
-                      color: Colors.black)),
-              onTap: () async {
-                onSelectDrawingDepth(drawingLineDepths[i], i);
-              }),
+      list.add(
+        Container(
+          child: OutlineRoundButton(
+              radius: 15.0,
+              onTap: () => onSelectTextFont(textFontList[i], i),
+              child: Center(
+                  child: PlatformText(
+                "ABCabc",
+                style: TextStyle(
+                    fontFamily: textFontList[i].fontName,
+                    fontSize: textFontList[i].fontSize,
+                    color: Colors.black),
+              ))),
         ),
-      )));
+      );
     }
     return Container(
         height: 50,
@@ -258,12 +250,31 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       if (isDrawingPanelVisible) {
         setState(() {
           if (isInsideOffset(localOffset, templateWidth, templateHeight)) {
-            points.add(RoughyDrawingPoint(
+            points.add(new RoughyDrawingPoint(
                 offset: localOffset,
                 color: selectedDrawingColor,
                 depth: selectedDrawingLineDepth));
           }
         });
+      }
+    }
+
+    void updateDrawingPositionPanDown(ui.Offset localOffset) {
+      if (isDrawingPanelVisible) {
+        updateDrawingPosition(localOffset);
+      }
+      if (isTextEditPanelVisible) {
+        Navigator.push(
+          context,
+          platformPageRoute(
+            context: context,
+            builder: (context) => SecondTabPage(),
+          ),
+        );
+        points.add(new RoughyTextPoint(
+            offset: localOffset,
+            color: selectedDrawingColor,
+            text: "text1입니당"));
       }
     }
 
@@ -294,7 +305,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                             ),
                             child: GestureDetector(
                                 onPanDown: (details) {
-                                  updateDrawingPosition(details.localPosition);
+                                  updateDrawingPositionPanDown(
+                                      details.localPosition);
                                 },
                                 onPanUpdate: (details) {
                                   updateDrawingPosition(details.localPosition);
@@ -372,6 +384,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                                     children: <Widget>[
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       OutlineRoundButton(
                                           radius: 15.0,
@@ -380,7 +394,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                                               onImageSettingButtonClicked(
                                                   context),
                                           child: Center(
-                                              child: Text(
+                                              child: PlatformText(
                                             "되돌리기",
                                             style: TextStyle(
                                                 color: Colors.white,
