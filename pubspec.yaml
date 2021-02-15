@@ -64,7 +64,7 @@ flutter:
         - asset: assets/fonts/Janitor.otf
     - family: SimplicityRegular
       fonts:
-        - asset: assets/fonts/Simplicity-Regular.otf
+        - asset: assets/fonts/SimplicityRegular.otf
 
   assets:
     - assets/images/
