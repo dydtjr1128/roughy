@@ -25,7 +25,7 @@ class OutlineRoundButton extends StatelessWidget {
       borderRadius: new BorderRadius.circular(radius),
       child: Container(
         //width: 100,
-        height: 50.0,
+        height: 40.0,
         decoration: BoxDecoration(
           border: Border.all(color: borderColor),
           color: foregroundColor,

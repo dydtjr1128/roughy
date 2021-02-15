@@ -29,7 +29,7 @@ class _RoughyAppBarState extends State<RoughyAppBar> {
             toolbarHeight: _appBarHeight,
             title: PlatformText("ROUGHY",
                 style: TextStyle(
-                    fontFamily: 'Simplicity-Regular',
+                    fontFamily: 'SimplicityRegular',
                     fontSize: 37,
                     color: Colors.black)),
             backgroundColor: Colors.white,
