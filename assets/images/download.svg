@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="19.45" height="20.44" viewBox="0 0 19.45 20.44">
+    <defs>
+        <style>
+            .cls-1{stroke:#000;stroke-width:.5px}
+        </style>
+    </defs>
+    <g id="그룹_157" transform="translate(-335.671 -99.816)">
+        <path id="Path" d="M17.953.5v5.98a2.493 2.493 0 0 1-2.494 2.49H3.491A2.493 2.493 0 0 1 1 6.479V.5a.5.5 0 0 0-1 0v5.98a3.49 3.49 0 0 0 3.491 3.487h11.968a3.49 3.49 0 0 0 3.491-3.488V.5a.5.5 0 0 0-1 0z" class="cls-1" transform="translate(335.921 110.039)"/>
+        <path id="Path-2" d="M3.987 13.249V.5a.5.5 0 0 1 1 0v12.749l3.133-3.136a.5.5 0 0 1 .7.7L4.838 14.8a.5.5 0 0 1-.7 0L.146 10.818a.5.5 0 0 1 .7-.7l3.136 3.136z" class="cls-1" transform="translate(340.91 100.066)"/>
+    </g>
+</svg>
