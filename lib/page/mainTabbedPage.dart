@@ -1,3 +1,4 @@
+import 'package:Roughy/tab/MyAlbumWidget.dart';
 import 'package:Roughy/tab/firstTab.dart';
 import 'package:Roughy/tab/templateSelectTab.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,7 @@ class _MainTabbedPageState extends State<MainTabbedPage> {
   @override
   Widget build(BuildContext context) {
     return PlatformTabScaffold(
-      pageBackgroundColor: Colors.red,
+      pageBackgroundColor: Colors.white,
       tabController: tabController,
       bodyBuilder: ((context, index) {
         print(index);
@@ -59,10 +60,10 @@ class _MainTabbedPageState extends State<MainTabbedPage> {
             return TemplateSelectWidget();
             break;
           case 1:
-            return FirstTabPage(widget.toggleBrightness);
+            return MyAlbumWidget();
             break;
           case 2:
-            return DynamicTabbedPage();
+            return FirstTabPage(widget.toggleBrightness);
             break;
         }
         return null;
