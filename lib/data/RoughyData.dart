@@ -20,10 +20,14 @@ class RoughyDrawingPoint {
 class RoughyTextPoint {
   ui.Offset offset;
   ui.Color color;
+  RoughyFont roughyFont;
   String text;
 
   RoughyTextPoint(
-      {@required this.offset, @required this.color, @required this.text});
+      {@required this.offset,
+      @required this.color,
+      @required this.roughyFont,
+      @required this.text});
 }
 
 class RoughyFont {
