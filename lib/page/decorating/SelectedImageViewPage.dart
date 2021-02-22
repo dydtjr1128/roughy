@@ -6,15 +6,18 @@ import 'package:Roughy/component/OutlineCircleButton.dart';
 import 'package:Roughy/component/OutlineRoundButton.dart';
 import 'package:Roughy/component/paintor/RoughyBackgroundPainter.dart';
 import 'package:Roughy/component/paintor/RoughyForegroundPainter.dart';
-import 'package:Roughy/component/roughyCenterAppBar.dart';
+import 'package:Roughy/component/roughyDownloadAppBar.dart';
 import 'package:Roughy/data/RoughyData.dart';
 import 'package:Roughy/tab/secondTab.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 
 class SelectedImageViewPage extends StatefulWidget {
   final File templateImage, croppedImage;
@@ -31,13 +34,14 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   ui.Image _templateImage, _croppedImage;
   bool isDrawingPanelVisible;
   bool isTextEditPanelVisible;
-  final List<dynamic> points = [RoughyDrawingPoint, RoughyTextPoint];
+  final List<dynamic> points = [];
   final List<RoughyFont> textFontList = [];
   RoughyFont selectedTextRoughyFont;
   Color selectedDrawingColor;
   double selectedDrawingLineDepth;
   final List<ui.Color> drawingColors = [];
   final List<double> drawingLineDepths = [];
+  GlobalKey painterKey = GlobalKey();
 
   _SelectedImageViewPageState() {
     this.isDrawingPanelVisible = true;
@@ -111,9 +115,12 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     });
   }
 
-  void onSelectTextFont(String selectedFontString, int index) {
-    print("폰트 선택 : " + selectedFontString.toString() + " " + index.toString());
-    this.selectedTextRoughyFont.fontName = selectedFontString;
+  void onSelectTextFont(RoughyFont selectedFontString, int index) {
+    print("폰트 선택 : " +
+        selectedFontString.fontName.toString() +
+        " " +
+        index.toString());
+    this.selectedTextRoughyFont = selectedFontString;
   }
 
   void onSelectDrawingColor(ui.Color selectedDrawingColor, int index) {
@@ -259,29 +266,82 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       }
     }
 
-    void updateDrawingPositionPanDown(ui.Offset localOffset) {
+    Future<void> updateDrawingPositionPanDown(ui.Offset localOffset) async {
       if (isDrawingPanelVisible) {
         updateDrawingPosition(localOffset);
       }
       if (isTextEditPanelVisible) {
-        Navigator.push(
+        await Navigator.push(
           context,
           platformPageRoute(
             context: context,
             builder: (context) => SecondTabPage(),
           ),
         );
-        points.add(new RoughyTextPoint(
-            offset: localOffset,
-            color: selectedDrawingColor,
-            text: "text1입니당"));
+        setState(() {
+          points.add(new RoughyTextPoint(
+              offset: localOffset,
+              color: selectedDrawingColor,
+              roughyFont: selectedTextRoughyFont,
+              text: "text1입니당"));
+        });
       }
+    }
+
+    Future<void> _capturePng() async {
+      RenderRepaintBoundary boundary =
+          painterKey.currentContext.findRenderObject();
+      ui.Image image = await boundary.toImage(pixelRatio: 10.0);
+      ByteData byteData =
+          await image.toByteData(format: ui.ImageByteFormat.png);
+      Uint8List pngBytes = byteData.buffer.asUint8List();
+
+      String dir = (await getExternalStorageDirectory()).path;
+      DateTime now = DateTime.now();
+      String formattedDate = DateFormat('yyyyMMddHHmmss').format(now);
+      String fullPath = '$dir/roughy_$formattedDate.png';
+      File file = File(fullPath);
+      print(fullPath);
+      await file.writeAsBytes(pngBytes);
     }
 
     return Scaffold(
         backgroundColor: Color.fromRGBO(235, 235, 235, 1),
-        appBar: RoughyCenterAppBar(
-          title: "template",
+        appBar: RoughyDownloadAppBar(
+          onClickedCallback: () {
+            showPlatformDialog(
+              context: context,
+              builder: (_) => PlatformAlertDialog(
+                title: Text('알림'),
+                content: Text('사진을 사진첩에 저장하시겠습니까?'),
+                actions: <Widget>[
+                  PlatformDialogAction(
+                      child: PlatformText('Yes'),
+                      onPressed: () {
+                        _capturePng();
+                        Navigator.pop(context);
+                        showPlatformDialog(
+                            context: context,
+                            builder: (_) => PlatformAlertDialog(
+                                    title: Text('알림'),
+                                    content: Text('저장완료!'),
+                                    actions: <Widget>[
+                                      PlatformDialogAction(
+                                          child: PlatformText('Okay'),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                            Navigator.pop(context);
+                                          })
+                                    ]));
+                      }),
+                  PlatformDialogAction(
+                    child: PlatformText('No'),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            );
+          },
         ),
         body: Container(
             decoration: new BoxDecoration(
@@ -312,23 +372,25 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                                   updateDrawingPosition(details.localPosition);
                                 },
                                 onPanEnd: (details) => points.add(null),
-                                child: Container(
-                                    width: templateWidth,
-                                    height: templateHeight,
-                                    child: CustomPaint(
-                                      //size: Size(templateWidth, templateHeight),
-                                      //size: Size(_templateImage.width.toDouble(), _templateImage.height.toDouble()),
-                                      painter: RoughyBackgroundPainter(
-                                          croppedImage: _croppedImage,
-                                          templateImage: _templateImage),
-                                      foregroundPainter:
-                                          RoughyForegroundPainter(
-                                              points: points,
-                                              drawingColor:
-                                                  selectedDrawingColor,
-                                              drawingDepth:
-                                                  selectedDrawingLineDepth),
-                                    ))),
+                                child: RepaintBoundary(
+                                    key: painterKey,
+                                    child: Container(
+                                        width: templateWidth,
+                                        height: templateHeight,
+                                        child: CustomPaint(
+                                          //size: Size(templateWidth, templateHeight),
+                                          //size: Size(_templateImage.width.toDouble(), _templateImage.height.toDouble()),
+                                          painter: RoughyBackgroundPainter(
+                                              croppedImage: _croppedImage,
+                                              templateImage: _templateImage),
+                                          foregroundPainter:
+                                              RoughyForegroundPainter(
+                                                  points: points,
+                                                  drawingColor:
+                                                      selectedDrawingColor,
+                                                  drawingDepth:
+                                                      selectedDrawingLineDepth),
+                                        )))),
                           )
                   ],
                 )),
