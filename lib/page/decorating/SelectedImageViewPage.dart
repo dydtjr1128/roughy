@@ -8,7 +8,7 @@ import 'package:Roughy/component/paintor/RoughyBackgroundPainter.dart';
 import 'package:Roughy/component/paintor/RoughyForegroundPainter.dart';
 import 'package:Roughy/component/roughyDownloadAppBar.dart';
 import 'package:Roughy/data/RoughyData.dart';
-import 'package:Roughy/tab/secondTab.dart';
+import 'package:Roughy/page/decorating/TextInputPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -271,11 +271,11 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         updateDrawingPosition(localOffset);
       }
       if (isTextEditPanelVisible) {
-        await Navigator.push(
+        final String result = await Navigator.push(
           context,
           platformPageRoute(
             context: context,
-            builder: (context) => SecondTabPage(),
+            builder: (context) => TextInputPage(),
           ),
         );
         setState(() {
@@ -283,7 +283,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
               offset: localOffset,
               color: selectedDrawingColor,
               roughyFont: selectedTextRoughyFont,
-              text: "text1입니당"));
+              text: result));
         });
       }
     }
@@ -296,7 +296,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
           await image.toByteData(format: ui.ImageByteFormat.png);
       Uint8List pngBytes = byteData.buffer.asUint8List();
 
-      String dir = (await getExternalStorageDirectory()).path;
+      String dir = (await getApplicationSupportDirectory()).path;
       DateTime now = DateTime.now();
       String formattedDate = DateFormat('yyyyMMddHHmmss').format(now);
       String fullPath = '$dir/roughy_$formattedDate.png';

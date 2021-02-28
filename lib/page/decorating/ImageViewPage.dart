@@ -96,6 +96,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
         backgroundColor: Color.fromRGBO(235, 235, 235, 1),
         appBar: RoughyCenterAppBar(
           title: "template",
+          isCenterTitle: true,
         ),
         body: Center(
             child: Container(

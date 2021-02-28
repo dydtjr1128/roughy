@@ -4,8 +4,11 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 class RoughyCenterAppBar extends StatefulWidget with PreferredSizeWidget {
   final double appBarHeight = 50.0;
   final String title;
+  final IconButton iconButton;
+  final bool isCenterTitle;
 
-  RoughyCenterAppBar({@required this.title});
+  RoughyCenterAppBar(
+      {@required this.title, this.iconButton, this.isCenterTitle = false});
 
   @override
   get preferredSize => Size.fromHeight(appBarHeight);
@@ -37,7 +40,8 @@ class _RoughyCenterAppBarState extends State<RoughyCenterAppBar> {
                     fontSize: 35,
                     color: Colors.black)),
             backgroundColor: Colors.white,
-            centerTitle: true,
+            centerTitle: widget.isCenterTitle,
+            actions: [widget.iconButton],
           ),
         ]));
   }
