@@ -26,7 +26,6 @@ class _TemplateContainerState extends State<TemplateContainer> {
   @override
   Widget build(BuildContext context) {
     _isFavoriteSelected = widget.template.isFavorite;
-
     return Card(
       elevation: 0,
       color: Color.fromRGBO(235, 235, 235, 1),
@@ -47,7 +46,7 @@ class _TemplateContainerState extends State<TemplateContainer> {
                     child: Container(
                       child: Image.asset(
                           "assets/templates/${widget.template.imageName}",
-                          fit: BoxFit.fill),
+                          fit: BoxFit.fitHeight),
                       height: MediaQuery.of(context).size.height,
                       margin:
                           EdgeInsets.symmetric(vertical: 15.0, horizontal: 0.0),
