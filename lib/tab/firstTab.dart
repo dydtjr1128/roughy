@@ -123,7 +123,7 @@ class _FirstPageWidgetState extends State<FirstPageWidget> {
                           platformPageRoute(
                               context: context,
                               builder: (context) {
-                                return SelectedImageViewPage(croppedImage: File("assets/images/test.jpg"), templateImage: File("assets/templates/template.png"));
+                                return SelectedImageViewPage(croppedImage: File("assets/images/test.jpg"), templateImage: File("assets/templates/base.png"));
                               }));
                     })
               ],
