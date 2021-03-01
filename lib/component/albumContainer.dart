@@ -27,69 +27,65 @@ class _AlbumContainerState extends State<AlbumContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      color: Color.fromRGBO(235, 235, 235, 1),
-      shape: RoundedRectangleBorder(borderRadius: widget._baseBorderRadius),
-      margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
+    return Padding(
+      padding: EdgeInsets.only(left: 5.0, right: 5.0, top: 5.0, bottom: 25.0),
       child: InkWell(
-          borderRadius: widget._baseBorderRadius,
-          onTap: () =>
-              widget.onTap(widget.containerIndex, widget.path, context),
-          child: Container(
-              decoration: BoxDecoration(
-                borderRadius: widget._baseBorderRadius,
-                color: Colors.transparent,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                          child: ClipOval(
-                              child: Container(
-                                width: 20,
-                                height: 20,
-                                color: Colors.black,
-                                child: Center(
-                                  child: PlatformText(
-                                      widget.containerIndex.toString(),
-                                      style: TextStyle(
-                                          fontFamily: 'SimplicityRegular',
-                                          fontSize: 15,
-                                          color: Colors.white)),
-                                ),
-                              )),
+        onTap: () => widget.onTap(widget.containerIndex, widget.path, context),
+        child: Container(
+            decoration: BoxDecoration(
+              borderRadius: widget._baseBorderRadius,
+              color: Colors.transparent,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ClipOval(
+                          child: Container(
+                        width: 20,
+                        height: 20,
+                        color: Colors.black,
+                        child: Center(
+                          child: PlatformText(widget.containerIndex.toString(),
+                              style: TextStyle(
+                                  fontFamily: 'SimplicityRegular',
+                                  fontSize: 15,
+                                  color: Colors.white)),
                         ),
-                        Icon(context.platformIcons.bookmark)
-                      ]),
-                  Row(
+                      )),
+                      Icon(context.platformIcons.bookmark)
+                    ]),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ClipRRect(
-                          child: Center(
-                        child: Container(
-                          child: new FutureBuilder(
-                              future: _getLocalFile(),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<File> snapshot) {
-                                return snapshot.data != null
-                                    ? new Image.file(snapshot.data,
-                                        fit: BoxFit.contain)
-                                    : new Container();
-                              }),
-                          height: MediaQuery.of(context).size.height,
-                          margin: EdgeInsets.symmetric(
-                              vertical: 15.0, horizontal: 0.0),
-                        ),
-                      ))
+                        child: new FutureBuilder(
+                            future: _getLocalFile(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<File> snapshot) {
+                              return snapshot.data != null
+                                  ? Container(
+                                      height:
+                                          MediaQuery.of(context).size.height,
+                                      margin: EdgeInsets.symmetric(
+                                          vertical: 15.0, horizontal: 0.0),
+                                      child: new Image.file(snapshot.data,
+                                          fit: BoxFit.fitWidth),
+                                    )
+                                  : new Container();
+                            }),
+                        //width:  MediaQuery.of(context).size.width,
+                      )
                     ],
-                  )
-                ],
-              ))),
+                  ),
+                )
+              ],
+            )),
+      ),
     );
   }
 }
