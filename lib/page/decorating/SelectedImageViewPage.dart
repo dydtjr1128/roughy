@@ -7,6 +7,7 @@ import 'package:Roughy/component/OutlineRoundButton.dart';
 import 'package:Roughy/component/paintor/RoughyBackgroundPainter.dart';
 import 'package:Roughy/component/paintor/RoughyForegroundPainter.dart';
 import 'package:Roughy/component/roughyDownloadAppBar.dart';
+import 'package:Roughy/component/roughyGestureText.dart';
 import 'package:Roughy/data/RoughyData.dart';
 import 'package:Roughy/page/decorating/TextInputPage.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,8 +23,7 @@ import 'package:path_provider/path_provider.dart';
 class SelectedImageViewPage extends StatefulWidget {
   final File templateImage, croppedImage;
 
-  SelectedImageViewPage(
-      {@required this.croppedImage, @required this.templateImage});
+  SelectedImageViewPage({@required this.croppedImage, @required this.templateImage});
 
   @override
   _SelectedImageViewPageState createState() => _SelectedImageViewPageState();
@@ -36,6 +36,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   bool isTextEditPanelVisible;
   final List<dynamic> points = [];
   final List<RoughyFont> textFontList = [];
+  final List<RoughyGestureText> gestureTextList = [];
   RoughyFont selectedTextRoughyFont;
   Color selectedDrawingColor;
   double selectedDrawingLineDepth;
@@ -108,32 +109,43 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     });
   }
 
-  onTextEditButtonClicked(BuildContext context) {
+  onTextEditButtonClicked(BuildContext context) async {
+    final String result = await Navigator.push(
+      context,
+      platformPageRoute(
+        context: context,
+        builder: (context) => TextInputPage(),
+      ),
+    );
     setState(() {
       isTextEditPanelVisible = !isTextEditPanelVisible;
       isDrawingPanelVisible = false;
+      gestureTextList.add(new RoughyGestureText(
+          roughyTextPoint: new RoughyTextPoint(
+              offset: Offset(100,100),
+              color: selectedDrawingColor,
+              roughyFont: selectedTextRoughyFont,
+              text: result)));
+/*          points.add(new RoughyTextPoint(
+              offset: localOffset,
+              color: selectedDrawingColor,
+              roughyFont: selectedTextRoughyFont,
+              text: result));*/
     });
   }
 
   void onSelectTextFont(RoughyFont selectedFontString, int index) {
-    print("폰트 선택 : " +
-        selectedFontString.fontName.toString() +
-        " " +
-        index.toString());
+    print("폰트 선택 : " + selectedFontString.fontName.toString() + " " + index.toString());
     this.selectedTextRoughyFont = selectedFontString;
   }
 
   void onSelectDrawingColor(ui.Color selectedDrawingColor, int index) {
-    print(
-        "색상 선택 : " + selectedDrawingColor.toString() + " " + index.toString());
+    print("색상 선택 : " + selectedDrawingColor.toString() + " " + index.toString());
     this.selectedDrawingColor = selectedDrawingColor;
   }
 
   void onSelectDrawingDepth(double selectedDrawingLineDepth, int index) {
-    print("두께 선택 : " +
-        selectedDrawingLineDepth.toString() +
-        " " +
-        index.toString());
+    print("두께 선택 : " + selectedDrawingLineDepth.toString() + " " + index.toString());
     this.selectedDrawingLineDepth = selectedDrawingLineDepth;
   }
 
@@ -145,8 +157,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
               width: 15,
               height: 15,
               decoration: BoxDecoration(
-                border: Border.all(
-                    color: Color.fromRGBO(228, 231, 233, 1), width: 1),
+                border: Border.all(color: Color.fromRGBO(228, 231, 233, 1), width: 1),
                 color: drawingColors[i],
                 shape: BoxShape.circle,
               ),
@@ -163,13 +174,10 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         height: 50,
         decoration: new BoxDecoration(
             color: Colors.white,
-            border:
-                Border.all(color: Color.fromRGBO(245, 245, 245, 1), width: 2)),
+            border: Border.all(color: Color.fromRGBO(245, 245, 245, 1), width: 2)),
         child: Padding(
             padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: list)));
+            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list)));
   }
 
   Widget getDrawingLineDepthPanelWidgets() {
@@ -193,13 +201,10 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         height: 50,
         decoration: new BoxDecoration(
             color: Colors.white,
-            border:
-                Border.all(color: Color.fromRGBO(245, 245, 245, 1), width: 1)),
+            border: Border.all(color: Color.fromRGBO(245, 245, 245, 1), width: 1)),
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: list),
+          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list),
         ));
   }
 
@@ -226,21 +231,15 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         height: 50,
         decoration: new BoxDecoration(
             color: Colors.white,
-            border:
-                Border.all(color: Color.fromRGBO(245, 245, 245, 1), width: 1)),
+            border: Border.all(color: Color.fromRGBO(245, 245, 245, 1), width: 1)),
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: list),
+          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list),
         ));
   }
 
   bool isInsideOffset(ui.Offset offset, double width, double height) {
-    return offset.dx >= 0 &&
-        offset.dy >= 0 &&
-        offset.dx <= width &&
-        offset.dy <= height;
+    return offset.dx >= 0 && offset.dy >= 0 && offset.dx <= width && offset.dy <= height;
   }
 
   @override
@@ -249,18 +248,15 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     final double itemHeight = size.height;
     final double itemWidth = size.width;
     final double templateHeight = (itemHeight - 150) * 0.7;
-    final double templateWidth = templateHeight *
-        _templateImage.width.toDouble() /
-        _templateImage.height.toDouble();
+    final double templateWidth =
+        templateHeight * _templateImage.width.toDouble() / _templateImage.height.toDouble();
 
     void updateDrawingPosition(ui.Offset localOffset) {
       if (isDrawingPanelVisible) {
         setState(() {
           if (isInsideOffset(localOffset, templateWidth, templateHeight)) {
             points.add(new RoughyDrawingPoint(
-                offset: localOffset,
-                color: selectedDrawingColor,
-                depth: selectedDrawingLineDepth));
+                offset: localOffset, color: selectedDrawingColor, depth: selectedDrawingLineDepth));
           }
         });
       }
@@ -270,30 +266,12 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       if (isDrawingPanelVisible) {
         updateDrawingPosition(localOffset);
       }
-      if (isTextEditPanelVisible) {
-        final String result = await Navigator.push(
-          context,
-          platformPageRoute(
-            context: context,
-            builder: (context) => TextInputPage(),
-          ),
-        );
-        setState(() {
-          points.add(new RoughyTextPoint(
-              offset: localOffset,
-              color: selectedDrawingColor,
-              roughyFont: selectedTextRoughyFont,
-              text: result));
-        });
-      }
     }
 
     Future<void> _capturePng() async {
-      RenderRepaintBoundary boundary =
-          painterKey.currentContext.findRenderObject();
+      RenderRepaintBoundary boundary = painterKey.currentContext.findRenderObject();
       ui.Image image = await boundary.toImage(pixelRatio: 10.0);
-      ByteData byteData =
-          await image.toByteData(format: ui.ImageByteFormat.png);
+      ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       Uint8List pngBytes = byteData.buffer.asUint8List();
 
       String dir = (await getApplicationSupportDirectory()).path;
@@ -352,54 +330,47 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Expanded(
-                    child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                    child: Stack(
                   children: [
-                    widget.croppedImage == null || widget.templateImage == null
-                        ? Text('No image selected.')
-                        : Container(
-                            width: templateWidth,
-                            height: templateHeight,
-                            decoration: new BoxDecoration(
-                              color: Colors.black,
-                            ),
-                            child: GestureDetector(
-                                onPanDown: (details) {
-                                  updateDrawingPositionPanDown(
-                                      details.localPosition);
-                                },
-                                onPanUpdate: (details) {
-                                  updateDrawingPosition(details.localPosition);
-                                },
-                                onPanEnd: (details) => points.add(null),
-                                child: RepaintBoundary(
-                                    key: painterKey,
-                                    child: Container(
-                                        width: templateWidth,
-                                        height: templateHeight,
-                                        child: CustomPaint(
-                                          //size: Size(templateWidth, templateHeight),
-                                          //size: Size(_templateImage.width.toDouble(), _templateImage.height.toDouble()),
-                                          painter: RoughyBackgroundPainter(
-                                              croppedImage: _croppedImage,
-                                              templateImage: _templateImage),
-                                          foregroundPainter:
-                                              RoughyForegroundPainter(
-                                                  points: points,
-                                                  drawingColor:
-                                                      selectedDrawingColor,
-                                                  drawingDepth:
-                                                      selectedDrawingLineDepth),
-                                        )))),
-                          )
+                    Center(
+                      child: Container(
+                        width: templateWidth,
+                        height: templateHeight,
+                        decoration: new BoxDecoration(
+                          color: Colors.black,
+                        ),
+                        child: GestureDetector(
+                            onPanDown: (details) {
+                              updateDrawingPositionPanDown(details.localPosition);
+                            },
+                            onPanUpdate: (details) {
+                              updateDrawingPosition(details.localPosition);
+                            },
+                            onPanEnd: (details) => points.add(null),
+                            child: RepaintBoundary(
+                                key: painterKey,
+                                child: Container(
+                                    width: templateWidth,
+                                    height: templateHeight,
+                                    child: CustomPaint(
+                                      //size: Size(templateWidth, templateHeight),
+                                      //size: Size(_templateImage.width.toDouble(), _templateImage.height.toDouble()),
+                                      painter: RoughyBackgroundPainter(
+                                          croppedImage: _croppedImage, templateImage: _templateImage),
+                                      foregroundPainter: RoughyForegroundPainter(
+                                          points: points,
+                                          drawingColor: selectedDrawingColor,
+                                          drawingDepth: selectedDrawingLineDepth),
+                                    )))),
+                      ),
+                    ),
+                    for (var widget in gestureTextList) widget
                   ],
                 )),
                 isTextEditPanelVisible ? getDrawingPanelWidgets() : new Row(),
                 isTextEditPanelVisible ? getTextPanelWidgets() : new Row(),
                 isDrawingPanelVisible ? getDrawingPanelWidgets() : new Row(),
-                isDrawingPanelVisible
-                    ? getDrawingLineDepthPanelWidgets()
-                    : new Row(),
+                isDrawingPanelVisible ? getDrawingLineDepthPanelWidgets() : new Row(),
                 Row(
                   children: [
                     Container(
@@ -407,60 +378,44 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                         height: 50.0,
                         decoration: new BoxDecoration(color: Colors.black),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 0, horizontal: 20),
+                          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
                           child: Row(children: <Widget>[
-                            Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  OutlineCircleButton(
-                                      radius: 45.0,
-                                      foregroundColor: Colors.black,
-                                      onTap: () =>
-                                          onTextEditButtonClicked(context),
-                                      child: Center(
-                                          child: Text(
-                                        "T",
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 30),
-                                      )))
-                                ]),
-                            Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  OutlineCircleButton(
-                                      radius: 45.0,
-                                      foregroundColor: Colors.black,
-                                      onTap: () =>
-                                          onDrawEditButtonClicked(context),
-                                      child: Center(
-                                          child: SvgPicture.asset(
-                                              'assets/images/logo.svg',
-                                              color: Colors.white,
-                                              height: 25,
-                                              width: 25)))
-                                ]),
+                            Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+                              OutlineCircleButton(
+                                  radius: 45.0,
+                                  foregroundColor: Colors.black,
+                                  onTap: () => onTextEditButtonClicked(context),
+                                  child: Center(
+                                      child: Text(
+                                    "T",
+                                    style: TextStyle(color: Colors.white, fontSize: 30),
+                                  )))
+                            ]),
+                            Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+                              OutlineCircleButton(
+                                  radius: 45.0,
+                                  foregroundColor: Colors.black,
+                                  onTap: () => onDrawEditButtonClicked(context),
+                                  child: Center(
+                                      child: SvgPicture.asset('assets/images/logo.svg',
+                                          color: Colors.white, height: 25, width: 25)))
+                            ]),
                             Expanded(
                                 child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: <Widget>[
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       OutlineRoundButton(
                                           radius: 15.0,
                                           foregroundColor: Colors.black,
-                                          onTap: () =>
-                                              onImageSettingButtonClicked(
-                                                  context),
+                                          onTap: () => onImageSettingButtonClicked(context),
                                           child: Center(
                                               child: PlatformText(
                                             "되돌리기",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16),
+                                            style: TextStyle(color: Colors.white, fontSize: 16),
                                           )))
                                     ],
                                   )
