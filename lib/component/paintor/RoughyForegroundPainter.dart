@@ -36,7 +36,7 @@ class RoughyForegroundPainter extends CustomPainter {
           canvas.drawPoints(ui.PointMode.points, [points[i].offset], paint);
         }
       } else if (points[i] is RoughyTextPoint) {
-        RoughyTextPoint roughyTextPoint = points[i] as RoughyTextPoint;
+        /*RoughyTextPoint roughyTextPoint = points[i] as RoughyTextPoint;
         // RoughyTextPoint
         final textStyle = TextStyle(
             color: roughyTextPoint.color,
@@ -54,7 +54,7 @@ class RoughyForegroundPainter extends CustomPainter {
           minWidth: 0,
           maxWidth: size.width,
         );
-        textPainter.paint(canvas, roughyTextPoint.offset);
+        textPainter.paint(canvas, roughyTextPoint.offset);*/
       }
     }
   }
