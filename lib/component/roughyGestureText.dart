@@ -26,26 +26,44 @@ class _RoughyGestureTextState extends State<RoughyGestureText> {
   bool isBorderExist = false;
   Offset localOffset = Offset(0, 0);
 
-  void onScaleStartHandler(ScaleStartDetails details) {
-
-  }
+  void onScaleStartHandler(ScaleStartDetails details) {}
 
   void onScaleEndHandler(ScaleEndDetails details) {}
 
   void onScaleUpdateHandler(ScaleUpdateDetails details) {
     print("@@" + details.focalPoint.toString() + details.localFocalPoint.toString());
+
     setState(() {
-      localOffset = details.localFocalPoint;
+      localOffset = Offset(details.focalPoint.dx - width / 2, details.focalPoint.dy - 70 - height/2);
     });
-    /*double scaleValue = details.scale;
+    double scaleValue = details.scale;
     double deg = details.rotation.abs() * (180 / math.pi);
-    print("scaleValue : " +
+    /*print("scaleValue : " +
         scaleValue.toString() +
         " deg : " +
         deg.toString() +
         " width : " +
-        (defaultMinSize + defaultMinSize * scaleValue).toString());
-    setState(() {
+        (defaultMinSize + defaultMinSize * scaleValue).toString() +
+        " " +
+        width.toString() +
+        " " +
+        height.toString());*/
+    if (scaleValue != 1) {
+      setState(() {
+        if (scaleValue > 1) {
+          scaleValue /=2;
+          width += scaleValue;
+          height += scaleValue;
+        } else {
+          if(width > 100) {
+            scaleValue *= 2;
+            width -= scaleValue;
+            height -= scaleValue;
+          }
+        }
+      });
+    }
+    /*setState(() {
       width = width + defaultMinSize * scaleValue;
       rotationDegree = deg;
     });*/
@@ -57,8 +75,12 @@ class _RoughyGestureTextState extends State<RoughyGestureText> {
       isBorderExist = !isBorderExist;
     });
   }
+
   void onPanUpdateHandler(DragUpdateDetails details) {
-    print("pan update : " + details.globalPosition.dx.toString() + " " + details.globalPosition.dy.toString());
+    print("pan update : " +
+        details.globalPosition.dx.toString() +
+        " " +
+        details.globalPosition.dy.toString());
   }
 
   @override
@@ -101,8 +123,9 @@ class _RoughyGestureTextState extends State<RoughyGestureText> {
             child: Container(
               width: width,
               height: height,
-              decoration:
-                  isBorderExist ? myBoxDecoration(Colors.black) : myBoxDecoration(Colors.transparent),
+              decoration: isBorderExist
+                  ? myBoxDecoration(Colors.black)
+                  : myBoxDecoration(Colors.transparent),
               child: GestureDetector(
                   //onPanUpdate: onPanUpdateHandler,
                   onScaleStart: onScaleStartHandler,
