@@ -33,6 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     final materialTheme = new ThemeData(
+      fontFamily: 'Yanolja',
       primarySwatch: Colors.purple,
     );
     final materialDarkTheme = new ThemeData(
