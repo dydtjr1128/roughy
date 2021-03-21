@@ -270,7 +270,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
 
     Future<void> _capturePng() async {
       RenderRepaintBoundary boundary = painterKey.currentContext.findRenderObject();
-      ui.Image image = await boundary.toImage(pixelRatio: 10.0);
+      ui.Image image = await boundary.toImage(pixelRatio: 3.5);
       ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       Uint8List pngBytes = byteData.buffer.asUint8List();
 
