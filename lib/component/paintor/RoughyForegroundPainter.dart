@@ -14,9 +14,7 @@ class RoughyForegroundPainter extends CustomPainter {
     @required this.points,
     @required this.drawingColor,
     @required this.drawingDepth,
-  }) {
-    print("@@생성자");
-  }
+  });
 
   @override
   void paint(Canvas canvas, Size size) async {
