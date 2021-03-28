@@ -24,63 +24,51 @@ class _RoughyGestureTextState extends State<RoughyGestureText> {
   double width;
   double height;
   bool isBorderExist = false;
-  Offset localOffset = Offset(0, 0);
+  double _scale = 1.0;
+  double _previousScale = 1;
+  Offset _previousOffset = Offset.zero;
+  Offset localOffset = Offset.zero;
 
-  void onScaleStartHandler(ScaleStartDetails details) {}
+  void onScaleStartHandler(ScaleStartDetails details) {
+    _previousScale = _scale;
+    _previousOffset = details.focalPoint;
+    print("prev : " + details.focalPoint.toString() + details.localFocalPoint.toString());
+  }
 
   void onScaleEndHandler(ScaleEndDetails details) {}
 
   void onScaleUpdateHandler(ScaleUpdateDetails details) {
-    print("@@" + details.focalPoint.toString() + details.localFocalPoint.toString());
-
-    setState(() {
-      localOffset = Offset(details.focalPoint.dx - width / 2, details.focalPoint.dy - 70 - height/2);
-    });
-    double scaleValue = details.scale;
-    double deg = details.rotation.abs() * (180 / math.pi);
-    /*print("scaleValue : " +
-        scaleValue.toString() +
-        " deg : " +
-        deg.toString() +
-        " width : " +
-        (defaultMinSize + defaultMinSize * scaleValue).toString() +
-        " " +
-        width.toString() +
-        " " +
-        height.toString());*/
-    if (scaleValue != 1) {
+    if (details.scale == 1) {
+      Offset delta = details.focalPoint - _previousOffset;
+      _previousOffset = details.focalPoint;
+      //print("@@ delta : " + delta.dx.toString() + " " + delta.dy.toString());
       setState(() {
-        if (scaleValue > 1) {
-          scaleValue /=2;
-          width += scaleValue;
-          height += scaleValue;
-        } else {
-          if(width > 100) {
-            scaleValue *= 2;
-            width -= scaleValue;
-            height -= scaleValue;
-          }
-        }
+        localOffset = Offset(localOffset.dx + delta.dx, localOffset.dy + delta.dy);
+      });
+    } else {
+      print("@@ scale : " + details.scale.toString() + " " + _previousScale.toString());
+      setState(() {
+        _scale = _previousScale * details.scale;
       });
     }
-    /*setState(() {
-      width = width + defaultMinSize * scaleValue;
-      rotationDegree = deg;
-    });*/
+
+    double scaleValue = details.scale;
+    double deg = details.rotation.abs() * (180 / math.pi);
   }
 
   void onTapHandler() {
     //widget.onTap();
+    print("@@@@");
     setState(() {
       isBorderExist = !isBorderExist;
     });
   }
 
   void onPanUpdateHandler(DragUpdateDetails details) {
-    print("pan update : " +
-        details.globalPosition.dx.toString() +
-        " " +
-        details.globalPosition.dy.toString());
+    setState(() {
+      //localOffset = Offset(details.focalPoint.dx - width / 2, details.focalPoint.dy - 70 - height/2);
+      localOffset = Offset(localOffset.dx + details.delta.dx, localOffset.dy + details.delta.dy);
+    });
   }
 
   @override
@@ -97,6 +85,7 @@ class _RoughyGestureTextState extends State<RoughyGestureText> {
         width: 1.0,
         color: selectedColor,
       ),
+      color: Colors.blueAccent,
       borderRadius: BorderRadius.all(Radius.circular(2.0) //                 <--- border radius here
           ),
     );
@@ -109,38 +98,31 @@ class _RoughyGestureTextState extends State<RoughyGestureText> {
     final double itemWidth = size.width;
 
     return Positioned(
-      left: localOffset.dx,
-      top: localOffset.dy,
-      child: ConstrainedBox(
-        constraints: new BoxConstraints(
-          minHeight: defaultMinSize,
-          minWidth: defaultMinSize,
-          maxHeight: itemHeight,
-          maxWidth: itemWidth,
-        ),
-        child: RotationTransition(
-            turns: new AlwaysStoppedAnimation(rotationDegree),
-            child: Container(
-              width: width,
-              height: height,
-              decoration: isBorderExist
-                  ? myBoxDecoration(Colors.black)
-                  : myBoxDecoration(Colors.transparent),
-              child: GestureDetector(
-                  //onPanUpdate: onPanUpdateHandler,
-                  onScaleStart: onScaleStartHandler,
-                  onScaleUpdate: onScaleUpdateHandler,
-                  onScaleEnd: onScaleEndHandler,
-                  onTap: onTapHandler,
-                  child: FittedBox(
-                      fit: BoxFit.fitWidth,
-                      child: Text(widget.roughyTextPoint.text,
-                          style: TextStyle(
-                            fontFamily:
-                                widget.roughyTextPoint.roughyFont.fontName, /*fontSize: fontSize*/
-                          )))),
-            )),
-      ),
-    );
+        left: localOffset.dx,
+        top: localOffset.dy,
+        child: GestureDetector(
+//                  onPanUpdate: onPanUpdateHandler,
+          onScaleStart: onScaleStartHandler,
+          onScaleUpdate: onScaleUpdateHandler,
+          //onScaleEnd: onScaleEndHandler,
+          onTap: onTapHandler,
+          child: ConstrainedBox(
+              constraints: new BoxConstraints(
+                minHeight: 100,
+                minWidth: 150,
+                maxHeight: itemHeight,
+                maxWidth: itemWidth,
+              ),
+              child: Container(
+                decoration: isBorderExist
+                    ? myBoxDecoration(Colors.black)
+                    : myBoxDecoration(Colors.transparent),
+                child: Text(widget.roughyTextPoint.text,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontFamily: widget.roughyTextPoint.roughyFont.fontName,
+                        fontSize: 30 * _scale)),
+              )),
+        ));
   }
 }
