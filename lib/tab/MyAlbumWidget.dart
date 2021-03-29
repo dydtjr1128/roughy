@@ -15,13 +15,13 @@ class MyAlbumWidget extends StatefulWidget {
 }
 
 class _MyAlbumWidgetState extends State<MyAlbumWidget> {
-  //final List<AlbumContainer> templateContainerList = List();
-  final LinkedHashMap templateContainerHashMap =
-      new LinkedHashMap<String, AlbumContainer>();
+  final LinkedHashMap<String, AlbumContainer> albumContainers =
+      LinkedHashMap<String, AlbumContainer>();
 
   @override
   void initState() {
     super.initState();
+    initializeTemplates();
   }
 
   Future<bool> deleteFile(String path) async {
@@ -53,7 +53,7 @@ class _MyAlbumWidgetState extends State<MyAlbumWidget> {
     print("이미지 제거 : " + path.toString());
     if (await deleteFile(path)) {
       setState(() {
-        templateContainerHashMap.remove(path);
+        albumContainers.remove(path);
       });
       showSnackBar("삭제 성공!");
     } else {
@@ -85,23 +85,29 @@ class _MyAlbumWidgetState extends State<MyAlbumWidget> {
     );
   }
 
-  Future<List<AlbumContainer>> initializeTemplates() async {
-    String dir = (await getApplicationSupportDirectory()).path;
-    Directory directory = new Directory(dir);
-    List<FileSystemEntity> contents = directory.listSync();
+  void initializeTemplates() async {
+    //String dir = await getApplicationSupportDirectory().
+    Directory directory = await getApplicationSupportDirectory();
+    List<FileSystemEntity> contents = directory.listSync().toList();
+    List<String> pathList = List();
     print(contents.length.toString() + "개 입니다.");
     for (int i = 0; i < contents.length; i++) {
-      print(contents[i].path);
-      FileSystemEntityType type = await FileSystemEntity.type(contents[i].path);
+      FileSystemEntityType type = FileSystemEntity.typeSync(contents[i].path);
       final extension = path.extension(contents[i].path).toLowerCase();
-      print(type.toString() + " " + extension);
       if (type == FileSystemEntityType.file && extension == ".png") {
-        templateContainerHashMap[contents[i].path] = new AlbumContainer(
-            onTap: onAlbumSelected, containerIndex: i, path: contents[i].path);
-        print("데이터 추가");
+        await precacheImage(AssetImage(contents[i].path), context);
+        pathList.add(contents[i].path);
       }
     }
-    return templateContainerHashMap.values.toList();
+    pathList.sort((a, b) => a.compareTo(b));
+    pathList = pathList.reversed.toList();
+
+    setState(() {
+      for (int i = 0; i < pathList.length; i++) {
+        albumContainers[pathList[i]] =
+            new AlbumContainer(onTap: onAlbumSelected, containerIndex: i, path: pathList[i]);
+      }
+    });
   }
 
   @override
@@ -110,28 +116,39 @@ class _MyAlbumWidgetState extends State<MyAlbumWidget> {
     final double itemHeight = (size.height) / 2;
     final double itemWidth = size.width / 2;
 
+    var gridTileList = albumContainers.values
+        .map((container) => new GridTile(
+              child: container,
+            ))
+        .toList();
+    return Scaffold(
+        appBar: RoughyAppBar(onClickedCallback: (bool isSelected) {}),
+        body: GridView.count(
+            crossAxisCount: 2, childAspectRatio: (itemWidth / itemHeight), children: gridTileList));
+  }
+
+/*@override
+  Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    final double itemHeight = (size.height) / 2;
+    final double itemWidth = size.width / 2;
+    int i = 0;
     return Scaffold(
         appBar: RoughyAppBar(onClickedCallback: (bool isSelected) {}),
         body: new FutureBuilder(
-            future: initializeTemplates(),
-            builder: (BuildContext context,
-                AsyncSnapshot<List<AlbumContainer>> snapshot) {
-              if (snapshot.hasData) {
-                print("데이터 있음" + snapshot.data.length.toString());
-              } else {
-                print("데이터 없음");
-              }
-
-              return snapshot.data != null
-                  ? new GridView.count(
-                      crossAxisCount: 2,
-                      childAspectRatio: (itemWidth / itemHeight),
-                      children: snapshot.data
-                          .map((container) => new GridTile(
-                                child: container,
-                              ))
-                          .toList())
-                  : new Container();
-            }));
-  }
+          future: initializeTemplates(),
+          builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+            List<AlbumContainer> albumContainers = List();
+            if (snapshot.hasData) {
+              for (String path in snapshot.data)
+                albumContainers.add(
+                    new AlbumContainer(onTap: onAlbumSelected, containerIndex: i++, path: path));
+            }
+            return GridView.count(
+                crossAxisCount: 2,
+                childAspectRatio: (itemWidth / itemHeight),
+                children: albumContainers);
+          },
+        ));
+  }*/
 }

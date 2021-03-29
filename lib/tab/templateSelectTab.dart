@@ -8,10 +8,9 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TemplateSelectWidget extends StatefulWidget {
-  final _TemplateSelectWidgetState parentState = _TemplateSelectWidgetState();
 
   @override
-  _TemplateSelectWidgetState createState() => parentState;
+  _TemplateSelectWidgetState createState() => _TemplateSelectWidgetState();
 }
 
 class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
