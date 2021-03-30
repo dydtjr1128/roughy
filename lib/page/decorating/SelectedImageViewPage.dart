@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 
 import 'package:Roughy/component/OutlineCircleButton.dart';
 import 'package:Roughy/component/OutlineRoundButton.dart';
+import 'package:Roughy/component/RoughyGestureTextController.dart';
 import 'package:Roughy/component/paintor/RoughyBackgroundPainter.dart';
 import 'package:Roughy/component/paintor/RoughyForegroundPainter.dart';
 import 'package:Roughy/component/roughyDownloadAppBar.dart';
@@ -37,6 +38,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   final List<dynamic> points = [];
   final List<RoughyFont> textFontList = [];
   final List<RoughyGestureText> gestureTextList = [];
+  RoughyGestureText selectedRoughyGestureText = null;
   RoughyFont selectedTextRoughyFont;
   Color selectedDrawingColor;
   double selectedDrawingLineDepth;
@@ -121,17 +123,35 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       isTextEditPanelVisible = !isTextEditPanelVisible;
       isDrawingPanelVisible = false;
       gestureTextList.add(new RoughyGestureText(
+          roughyGestureTextController: RoughyGestureTextController(),
+          onWidgetSelected: onWidgetSelected,
           roughyTextPoint: new RoughyTextPoint(
-              offset: Offset(100,100),
-              color: selectedDrawingColor,
-              roughyFont: selectedTextRoughyFont,
-              text: result)));
-/*          points.add(new RoughyTextPoint(
-              offset: localOffset,
-              color: selectedDrawingColor,
-              roughyFont: selectedTextRoughyFont,
-              text: result));*/
+            offset: Offset(100, 100),
+            color: selectedDrawingColor,
+            roughyFont: selectedTextRoughyFont,
+            text: result,
+          )));
     });
+  }
+
+  void onWidgetSelected(RoughyGestureText target) {
+    selectedRoughyGestureText = target;
+    for (var widget in gestureTextList) {
+      if (widget != target) {
+        widget.roughyGestureTextController.setWidgetSelected(false);
+      }
+    }
+    setState(() {
+      isTextEditPanelVisible = true;
+    });
+  }
+
+  void onTapHandler() {
+    print("@@@@@@");
+    selectedRoughyGestureText = null;
+    for (var widget in gestureTextList) {
+      widget.roughyGestureTextController.setWidgetSelected(false);
+    }
   }
 
   void onSelectTextFont(RoughyFont selectedFontString, int index) {
@@ -270,7 +290,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
 
     Future<void> _capturePng() async {
       RenderRepaintBoundary boundary = painterKey.currentContext.findRenderObject();
-      ui.Image image = await boundary.toImage(pixelRatio: 3.5);
+      ui.Image image = await boundary.toImage(pixelRatio: 3);
       ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       Uint8List pngBytes = byteData.buffer.asUint8List();
 
@@ -284,147 +304,161 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     }
 
     return Scaffold(
-        backgroundColor: Color.fromRGBO(235, 235, 235, 1),
-        appBar: RoughyDownloadAppBar(
-          onClickedCallback: () {
-            showPlatformDialog(
-              context: context,
-              builder: (_) => PlatformAlertDialog(
-                title: Text('알림'),
-                content: Text('사진을 사진첩에 저장하시겠습니까?'),
-                actions: <Widget>[
-                  PlatformDialogAction(
-                      child: PlatformText('Yes'),
-                      onPressed: () {
-                        _capturePng();
-                        Navigator.pop(context);
-                        showPlatformDialog(
-                            context: context,
-                            builder: (_) => PlatformAlertDialog(
-                                    title: Text('알림'),
-                                    content: Text('저장완료!'),
-                                    actions: <Widget>[
-                                      PlatformDialogAction(
-                                          child: PlatformText('Okay'),
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                            Navigator.pop(context);
-                                          })
-                                    ]));
-                      }),
-                  PlatformDialogAction(
-                    child: PlatformText('No'),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
-        body: Container(
-            decoration: new BoxDecoration(
-              color: Colors.white,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                    child: Stack(
-                  children: [
-                    Center(
-                      child: Container(
-                        width: templateWidth,
-                        height: templateHeight,
-                        decoration: new BoxDecoration(
-                          color: Colors.black,
-                        ),
-                        child: GestureDetector(
-                            onPanDown: (details) {
-                              updateDrawingPositionPanDown(details.localPosition);
-                            },
-                            onPanUpdate: (details) {
-                              updateDrawingPosition(details.localPosition);
-                            },
-                            onPanEnd: (details) => points.add(null),
-                            child: RepaintBoundary(
-                                key: painterKey,
-                                child: Container(
-                                    width: templateWidth,
-                                    height: templateHeight,
-                                    child: CustomPaint(
-                                      //size: Size(templateWidth, templateHeight),
-                                      //size: Size(_templateImage.width.toDouble(), _templateImage.height.toDouble()),
-                                      painter: RoughyBackgroundPainter(
-                                          croppedImage: _croppedImage, templateImage: _templateImage),
-                                      foregroundPainter: RoughyForegroundPainter(
-                                          points: points,
-                                          drawingColor: selectedDrawingColor,
-                                          drawingDepth: selectedDrawingLineDepth),
-                                    )))),
-                      ),
-                    ),
-                    for (var widget in gestureTextList) widget
-                  ],
-                )),
-                isTextEditPanelVisible ? getDrawingPanelWidgets() : new Row(),
-                isTextEditPanelVisible ? getTextPanelWidgets() : new Row(),
-                isDrawingPanelVisible ? getDrawingPanelWidgets() : new Row(),
-                isDrawingPanelVisible ? getDrawingLineDepthPanelWidgets() : new Row(),
-                Row(
-                  children: [
-                    Container(
-                        width: itemWidth,
-                        height: 50.0,
-                        decoration: new BoxDecoration(color: Colors.black),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
-                          child: Row(children: <Widget>[
-                            Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                              OutlineCircleButton(
-                                  radius: 45.0,
-                                  foregroundColor: Colors.black,
-                                  onTap: () => onTextEditButtonClicked(context),
-                                  child: Center(
-                                      child: Text(
-                                    "T",
-                                    style: TextStyle(color: Colors.white, fontSize: 30),
-                                  )))
-                            ]),
-                            Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                              OutlineCircleButton(
-                                  radius: 45.0,
-                                  foregroundColor: Colors.black,
-                                  onTap: () => onDrawEditButtonClicked(context),
-                                  child: Center(
-                                      child: SvgPicture.asset('assets/images/logo.svg',
-                                          color: Colors.white, height: 25, width: 25)))
-                            ]),
-                            Expanded(
-                                child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: <Widget>[
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      OutlineRoundButton(
-                                          radius: 15.0,
-                                          foregroundColor: Colors.black,
-                                          onTap: () => onImageSettingButtonClicked(context),
-                                          child: Center(
-                                              child: PlatformText(
-                                            "되돌리기",
-                                            style: TextStyle(color: Colors.white, fontSize: 16),
-                                          )))
-                                    ],
-                                  )
-                                ])),
-                          ]),
-                        ))
-                  ],
-                )
+      backgroundColor: Color.fromRGBO(235, 235, 235, 1),
+      appBar: RoughyDownloadAppBar(
+        onClickedCallback: () {
+          onTapHandler();
+          showPlatformDialog(
+            context: context,
+            builder: (_) => PlatformAlertDialog(
+              title: Text('알림'),
+              content: Text('사진을 사진첩에 저장하시겠습니까?'),
+              actions: <Widget>[
+                PlatformDialogAction(
+                    child: PlatformText('Yes'),
+                    onPressed: () {
+                      _capturePng();
+                      Navigator.pop(context);
+                      showPlatformDialog(
+                          context: context,
+                          builder: (_) => PlatformAlertDialog(
+                                  title: Text('알림'),
+                                  content: Text('저장완료!'),
+                                  actions: <Widget>[
+                                    PlatformDialogAction(
+                                        child: PlatformText('Okay'),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          Navigator.pop(context);
+                                        })
+                                  ]));
+                    }),
+                PlatformDialogAction(
+                  child: PlatformText('No'),
+                  onPressed: () => Navigator.pop(context),
+                ),
               ],
-            )));
+            ),
+          );
+        },
+      ),
+      body: Container(
+          decoration: new BoxDecoration(
+            color: Colors.white,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: GestureDetector(
+                  onTap: onTapHandler,
+                  child: Stack(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Colors.transparent
+                        ),
+                      ),
+                      Center(
+                        child: Container(
+                          width: templateWidth,
+                          height: templateHeight,
+                          decoration: new BoxDecoration(
+                            color: Colors.black,
+                          ),
+                          child: GestureDetector(
+                              onPanDown: (details) {
+                                updateDrawingPositionPanDown(details.localPosition);
+                              },
+                              onPanUpdate: (details) {
+                                updateDrawingPosition(details.localPosition);
+                              },
+                              onPanEnd: (details) => points.add(null),
+                              child: RepaintBoundary(
+                                  key: painterKey,
+                                  child: Container(
+                                      width: templateWidth,
+                                      height: templateHeight,
+                                      child: CustomPaint(
+                                        //size: Size(templateWidth, templateHeight),
+                                        //size: Size(_templateImage.width.toDouble(), _templateImage.height.toDouble()),
+                                        painter: RoughyBackgroundPainter(
+                                            croppedImage: _croppedImage,
+                                            templateImage: _templateImage),
+                                        foregroundPainter: RoughyForegroundPainter(
+                                            points: points,
+                                            drawingColor: selectedDrawingColor,
+                                            drawingDepth: selectedDrawingLineDepth),
+                                      )))),
+                        ),
+                      ),
+                      for (var widget in gestureTextList) widget,
+                    ],
+                  ),
+                ),
+              ),
+              isTextEditPanelVisible ? getDrawingPanelWidgets() : new Row(),
+              isTextEditPanelVisible ? getTextPanelWidgets() : new Row(),
+              isDrawingPanelVisible ? getDrawingPanelWidgets() : new Row(),
+              isDrawingPanelVisible ? getDrawingLineDepthPanelWidgets() : new Row(),
+              Row(
+                children: [
+                  Container(
+                      width: itemWidth,
+                      height: 50.0,
+                      decoration: new BoxDecoration(color: Colors.black),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+                        child: Row(children: <Widget>[
+                          Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+                            OutlineCircleButton(
+                                radius: 45.0,
+                                foregroundColor: Colors.black,
+                                onTap: () => onTextEditButtonClicked(context),
+                                child: Center(
+                                    child: Text(
+                                  "T",
+                                  style: TextStyle(color: Colors.white, fontSize: 30),
+                                )))
+                          ]),
+                          Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+                            OutlineCircleButton(
+                                radius: 45.0,
+                                foregroundColor: Colors.black,
+                                onTap: () => onDrawEditButtonClicked(context),
+                                child: Center(
+                                    child: SvgPicture.asset('assets/images/logo.svg',
+                                        color: Colors.white, height: 25, width: 25)))
+                          ]),
+                          Expanded(
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: <Widget>[
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    isDrawingPanelVisible
+                                        ? OutlineRoundButton(
+                                            radius: 15.0,
+                                            foregroundColor: Colors.black,
+                                            onTap: () => onImageSettingButtonClicked(context),
+                                            child: Center(
+                                                child: PlatformText(
+                                              "되돌리기",
+                                              style: TextStyle(color: Colors.white, fontSize: 16),
+                                            )))
+                                        : Container()
+                                  ],
+                                )
+                              ])),
+                        ]),
+                      ))
+                ],
+              )
+            ],
+          )),
+    );
   }
 }
