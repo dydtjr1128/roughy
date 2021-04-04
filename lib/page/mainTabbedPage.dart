@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
-import 'file:///F:/dev/Mobile/roughy/lib/example/DynamicTabbedPage.dart';
-
 class MainTabbedPage extends StatefulWidget {
   MainTabbedPage(this.toggleBrightness);
 
@@ -48,7 +46,78 @@ class _MainTabbedPageState extends State<MainTabbedPage> {
     }
   }
 
-  @override
+  Widget bottomAppBar() {
+    return Container(
+      color: Colors.white,
+      child: Container(
+        height: 70,
+        padding: EdgeInsets.only(bottom: 10, top: 5),
+        child: TabBar(
+          indicatorSize: TabBarIndicatorSize.label,
+          indicatorColor: Colors.red,
+          indicatorWeight: 2,
+          labelColor: Colors.blueAccent,
+          unselectedLabelColor: Colors.grey,
+          labelStyle: TextStyle(fontFamily: 'Yanolja'),
+          tabs: [
+            Tab(
+              icon: Icon(context.platformIcons.flag),
+              text: titles[0],
+            ),
+            Tab(
+              icon: Icon(context.platformIcons.book),
+              text: titles[1],
+            ),
+            Tab(
+              icon: Icon(context.platformIcons.settings),
+              text: titles[2],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  /*@override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Tab demo"),
+        ),
+        bottomNavigationBar: bottomAppBar(),
+        body: TabBarView(
+          children: <Widget>[
+            TemplateSelectWidget(),
+            MyAlbumWidget(),
+            FirstTabPage(widget.toggleBrightness),
+          ],
+        ),
+      ),
+    );
+  }*/
+
+/*@override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: RoughyCenterAppBar(title: "rrr",),
+      bottomNavigationBar: DefaultTabController(
+          length: 3,
+          child: Scaffold(
+            body: TabBarView(
+              children: [
+                TemplateSelectWidget(),
+                MyAlbumWidget(),
+                FirstTabPage(widget.toggleBrightness),
+              ],
+            ),
+            bottomNavigationBar: bottomAppBar(),
+          )),
+    );
+  }*/
+
+@override
   Widget build(BuildContext context) {
     return PlatformTabScaffold(
       pageBackgroundColor: Colors.white,
@@ -69,11 +138,6 @@ class _MainTabbedPageState extends State<MainTabbedPage> {
         return null;
       }),
       items: items(context),
-      /*cupertino: (_, __) => CupertinoTabScaffoldData(
-        //   Having this property as false (default true) forces it not to use CupertinoTabView which will show
-        //   the back button, but does required transitionBetweenRoutes set to false (see above)
-        useCupertinoTabView: false,
-      ),*/
     );
   }
 }
