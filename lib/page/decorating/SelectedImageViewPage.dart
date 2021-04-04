@@ -45,10 +45,11 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   final List<ui.Color> drawingColors = [];
   final List<double> drawingLineDepths = [];
   GlobalKey painterKey = GlobalKey();
+  int key = 1;
 
   _SelectedImageViewPageState() {
-    this.isDrawingPanelVisible = true;
-    this.isTextEditPanelVisible = false;
+    this.isDrawingPanelVisible = false;
+    this.isTextEditPanelVisible = true;
     this.drawingColors
       ..add(Color.fromRGBO(255, 255, 255, 1))
       ..add(Color.fromRGBO(126, 126, 126, 1))
@@ -120,11 +121,14 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       ),
     );
     setState(() {
-      isTextEditPanelVisible = !isTextEditPanelVisible;
+      isTextEditPanelVisible = true;
       isDrawingPanelVisible = false;
       gestureTextList.add(new RoughyGestureText(
           roughyGestureTextController: RoughyGestureTextController(),
-          onWidgetSelected: onWidgetSelected,
+          onWidgetSelected: onRoughyTextWidgetSelected,
+          onWidgetReleased: onRoughyTextWidgetReleased,
+          onTapRoughyGestureTextRemove: onTapRoughyGestureTextRemove,
+          key: Key((key++).toString()),
           roughyTextPoint: new RoughyTextPoint(
             offset: Offset(100, 100),
             color: selectedDrawingColor,
@@ -134,7 +138,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     });
   }
 
-  void onWidgetSelected(RoughyGestureText target) {
+  void onRoughyTextWidgetSelected(RoughyGestureText target) {
+    print("onRoughyTextWidgetSelected");
     selectedRoughyGestureText = target;
     for (var widget in gestureTextList) {
       if (widget != target) {
@@ -144,6 +149,35 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     setState(() {
       isTextEditPanelVisible = true;
     });
+  }
+
+  void onRoughyTextWidgetReleased(RoughyGestureText target) {
+    print("onRoughyTextWidgetReleased");
+    selectedRoughyGestureText = target;
+    setState(() {
+      isTextEditPanelVisible = true;
+    });
+  }
+
+  void onTapRoughyGestureTextRemove(RoughyGestureText target) {
+    print("onTapRoughyGestureTextRemove");
+    /*setState(() {
+      for (int i = 0; i < gestureTextList.length; i++) {
+        if (gestureTextList[i] == target) {
+          gestureTextList[i] = null;
+          gestureTextList.removeAt(i);
+        }
+      }
+    });*/
+    gestureTextList.remove(target);
+    setState(() {
+
+    });
+    /*if(mounted) {
+      setState(() {
+        gestureTextList.remove(target);
+      });
+    }*/
   }
 
   void onTapHandler() {
@@ -351,51 +385,70 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
-                child: GestureDetector(
+                child:
+                    GestureDetector(
+                  behavior: HitTestBehavior.translucent,
                   onTap: onTapHandler,
-                  child: Stack(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                            color: Colors.transparent
+                  child:
+                    Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(color: Colors.transparent),
+                    ),
+                    Center(
+                      child: Container(
+                        width: templateWidth,
+                        height: templateHeight,
+                        decoration: new BoxDecoration(
+                          color: Colors.black,
                         ),
+                        child: GestureDetector(
+                            onPanDown: (details) {
+                              updateDrawingPositionPanDown(details.localPosition);
+                            },
+                            onPanUpdate: (details) {
+                              updateDrawingPosition(details.localPosition);
+                            },
+                            onPanEnd: (details) => points.add(null),
+                            child: RepaintBoundary(
+                                key: painterKey,
+                                child: Container(
+                                    width: templateWidth,
+                                    height: templateHeight,
+                                    child: CustomPaint(
+                                      //size: Size(templateWidth, templateHeight),
+                                      //size: Size(_templateImage.width.toDouble(), _templateImage.height.toDouble()),
+                                      painter: RoughyBackgroundPainter(
+                                          croppedImage: _croppedImage,
+                                          templateImage: _templateImage),
+                                      foregroundPainter: RoughyForegroundPainter(
+                                          points: points,
+                                          drawingColor: selectedDrawingColor,
+                                          drawingDepth: selectedDrawingLineDepth),
+                                    )))),
                       ),
-                      Center(
-                        child: Container(
-                          width: templateWidth,
-                          height: templateHeight,
-                          decoration: new BoxDecoration(
-                            color: Colors.black,
-                          ),
-                          child: GestureDetector(
-                              onPanDown: (details) {
-                                updateDrawingPositionPanDown(details.localPosition);
-                              },
-                              onPanUpdate: (details) {
-                                updateDrawingPosition(details.localPosition);
-                              },
-                              onPanEnd: (details) => points.add(null),
-                              child: RepaintBoundary(
-                                  key: painterKey,
-                                  child: Container(
-                                      width: templateWidth,
-                                      height: templateHeight,
-                                      child: CustomPaint(
-                                        //size: Size(templateWidth, templateHeight),
-                                        //size: Size(_templateImage.width.toDouble(), _templateImage.height.toDouble()),
-                                        painter: RoughyBackgroundPainter(
-                                            croppedImage: _croppedImage,
-                                            templateImage: _templateImage),
-                                        foregroundPainter: RoughyForegroundPainter(
-                                            points: points,
-                                            drawingColor: selectedDrawingColor,
-                                            drawingDepth: selectedDrawingLineDepth),
-                                      )))),
+                    ),
+                    for (var widget in gestureTextList) widget,
+/*                      Container(
+                        decoration: BoxDecoration(color: Colors.red),
+                        child: Column(
+                          children: [
+                            InteractiveViewer(
+                              panEnabled: true, // Set it to false to prevent panning.
+                              boundaryMargin: EdgeInsets.all(180),
+                              minScale: 0.5,
+                              maxScale: 10,
+
+                              child: Text("ttttttt",style: TextStyle(
+                                  fontFamily: "Janitor",
+                                  fontSize: 50),),
+                            ),
+                          ],
                         ),
-                      ),
-                      for (var widget in gestureTextList) widget,
-                    ],
-                  ),
+                      ),*/
+                  ],
+                ),
                 ),
               ),
               isTextEditPanelVisible ? getDrawingPanelWidgets() : new Row(),
