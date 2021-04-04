@@ -95,7 +95,7 @@ class _MyAlbumWidgetState extends State<MyAlbumWidget> {
       FileSystemEntityType type = FileSystemEntity.typeSync(contents[i].path);
       final extension = path.extension(contents[i].path).toLowerCase();
       if (type == FileSystemEntityType.file && extension == ".png") {
-        await precacheImage(AssetImage(contents[i].path), context);
+        //precacheImage(AssetImage(contents[i].path), context);
         pathList.add(contents[i].path);
       }
     }
