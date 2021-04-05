@@ -34,10 +34,34 @@ class _RoughyGestureTextState extends State<RoughyGestureText> {
   double _previousScale = 1;
   Offset _previousOffset = Offset.zero;
   Offset localOffset = Offset.zero;
+  String fontName;
+  Color fontColor;
 
   _RoughyGestureTextState(RoughyGestureTextController _controller) {
     _controller.setWidgetSelected = setWidgetSelected;
-    print("연결!");
+    _controller.setFont = setFont;
+    _controller.setFontColor = setFontColor;
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    print("@@@@~~~" + widget.toString());
+    this.fontName = widget.roughyTextPoint.roughyFont.fontName;
+    this.fontColor = widget.roughyTextPoint.color;
+  }
+
+  void setFont(String fontName) {
+    setState(() {
+      this.fontName = fontName;
+    });
+  }
+
+  void setFontColor(Color fontColor) {
+    setState(() {
+      this.fontColor = fontColor;
+    });
   }
 
   void setWidgetSelected(bool selected) {
@@ -141,7 +165,8 @@ class _RoughyGestureTextState extends State<RoughyGestureText> {
                     Text(widget.roughyTextPoint.text,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            fontFamily: widget.roughyTextPoint.roughyFont.fontName,
+                            fontFamily: fontName,
+                            color: fontColor,
                             fontSize: 30 * _scale)),
                   ],
                 ),
