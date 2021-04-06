@@ -42,6 +42,7 @@ class RoundShadowButton extends StatelessWidget {
               }),
         ),
       ),
+      if(isSelect)
       Positioned(
         top: 15,
         right: 15,
