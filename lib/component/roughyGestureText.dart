@@ -52,7 +52,6 @@ class _RoughyGestureTextState extends State<RoughyGestureText> {
   @override
   void initState() {
     super.initState();
-    print("@@@@~~~" + widget.toString());
     this.fontName = widget.roughyTextPoint.roughyFont.fontName;
     this.fontColor = widget.roughyTextPoint.color;
   }
@@ -138,47 +137,6 @@ class _RoughyGestureTextState extends State<RoughyGestureText> {
     }
   }
 
-  BoxDecoration myBoxDecoration(Color selectedColor) {
-    return BoxDecoration(
-      border: Border.all(
-        width: 2.0,
-        color: selectedColor,
-      ),
-      borderRadius: BorderRadius.all(Radius.circular(2.0) //                 <--- border radius here
-          ),
-    );
-  }
-
-  ButtonStyle myButtonDecoration(Color shadowColor, Color borderColor) {
-    return ElevatedButton.styleFrom(
-        primary: Colors.transparent, // background
-        onPrimary: Colors.transparent,
-        shadowColor: shadowColor,
-        side: BorderSide(
-          width: 2.0,
-          color: borderColor,
-        ));
-  }
-
-  /*@override
-  Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    final double itemHeight = size.height;
-    final double itemWidth = size.width;
-
-    return InteractiveViewer(
-        panEnabled: true,
-        // Set it to false to prevent panning.
-        boundaryMargin: EdgeInsets.all(180),
-        minScale: 0.5,
-        maxScale: 10,
-        child: Text(widget.roughyTextPoint.text,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                fontFamily: widget.roughyTextPoint.roughyFont.fontName,
-                fontSize: 30 * _scale)));
-  }*/
-
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -192,87 +150,21 @@ class _RoughyGestureTextState extends State<RoughyGestureText> {
         ));
   }
 
-  List<Positioned> buildBorders() {
-    double top = 0;
-    double left = 0;
-  }
-
   Stack buildTextContainer() {
     return Stack(children: [
       RoundShadowButton(
-          isSelect: isWidgetSelected,
-          onRemove: onTapRoughyGestureTextRemoveCallback,
-          onTap: onTapHandler,
-          child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(widget.roughyTextPoint.text,
-                    textAlign: TextAlign.center,
-                    style:
-                        TextStyle(fontFamily: fontName, color: fontColor, fontSize: 30 * _scale)),
-              ]),
-        ),
+        isSelect: isWidgetSelected,
+        onRemove: onTapRoughyGestureTextRemoveCallback,
+        onTap: onTapHandler,
+        child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(widget.roughyTextPoint.text,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontFamily: fontName, color: fontColor, fontSize: 30 * _scale)),
+            ]),
+      ),
     ]);
   }
-/*Stack buildTextContainer(double itemHeight, double itemWidth) {
-    return Stack(children: [
-      if (isWidgetSelected)
-        Positioned(
-          left: 0,
-          bottom: 0,
-          top: 0,
-          right: 0,
-          child: Container(
-            decoration: BoxDecoration(color: Colors.transparent),
-          ),
-        ),
-      ConstrainedBox(
-        constraints: new BoxConstraints(
-          minHeight: 150,
-          minWidth: 200,
-          maxHeight: itemHeight,
-          maxWidth: itemWidth,
-        ),
-        child: Container(
-            margin: EdgeInsets.all(50),
-            padding: EdgeInsets.all(15),
-            decoration: isWidgetSelected
-                ? myBoxDecoration(Colors.black54)
-                : myBoxDecoration(Colors.transparent),
-            child: GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTap: onTapHandler,
-              child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(widget.roughyTextPoint.text,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontFamily: fontName, color: fontColor, fontSize: 30 * _scale)),
-                  ]),
-            )),
-      ),
-      if (isWidgetSelected)
-        Positioned(
-          top: 40,
-          right: 40,
-          child: ClipOval(
-            child: Material(
-              color: Colors.black,
-              child: InkWell(
-                splashColor: Colors.red, // inkwell color
-                child: Icon(
-                  Icons.horizontal_rule,
-                  color: Colors.white,
-                  size: 28,
-                ),
-                onTap: onTapRoughyGestureTextRemoveCallback,
-              ),
-            ),
-          ),
-        )
-    ]);
-  }*/
 }
