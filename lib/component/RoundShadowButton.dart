@@ -25,8 +25,8 @@ class RoundShadowButton extends StatelessWidget {
         padding: EdgeInsets.all(30),
         child: ConstrainedBox(
           constraints: new BoxConstraints(
-            minHeight: 100,
-            minWidth: 150,
+            minHeight: 80,
+            minWidth: 120,
             maxHeight: itemHeight,
             maxWidth: itemWidth,
           ),
