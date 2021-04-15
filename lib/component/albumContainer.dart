@@ -54,8 +54,10 @@ class _AlbumContainerState extends State<AlbumContainer> {
                           margin: EdgeInsets.only(top: 10),
                           decoration: new BoxDecoration(
                             image:
-                                DecorationImage(fit: BoxFit.cover, image: AssetImage(widget.path)),
-                          )))
+                                DecorationImage(fit: BoxFit.cover, image: FileImage(File(widget.path))),
+                          ),
+                      )
+                  )
                 ],
               ),
             ),
