@@ -114,7 +114,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     });
   }
 
-  onTextEditButtonClicked(BuildContext context) async {
+  void onTextEditButtonClicked(BuildContext context) async {
     final String result = await Navigator.push(
       context,
       platformPageRoute(
@@ -122,15 +122,17 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         builder: (context) => TextInputPage(),
       ),
     );
+    if (result == null || result.trim().isEmpty) {
+      return;
+    }
     setState(() {
-      isTextEditPanelVisible = true;
-      isDrawingPanelVisible = false;
+      switchToTextEditPanel();
       gestureTextList.add(new RoughyGestureText(
           roughyGestureTextController: RoughyGestureTextController(),
           onWidgetSelected: onRoughyTextWidgetSelected,
           onWidgetReleased: onRoughyTextWidgetReleased,
           onTapRoughyGestureTextRemove: onTapRoughyGestureTextRemove,
-          key: Key((key++).toString()),
+          key: Key((gestureTextList.length).toString()),
           roughyTextPoint: new RoughyTextPoint(
             offset: Offset(100, 100),
             color: selectedDrawingColor,
@@ -148,41 +150,38 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         widget.roughyGestureTextController.setWidgetSelected(false);
       }
     }
-    setState(() {
-      isTextEditPanelVisible = true;
-    });
+    switchToTextEditPanel();
   }
 
   void onRoughyTextWidgetReleased(RoughyGestureText target) {
     print("onRoughyTextWidgetReleased");
     if (selectedRoughyGestureText == target) selectedRoughyGestureText = null;
-    setState(() {
-      isTextEditPanelVisible = true;
-    });
+    switchToTextEditPanel();
   }
 
   void onTapRoughyGestureTextRemove(RoughyGestureText target) {
     print("onTapRoughyGestureTextRemove");
-    /*setState(() {
-      for (int i = 0; i < gestureTextList.length; i++) {
-        if (gestureTextList[i] == target) {
-          gestureTextList[i] = null;
-          gestureTextList.removeAt(i);
-        }
-      }
-    });*/
     if (selectedRoughyGestureText == target) selectedRoughyGestureText = null;
     gestureTextList.remove(target);
-    setState(() {});
-    /*if(mounted) {
-      setState(() {
-        gestureTextList.remove(target);
-      });
-    }*/
+    switchToTextEditPanel();
   }
 
-  void onTapHandler() {
-    print("@@@@@@");
+  void switchToTextEditPanel() {
+    setState(() {
+      isTextEditPanelVisible = true;
+      isDrawingPanelVisible = false;
+    });
+  }
+
+  void switchToDrawingEditPanelPanel() {
+    selectedRoughyGestureText = null;
+    setState(() {
+      isTextEditPanelVisible = false;
+      isDrawingPanelVisible = true;
+    });
+  }
+
+  void setAllRoughyGestureTextWidgetChangToNotSelected() {
     selectedRoughyGestureText = null;
     for (var widget in gestureTextList) {
       widget.roughyGestureTextController.setWidgetSelected(false);
@@ -192,7 +191,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   void onSelectTextFont(RoughyFont selectedFontString, int index) {
     print("폰트 선택 : " + selectedFontString.fontName.toString() + " " + index.toString());
     this.selectedTextRoughyFont = selectedFontString;
-    if(selectedRoughyGestureText != null){
+    if (selectedRoughyGestureText != null) {
       selectedRoughyGestureText.roughyGestureTextController.setFont(selectedFontString.fontName);
     }
   }
@@ -200,7 +199,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   void onSelectDrawingColor(ui.Color selectedDrawingColor, int index) {
     print("색상 선택 : " + selectedDrawingColor.toString() + " " + index.toString());
     this.selectedDrawingColor = selectedDrawingColor;
-    if(selectedRoughyGestureText != null){
+    if (selectedRoughyGestureText != null) {
       selectedRoughyGestureText.roughyGestureTextController.setFontColor(selectedDrawingColor);
     }
   }
@@ -278,7 +277,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
               radius: 15.0,
               onTap: () => onSelectTextFont(textFontList[i], i),
               child: Center(
-                  child: PlatformText(
+                  child: Text(
                 "ABCabc",
                 style: TextStyle(
                     fontFamily: textFontList[i].fontName,
@@ -288,6 +287,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         ),
       );
     }
+
     return Container(
         height: 50,
         decoration: new BoxDecoration(
@@ -323,9 +323,9 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       }
     }
 
-    Future<void> updateDrawingPositionPanDown(ui.Offset localOffset) async {
+    void initializeDrawingPosition() {
       if (isDrawingPanelVisible) {
-        updateDrawingPosition(localOffset);
+        points.add(null);
       }
     }
 
@@ -407,63 +407,26 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                       Container(
                         decoration: BoxDecoration(color: Colors.transparent),
                       ),
-                      Center(
-                        child: Container(
-                          width: templateWidth,
-                          height: templateHeight,
-                          decoration: new BoxDecoration(
-                            color: Colors.black,
-                          ),
-                          child: GestureDetector(
-                              onPanDown: (details) {
-                                updateDrawingPositionPanDown(details.localPosition);
-                              },
-                              onPanUpdate: (details) {
-                                updateDrawingPosition(details.localPosition);
-                              },
-                              onPanEnd: (details) => points.add(null),
-                              child: RepaintBoundary(
-                                  child: Container(
-                                      width: templateWidth,
-                                      height: templateHeight,
-                                      child: CustomPaint(
-                                        //size: Size(templateWidth, templateHeight),
-                                        //size: Size(_templateImage.width.toDouble(), _templateImage.height.toDouble()),
-                                        painter: RoughyBackgroundPainter(
-                                            croppedImage: _croppedImage,
-                                            templateImage: _templateImage),
-                                        foregroundPainter: RoughyForegroundPainter(
-                                            points: points,
-                                            drawingColor: selectedDrawingColor,
-                                            drawingDepth: selectedDrawingLineDepth),
-                                      )))),
+                      Container(
+                        child: Center(
+                          child: Container(
+                              width: templateWidth,
+                              height: templateHeight,
+                              decoration: new BoxDecoration(
+                                color: Colors.black,
+                              ),
+                              child: isDrawingPanelVisible
+                                  ? GestureDetector(
+                                      behavior: HitTestBehavior.opaque,
+                                      onPanDown: (details) =>
+                                          updateDrawingPosition(details.localPosition),
+                                      onPanUpdate: (details) =>
+                                          updateDrawingPosition(details.localPosition),
+                                      onPanEnd: (details) => initializeDrawingPosition(),
+                                      child: getCanvas(templateWidth, templateHeight))
+                                  : getCanvas(templateWidth, templateHeight)),
                         ),
                       ),
-                      for (var widget in gestureTextList) widget,
-                      Center(
-                          child: Container(
-                        decoration: BoxDecoration(color: Colors.transparent),
-                        key: painterKey,
-                        width: templateWidth,
-                        height: templateHeight,
-                      ))
-/*                      Container(
-                        decoration: BoxDecoration(color: Colors.red),
-                        child: Column(
-                          children: [
-                            InteractiveViewer(
-                              panEnabled: true, // Set it to false to prevent panning.
-                              boundaryMargin: EdgeInsets.all(180),
-                              minScale: 0.5,
-                              maxScale: 10,
-
-                              child: Text("ttttttt",style: TextStyle(
-                                  fontFamily: "Janitor",
-                                  fontSize: 50),),
-                            ),
-                          ],
-                        ),
-                      ),*/
                     ],
                   ),
                 ),
@@ -486,8 +449,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                                 radius: 45.0,
                                 foregroundColor: Colors.black,
                                 onTap: () => onTextEditButtonClicked(context),
-                                child: Center(
-                                    child: Text(
+                                child: const Center(
+                                    child: const Text(
                                   "T",
                                   style: TextStyle(color: Colors.white, fontSize: 30),
                                 )))
@@ -514,8 +477,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                                             radius: 15.0,
                                             foregroundColor: Colors.black,
                                             onTap: () => onImageSettingButtonClicked(context),
-                                            child: Center(
-                                                child: PlatformText(
+                                            child: const Center(
+                                                child: const Text(
                                               "되돌리기",
                                               style: TextStyle(color: Colors.white, fontSize: 16),
                                             )))
