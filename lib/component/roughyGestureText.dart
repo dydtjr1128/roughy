@@ -40,6 +40,8 @@ class _RoughyGestureTextState extends State<RoughyGestureText> {
   double _previousScale = 1;
   Offset _previousOffset = Offset.zero;
   Offset localOffset = Offset.zero;
+  double _rotation = 0.0;
+  double _previousRotation = 0.0;
   String fontName;
   Color fontColor;
 
@@ -81,31 +83,12 @@ class _RoughyGestureTextState extends State<RoughyGestureText> {
     widget.onTapRoughyGestureTextRemove(widget);
   }
 
-  void onScaleGlobalStartHandler(ScaleStartDetails details) {
-    if (!isWidgetSelected) return;
-    _previousScale = _scale;
-    _previousOffset = details.focalPoint;
-    print("prev : " + details.focalPoint.toString() + details.localFocalPoint.toString());
-  }
-
-  void onScaleGlobalUpdateHandler(ScaleUpdateDetails details) {
-    if (!isWidgetSelected) return;
-    if (details.scale != 1) {
-      setState(() {
-        _scale = _previousScale * details.scale;
-      });
-    }
-
-    double scaleValue = details.scale;
-    double deg = details.rotation.abs() * (180 / math.pi);
-  }
-
   void onScaleStartHandler(ScaleStartDetails details) {
     print("~~~~");
     if (!isWidgetSelected) return;
     _previousScale = _scale;
     _previousOffset = details.focalPoint;
-    print("prev : " + details.focalPoint.toString() + details.localFocalPoint.toString());
+    _previousRotation = 0;
   }
 
   void onScaleUpdateHandler(ScaleUpdateDetails details) {
@@ -119,11 +102,17 @@ class _RoughyGestureTextState extends State<RoughyGestureText> {
     } else {
       setState(() {
         _scale = _previousScale * details.scale;
+        double tempRotation = _rotation - _previousRotation - details.rotation;
+        var deg = tempRotation.abs() * (180 / math.pi);
+        if (deg < 20) {
+          _rotation = 0;
+          _previousRotation = 0;
+        } else {
+          _rotation -= _previousRotation - details.rotation;
+        }
+        _previousRotation = details.rotation;
       });
     }
-
-    double scaleValue = details.scale;
-    double deg = details.rotation.abs() * (180 / math.pi);
   }
 
   void onTapHandler() {
@@ -142,11 +131,14 @@ class _RoughyGestureTextState extends State<RoughyGestureText> {
     return Positioned(
         left: localOffset.dx,
         top: localOffset.dy,
-        child: GestureDetector(
-          behavior: HitTestBehavior.deferToChild,
-          onScaleStart: onScaleStartHandler,
-          onScaleUpdate: onScaleUpdateHandler,
-          child: buildTextContainer(),
+        child: Transform.rotate(
+          angle: _rotation,
+          child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onScaleStart: onScaleStartHandler,
+              onScaleUpdate: onScaleUpdateHandler,
+              onTap: onTapHandler,
+              child: buildTextContainer()),
         ));
   }
 
@@ -155,7 +147,6 @@ class _RoughyGestureTextState extends State<RoughyGestureText> {
       RoundShadowButton(
         isSelect: isWidgetSelected,
         onRemove: onTapRoughyGestureTextRemoveCallback,
-        onTap: onTapHandler,
         child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
