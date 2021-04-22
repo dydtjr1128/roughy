@@ -4,14 +4,12 @@ import 'package:flutter/widgets.dart';
 class RoundShadowButton extends StatelessWidget {
   RoundShadowButton({
     Key key,
-    this.onTap,
     this.onRemove,
     this.child,
     this.isSelect,
   }) : super(key: key);
 
   bool isSelect;
-  final onTap;
   final onRemove;
   final child;
 
@@ -30,39 +28,33 @@ class RoundShadowButton extends StatelessWidget {
             maxHeight: itemHeight,
             maxWidth: itemWidth,
           ),
-          child: GestureDetector(
-              child: Container(
-                  child: CustomPaint(
-                      painter: MyPainter(isSelect),
-                      child: Container(padding: EdgeInsets.all(10), child: child))),
-              onTap: () async {
-                if (onTap != null) {
-                  onTap();
-                }
-              }),
+          child: Container(
+              child: CustomPaint(
+                  painter: MyPainter(isSelect),
+                  child: Container(padding: EdgeInsets.all(10), child: child))),
         ),
       ),
-      if(isSelect)
-      Positioned(
-        top: 15,
-        right: 15,
-        child: ClipOval(
-          child: Material(
-            color: Colors.black,
-            child: InkWell(
-              splashColor: Colors.red, // inkwell color
-              child: Icon(
-                Icons.horizontal_rule,
-                color: Colors.white,
-                size: 28,
+      if (isSelect)
+        Positioned(
+          top: 15,
+          right: 15,
+          child: ClipOval(
+            child: Material(
+              color: Colors.black,
+              child: InkWell(
+                splashColor: Colors.red, // inkwell color
+                child: Icon(
+                  Icons.horizontal_rule,
+                  color: Colors.white,
+                  size: 28,
+                ),
+                onTap: () {
+                  onRemove();
+                },
               ),
-              onTap: () {
-                onRemove();
-              },
             ),
           ),
-        ),
-      )
+        )
     ]);
   }
 }
