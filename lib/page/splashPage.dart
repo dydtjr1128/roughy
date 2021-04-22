@@ -11,16 +11,13 @@ class SplashPage extends StatefulWidget {
   final void Function() toggleBrightness;
 
   @override
-  _SplashPageState createState() => _SplashPageState(toggleBrightness);
+  _SplashPageState createState() => _SplashPageState();
 }
 
 class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
-  _SplashPageState(this.toggleBrightness);
 
-  final void Function() toggleBrightness;
-
-  AnimationController _controller;
-  Animation<double> _animation;
+  late AnimationController _controller;
+  late Animation<double> _animation;
 
   @override
   void initState() {
@@ -61,7 +58,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
         platformPageRoute(
             context: context,
             builder: (BuildContext context) =>
-                MainTabbedPage(toggleBrightness)));
+                MainTabbedPage(widget.toggleBrightness)));
   }
 
   @override

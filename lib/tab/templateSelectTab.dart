@@ -15,7 +15,7 @@ class TemplateSelectWidget extends StatefulWidget {
 
 class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
   final String templateKey = "TEMPLATE_LISTS";
-  final List<TemplateContainer> templateContainerList = List();
+  final List<TemplateContainer> templateContainerList = [];
   bool _isFavoriteSelected = false;
 
   @override
@@ -39,8 +39,8 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
     // 사용자가 설정한 Favorite 값 로드
     final prefs = await SharedPreferences.getInstance();
     templateList.forEach((template) {
-      bool temp = prefs.getBool(templateKey + template.uniqueName);
-      if (temp != null && temp == true) {
+      bool? temp = prefs.getBool(templateKey + template.uniqueName);
+      if (temp == true) {
         template.isFavorite = true;
       }
     });

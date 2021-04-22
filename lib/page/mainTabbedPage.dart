@@ -32,18 +32,13 @@ class _MainTabbedPageState extends State<MainTabbedPage> {
       ];
 
   // This needs to be captured here in a stateful widget
-  PlatformTabController tabController;
+  PlatformTabController tabController = PlatformTabController(
+    initialIndex: 1,
+  );
 
   @override
   void initState() {
     super.initState();
-
-    // If you want further control of the tabs have one of these
-    if (tabController == null) {
-      tabController = PlatformTabController(
-        initialIndex: 1,
-      );
-    }
   }
 
   Widget bottomAppBar() {
@@ -117,7 +112,7 @@ class _MainTabbedPageState extends State<MainTabbedPage> {
     );
   }*/
 
-@override
+  @override
   Widget build(BuildContext context) {
     return PlatformTabScaffold(
       pageBackgroundColor: Colors.white,
@@ -127,15 +122,11 @@ class _MainTabbedPageState extends State<MainTabbedPage> {
         switch (index) {
           case 0:
             return TemplateSelectWidget();
-            break;
           case 1:
             return MyAlbumWidget();
-            break;
-          case 2:
+          default:
             return FirstTabPage(widget.toggleBrightness);
-            break;
         }
-        return null;
       }),
       items: items(context),
     );

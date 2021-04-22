@@ -3,14 +3,13 @@ import 'package:flutter/widgets.dart';
 
 class OutlineRoundButton extends StatelessWidget {
   OutlineRoundButton({
-    Key key,
     this.onTap,
     this.borderSize: 0.5,
     this.radius: 20.0,
     this.borderColor: Colors.transparent,
     this.foregroundColor: Colors.white,
     this.child,
-  }) : super(key: key);
+  });
 
   final onTap;
   final radius;

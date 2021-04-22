@@ -11,17 +11,17 @@ class TemplateContainer extends StatefulWidget {
   final Template template;
 
   TemplateContainer(
-      {@required this.onTap,
-      @required this.containerIndex,
-      @required this.onFavoriteTap,
-      @required this.template});
+      {required this.onTap,
+      required this.containerIndex,
+      required this.onFavoriteTap,
+      required this.template});
 
   @override
   _TemplateContainerState createState() => _TemplateContainerState();
 }
 
 class _TemplateContainerState extends State<TemplateContainer> {
-  bool _isFavoriteSelected;
+  late bool _isFavoriteSelected;
 
   @override
   Widget build(BuildContext context) {

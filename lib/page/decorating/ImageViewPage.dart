@@ -13,7 +13,7 @@ import 'package:image_picker/image_picker.dart';
 class ImageViewPage extends StatefulWidget {
   final String path;
 
-  ImageViewPage({Key key, this.path}) : super(key: key);
+  ImageViewPage({required this.path});
 
   @override
   _ImageViewPageState createState() => _ImageViewPageState();
@@ -25,31 +25,21 @@ class _ImageViewPageState extends State<ImageViewPage> {
     _showPicker(context);
   }
 
-  File _changedImage;
   final ImagePicker imagePicker = ImagePicker();
 
   _getImage({@required source}) async {
     final pickedFile =
         await imagePicker.getImage(source: source, imageQuality: 100);
     if (pickedFile != null) {
-      File croppedImage = await ImageCropper.cropImage(
+      File croppedImage = (await ImageCropper.cropImage(
         sourcePath: pickedFile.path,
         aspectRatio: CropAspectRatio(ratioX: 68, ratioY: 108.4),
         compressQuality: 100,
         //maxHeight: 700,
         //maxWidth: 700,
         compressFormat: ImageCompressFormat.png,
-      );
+      ))!;
 
-      _changedImage = await Navigator.push(
-          context,
-          platformPageRoute(
-              builder: (_) {
-                return SelectedImageViewPage(
-                    croppedImage: croppedImage,
-                    templateImage: File(widget.path));
-              },
-              context: context));
     } else {
       print('No image selected.');
     }

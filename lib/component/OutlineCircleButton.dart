@@ -3,20 +3,19 @@ import 'package:flutter/widgets.dart';
 
 class OutlineCircleButton extends StatelessWidget {
   OutlineCircleButton({
-    Key key, 
     this.onTap,
     this.borderSize: 0.5, 
     this.radius: 20.0,
     this.borderColor: Colors.transparent,
     this.foregroundColor: Colors.white,
     this.child,
-  }) : super(key: key);
+  });
 
-  final onTap;
-  final radius;
-  final borderSize;
-  final borderColor;
-  final foregroundColor;
+  final Function? onTap;
+  final double radius;
+  final double borderSize;
+  final Color borderColor;
+  final Color foregroundColor;
   final child;
 
   @override
@@ -36,7 +35,7 @@ class OutlineCircleButton extends StatelessWidget {
             child: child??SizedBox(),
             onTap: () async {
               if(onTap != null) {
-                onTap();
+                onTap!();
               }          
             } 
           ),

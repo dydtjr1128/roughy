@@ -20,8 +20,7 @@ class FirstTabPage extends StatelessWidget {
 }
 
 class FirstPageWidget extends StatefulWidget {
-  FirstPageWidget({Key key, this.title, this.toggleBrightness})
-      : super(key: key);
+  FirstPageWidget({required this.title, required this.toggleBrightness});
   final String title;
   final void Function() toggleBrightness;
   int titleValue = 100;
@@ -95,9 +94,9 @@ class _FirstPageWidgetState extends State<FirstPageWidget> {
                   child: PlatformText('테마 변경'),
                   onPressed: () => {
                     if (isMaterial(context))
-                      {PlatformProvider.of(context).changeToCupertinoPlatform()}
+                      {PlatformProvider.of(context)!.changeToCupertinoPlatform()}
                     else
-                      {PlatformProvider.of(context).changeToMaterialPlatform()}
+                      {PlatformProvider.of(context)!.changeToMaterialPlatform()}
                   },
                 )
               ],

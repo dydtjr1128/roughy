@@ -11,9 +11,9 @@ class RoughyForegroundPainter extends CustomPainter {
   List<dynamic> points = [RoughyDrawingPoint, RoughyTextPoint];
 
   RoughyForegroundPainter({
-    @required this.points,
-    @required this.drawingColor,
-    @required this.drawingDepth,
+    required this.points,
+    required this.drawingColor,
+    required this.drawingDepth,
   });
 
   @override

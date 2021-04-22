@@ -10,7 +10,7 @@ class AlbumContainer extends StatefulWidget {
   final BorderRadius _baseBorderRadius = BorderRadius.circular(38);
   final String path;
 
-  AlbumContainer({@required this.onTap, @required this.containerIndex, @required this.path});
+  AlbumContainer({required this.onTap, required this.containerIndex, required this.path});
 
   @override
   _AlbumContainerState createState() => _AlbumContainerState();

@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class RoundShadowButton extends StatelessWidget {
-  RoundShadowButton({
-    Key key,
-    this.onRemove,
-    this.child,
-    this.isSelect,
-  }) : super(key: key);
-
   bool isSelect;
   final onRemove;
   final child;
+
+  RoundShadowButton({
+    this.onRemove,
+    this.child,
+    required this.isSelect,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -65,9 +64,7 @@ const double _kBorderWidth = 2;
 class MyPainter extends CustomPainter {
   bool isSelect;
 
-  MyPainter(bool isSelect) {
-    this.isSelect = isSelect;
-  }
+  MyPainter(this.isSelect);
 
   @override
   void paint(Canvas canvas, Size size) {

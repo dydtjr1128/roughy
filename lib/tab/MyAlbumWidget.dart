@@ -16,7 +16,7 @@ class MyAlbumWidget extends StatefulWidget {
 
 class _MyAlbumWidgetState extends State<MyAlbumWidget> {
   final LinkedHashMap<String, AlbumContainer> albumContainers =
-      LinkedHashMap<String, AlbumContainer>();
+  LinkedHashMap<String, AlbumContainer>();
 
   @override
   void initState() {
@@ -64,8 +64,8 @@ class _MyAlbumWidgetState extends State<MyAlbumWidget> {
   onAlbumSelected(int index, String path, BuildContext context) async {
     print("이미지 선택 : " + path.toString() + " " + index.toString());
     await showDialog(
-      context: context,
-      child: SimpleDialog(
+      context: context, builder: (BuildContext context) {
+      return SimpleDialog(
         title: Text('선택'),
         children: <Widget>[
           SimpleDialogOption(
@@ -81,7 +81,8 @@ class _MyAlbumWidgetState extends State<MyAlbumWidget> {
                 Navigator.pop(context);
               }),
         ],
-      ),
+      );
+    },
     );
   }
 
@@ -89,7 +90,7 @@ class _MyAlbumWidgetState extends State<MyAlbumWidget> {
     //String dir = await getApplicationSupportDirectory().
     Directory directory = await getApplicationSupportDirectory();
     List<FileSystemEntity> contents = directory.listSync().toList();
-    List<String> pathList = List();
+    List<String> pathList = [];
     print(contents.length.toString() + "개 입니다.");
     for (int i = 0; i < contents.length; i++) {
       FileSystemEntityType type = FileSystemEntity.typeSync(contents[i].path);
@@ -105,21 +106,24 @@ class _MyAlbumWidgetState extends State<MyAlbumWidget> {
     setState(() {
       for (int i = 0; i < pathList.length; i++) {
         albumContainers[pathList[i]] =
-            new AlbumContainer(onTap: onAlbumSelected, containerIndex: i, path: pathList[i]);
+        new AlbumContainer(onTap: onAlbumSelected, containerIndex: i, path: pathList[i]);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+    var size = MediaQuery
+        .of(context)
+        .size;
     final double itemHeight = (size.height) / 2;
     final double itemWidth = size.width / 2;
 
     var gridTileList = albumContainers.values
-        .map((container) => new GridTile(
-              child: container,
-            ))
+        .map((container) =>
+    new GridTile(
+      child: container,
+    ))
         .toList();
     return Scaffold(
         appBar: RoughyAppBar(onClickedCallback: (bool isSelected) {}),

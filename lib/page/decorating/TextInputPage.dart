@@ -13,7 +13,7 @@ class _TextInputPageState extends State<TextInputPage> {
 
   setThisText() {
     final form = _formKey.currentState;
-    print("@@@@" + form.validate().toString() + " " +  _textController.text.toString() + "!@@");
+    print("@@@@" + form!.validate().toString() + " " +  _textController.text.toString() + "!@@");
     if (form.validate()) {
       print("@@@ " + _textController.text);
       Navigator.pop(context, _textController.text);
@@ -45,7 +45,7 @@ class _TextInputPageState extends State<TextInputPage> {
                       //border: InputBorder.none,
                       contentPadding: const EdgeInsets.all(16.0)),
                   validator: (value) {
-                    if (value.isEmpty) {
+                    if (value!.isEmpty) {
                       return "Please enter text";
                     }
                     return null;

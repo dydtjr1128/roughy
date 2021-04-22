@@ -9,26 +9,27 @@ import 'package:flutter/widgets.dart';
 
 class RoughyGestureText extends StatefulWidget {
   final String text;
-  final String fontFamily;
+  final String fontName;
+  final Color fontColor;
   final Function onWidgetSelected;
   final Function onWidgetReleased;
   final Function onTapRoughyGestureTextRemove;
-  final RoughyTextPoint roughyTextPoint;
   final RoughyGestureTextController roughyGestureTextController;
 
   RoughyGestureText(
-      {this.text,
-      this.fontFamily,
-      this.onWidgetSelected,
-      this.onWidgetReleased,
-      this.onTapRoughyGestureTextRemove,
-      this.roughyTextPoint,
-      this.roughyGestureTextController,
-      Key key})
+      {required this.text,
+      required this.fontName,
+      required this.fontColor,
+      required this.onWidgetSelected,
+      required this.onWidgetReleased,
+      required this.onTapRoughyGestureTextRemove,
+      required this.roughyGestureTextController,
+      required Key key})
       : super(key: key);
 
   @override
-  _RoughyGestureTextState createState() => _RoughyGestureTextState(roughyGestureTextController);
+  _RoughyGestureTextState createState() =>
+      _RoughyGestureTextState(roughyGestureTextController, text, fontName, fontColor);
 }
 
 class _RoughyGestureTextState extends State<RoughyGestureText> {
@@ -42,10 +43,12 @@ class _RoughyGestureTextState extends State<RoughyGestureText> {
   Offset localOffset = Offset.zero;
   double _rotation = 0.0;
   double _previousRotation = 0.0;
+  String text;
   String fontName;
   Color fontColor;
 
-  _RoughyGestureTextState(RoughyGestureTextController _controller) {
+  _RoughyGestureTextState(
+      RoughyGestureTextController _controller, this.text, this.fontName, this.fontColor) {
     _controller.setWidgetSelected = setWidgetSelected;
     _controller.setFont = setFont;
     _controller.setFontColor = setFontColor;
@@ -54,8 +57,6 @@ class _RoughyGestureTextState extends State<RoughyGestureText> {
   @override
   void initState() {
     super.initState();
-    this.fontName = widget.roughyTextPoint.roughyFont.fontName;
-    this.fontColor = widget.roughyTextPoint.color;
   }
 
   void setFont(String fontName) {
@@ -151,7 +152,7 @@ class _RoughyGestureTextState extends State<RoughyGestureText> {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(widget.roughyTextPoint.text,
+              Text(text,
                   textAlign: TextAlign.center,
                   style: TextStyle(fontFamily: fontName, color: fontColor, fontSize: 30 * _scale)),
             ]),

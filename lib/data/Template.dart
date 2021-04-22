@@ -3,7 +3,5 @@ class Template {
   String imageName;
   bool isFavorite;
 
-  Template({this.uniqueName, this.imageName, this.isFavorite}) {
-    this.isFavorite = false;
-  }
+  Template({required this.uniqueName, required this.imageName, this.isFavorite = false});
 }

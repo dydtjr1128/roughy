@@ -10,17 +10,17 @@ import 'package:flutter/widgets.dart';
 class RoughyBackgroundPainter extends CustomPainter {
   final ui.Image templateImage, croppedImage;
 
-  Color drawingColor;
-  double drawingDepth;
+  Color? drawingColor;
+  double? drawingDepth;
 
   List<dynamic> points = [RoughyDrawingPoint, RoughyTextPoint];
 
   RoughyBackgroundPainter({
-    @required this.templateImage,
-    @required this.croppedImage,
-    @required this.points,
-    @required this.drawingColor,
-    @required this.drawingDepth,
+    required this.templateImage,
+    required this.croppedImage,
+    required this.points,
+    required this.drawingColor,
+    required this.drawingDepth,
   });
 
   @override

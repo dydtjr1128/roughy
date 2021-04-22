@@ -6,7 +6,7 @@ class RoughyDownloadAppBar extends StatefulWidget with PreferredSizeWidget {
   final double appBarHeight = 60.0;
   final Function() onClickedCallback;
 
-  RoughyDownloadAppBar({@required this.onClickedCallback});
+  RoughyDownloadAppBar({required this.onClickedCallback});
 
   @override
   get preferredSize => Size.fromHeight(appBarHeight);
