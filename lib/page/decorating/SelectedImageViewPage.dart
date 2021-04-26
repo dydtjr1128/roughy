@@ -102,19 +102,26 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     });
   }
 
-  onImageSettingButtonClicked(BuildContext context) {
-    Navigator.pop(context, changedImage);
+  void onDrawingRollbackButtonClicked(BuildContext context) {
+    if (points.isEmpty) return;
+    setState(() {
+      points.removeLast();
+      for (int i = points.length - 1; i >= 0; i--) {
+        if (points.isEmpty || points[i] == null) break;
+        points.removeLast();
+      }
+    });
   }
 
-  onDrawEditButtonClicked(BuildContext context) {
+  void onDrawEditButtonClicked(BuildContext context) {
     setState(() {
-      isDrawingPanelVisible = !isDrawingPanelVisible;
-      isTextEditPanelVisible = false;
+      setAllRoughyGestureTextWidgetChangToNotSelected();
+      switchToDrawingEditPanelPanel();
     });
   }
 
   void onTextEditButtonClicked(BuildContext context) async {
-    final String result = await Navigator.push(
+    final String? result = await Navigator.push(
       context,
       platformPageRoute(
         context: context,
@@ -187,84 +194,119 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     }
   }
 
-  void onSelectTextFont(RoughyFont selectedFontString, int index) {
-    print("폰트 선택 : " + selectedFontString.fontName.toString() + " " + index.toString());
-    this.selectedTextRoughyFont = selectedFontString;
-    if (selectedRoughyGestureText != null) {
-      selectedRoughyGestureText.roughyGestureTextController.setFont(selectedFontString.fontName);
+  void onSelectTextFont(String selectedFontName, int index) {
+    print("폰트 선택 : " + selectedFontName.toString() + " " + index.toString());
+    setState(() {
+      this.selectedTextRoughyFont = selectedFontName;
+    });
+    if (selectedRoughyGestureText != null && isTextEditPanelVisible) {
+      selectedRoughyGestureText!.roughyGestureTextController.setFont(selectedFontName);
     }
   }
 
   void onSelectDrawingColor(ui.Color selectedDrawingColor, int index) {
     print("색상 선택 : " + selectedDrawingColor.toString() + " " + index.toString());
-    this.selectedDrawingColor = selectedDrawingColor;
-    if (selectedRoughyGestureText != null) {
-      selectedRoughyGestureText.roughyGestureTextController.setFontColor(selectedDrawingColor);
+    setState(() {
+      this.selectedDrawingColor = selectedDrawingColor;
+    });
+    if (selectedRoughyGestureText != null && isTextEditPanelVisible) {
+      selectedRoughyGestureText!.roughyGestureTextController.setFontColor(selectedDrawingColor);
     }
   }
 
   void onSelectDrawingDepth(double selectedDrawingLineDepth, int index) {
     print("두께 선택 : " + selectedDrawingLineDepth.toString() + " " + index.toString());
-    this.selectedDrawingLineDepth = selectedDrawingLineDepth;
+    setState(() {
+      this.selectedDrawingLineDepth = selectedDrawingLineDepth;
+    });
   }
 
-  Widget getDrawingPanelWidgets() {
+  bool isInsideOffset(ui.Offset offset, double width, double height) {
+    final double lineDepth = selectedDrawingLineDepth / 2;
+    return offset.dx >= lineDepth &&
+        offset.dy >= lineDepth &&
+        offset.dx <= width - lineDepth &&
+        offset.dy <= height - lineDepth;
+  }
+
+  Widget getColorPanelWidgets() {
     List<Widget> list = [];
     for (int i = 0; i < drawingColors.length; i++) {
-      list.add(ClipOval(
-          child: Container(
-              width: 15,
-              height: 15,
-              decoration: BoxDecoration(
-                border: Border.all(color: Color.fromRGBO(228, 231, 233, 1), width: 1),
-                color: drawingColors[i],
-                shape: BoxShape.circle,
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                    child: SizedBox(),
-                    onTap: () async {
-                      onSelectDrawingColor(drawingColors[i], i);
-                    }),
-              ))));
-    }
-    return Container(
-        height: 50,
-        decoration: new BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: Color.fromRGBO(245, 245, 245, 1), width: 2)),
-        child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list)));
-  }
-
-  Widget getDrawingLineDepthPanelWidgets() {
-    List<Widget> list = [];
-    for (int i = 0; i < drawingLineDepths.length; i++) {
-      list.add(ClipOval(
-          child: Container(
-        child: Material(
-          child: InkWell(
-              child: SvgPicture.asset(
-                'assets/images/logo_depth' + (i + 1).toString() + '.svg',
-                color: Colors.black,
-              ),
-              onTap: () async {
-                onSelectDrawingDepth(drawingLineDepths[i], i);
-              }),
+      list.add(
+        Expanded(
+          child: GestureDetector(
+            onTap: () {
+              onSelectDrawingColor(drawingColors[i], i);
+            },
+            child: Container(
+              decoration: BoxDecoration(color: Colors.white),
+              child: Center(
+                  child: OutlineCircleButton(
+                radius: 15,
+                borderColor: selectedDrawingColor == drawingColors[i]
+                    ? Color.fromRGBO(0, 0, 0, 1)
+                    : Color.fromRGBO(228, 231, 233, 1),
+                borderSize: 1.5,
+                foregroundColor: drawingColors[i],
+                onTap: () {
+                  onSelectDrawingColor(drawingColors[i], i);
+                },
+              )),
+            ),
+          ),
         ),
-      )));
+      );
     }
     return Container(
         height: 50,
         decoration: new BoxDecoration(
             color: Colors.white,
             border: Border.all(color: Color.fromRGBO(245, 245, 245, 1), width: 1)),
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list),
-        ));
+        child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: list));
+  }
+
+  Widget getDrawingLineDepthPanelWidgets() {
+    List<Widget> list = [];
+    for (int i = 0; i < drawingLineDepths.length; i++) {
+      list.add(Expanded(
+        child: GestureDetector(
+          onTap: () {
+            onSelectDrawingDepth(drawingLineDepths[i], i);
+          },
+          child: Container(
+            decoration: BoxDecoration(color: Colors.white),
+            child: Center(
+                child: OutlineCircleButton(
+              radius: 25,
+              child: Padding(
+                padding: EdgeInsets.all(.0),
+                child: SvgPicture.asset(
+                  'assets/images/logo_depth' + (i + 1).toString() + '.svg',
+                  fit: BoxFit.contain,
+                  color: selectedDrawingLineDepth == drawingLineDepths[i]
+                      ? Colors.black
+                      : Colors.black12,
+                  allowDrawingOutsideViewBox: true,
+                ),
+              ),
+              onTap: () {
+                onSelectDrawingDepth(drawingLineDepths[i], i);
+              },
+            )),
+          ),
+        ),
+      ));
+    }
+    return Container(
+      height: 50,
+      decoration: new BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: Color.fromRGBO(245, 245, 245, 1), width: 1)),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list),
+    );
   }
 
   Widget getTextPanelWidgets() {
@@ -279,9 +321,9 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                   child: Text(
                 "ABCabc",
                 style: TextStyle(
-                    fontFamily: textFontList[i].fontName,
-                    fontSize: textFontList[i].fontSize,
-                    color: Colors.black),
+                    fontFamily: textFontList[i],
+                    fontSize: 14,
+                    color: selectedTextRoughyFont == textFontList[i] ? Colors.black : Colors.grey),
               ))),
         ),
       );
@@ -298,8 +340,32 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         ));
   }
 
-  bool isInsideOffset(ui.Offset offset, double width, double height) {
-    return offset.dx >= 0 && offset.dy >= 0 && offset.dx <= width && offset.dy <= height;
+  Widget getCanvas(templateWidth, templateHeight) {
+    return RepaintBoundary(
+      key: captureKey,
+      child: Container(
+          width: templateWidth,
+          height: templateHeight,
+          child: CustomPaint(
+            //size: Size(templateWidth, templateHeight),
+            //size: Size(_templateImage.width.toDouble(), _templateImage.height.toDouble()),
+            child: Stack(
+              children: [
+                for (var widget in gestureTextList) widget,
+              ],
+            ),
+            painter: RoughyBackgroundPainter(
+                croppedImage: _croppedImage,
+                templateImage: _templateImage,
+                points: points,
+                drawingColor: selectedDrawingColor,
+                drawingDepth: selectedDrawingLineDepth),
+/*                                          foregroundPainter: RoughyForegroundPainter(
+                                              points: points,
+                                              drawingColor: selectedDrawingColor,
+                                              drawingDepth: selectedDrawingLineDepth),*/
+          )),
+    );
   }
 
   @override
@@ -315,8 +381,12 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       if (isDrawingPanelVisible) {
         setState(() {
           if (isInsideOffset(localOffset, templateWidth, templateHeight)) {
-            points.add(new RoughyDrawingPoint(
-                offset: localOffset, color: selectedDrawingColor, depth: selectedDrawingLineDepth));
+            setState(() {
+              points.add(new RoughyDrawingPoint(
+                  offset: localOffset,
+                  color: selectedDrawingColor,
+                  depth: selectedDrawingLineDepth));
+            });
           }
         });
       }
@@ -324,17 +394,17 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
 
     void initializeDrawingPosition() {
       if (isDrawingPanelVisible) {
-        points.add(null);
+        setState(() {
+          points.add(null);
+        });
       }
     }
 
     Future<void> _capturePng() async {
-      setState(() {
-        isCapturing = true;
-      });
-      RenderRepaintBoundary boundary = painterKey.currentContext.findRenderObject();
+      RenderRepaintBoundary boundary =
+          captureKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
       ui.Image image = await boundary.toImage(pixelRatio: 3);
-      ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      ByteData byteData = (await image.toByteData(format: ui.ImageByteFormat.png))!;
       Uint8List pngBytes = byteData.buffer.asUint8List();
 
       String dir = (await getApplicationSupportDirectory()).path;
@@ -344,17 +414,26 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       File file = File(fullPath);
       print(fullPath);
       await file.writeAsBytes(pngBytes);
+
+/*      DateTime now = DateTime.now();
+      String dir = (await getApplicationSupportDirectory()).path;
+      String formattedDate = DateFormat('yyyyMMddHHmmss').format(now);
+      screenshotController.captureAndSave(dir, //set path where screenshot will be saved
+          fileName: 'roughy_$formattedDate.png');*/
       setState(() {
-        isCapturing = false;
+        isCaptureMode = false;
       });
     }
 
     return Scaffold(
       backgroundColor: Color.fromRGBO(235, 235, 235, 1),
       appBar: RoughyDownloadAppBar(
-        onClickedCallback: () {
-          onTapHandler();
-          showPlatformDialog(
+        onClickedCallback: () async {
+          setAllRoughyGestureTextWidgetChangToNotSelected();
+          setState(() {
+            isCaptureMode = true;
+          });
+          await showPlatformDialog(
             context: context,
             builder: (_) => PlatformAlertDialog(
               title: Text('알림'),
@@ -386,6 +465,9 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
               ],
             ),
           );
+          setState(() {
+            isCaptureMode = false;
+          });
         },
       ),
       body: Container(
@@ -399,7 +481,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
               Expanded(
                 child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
-                  onTap: onTapHandler,
+                  onTap: setAllRoughyGestureTextWidgetChangToNotSelected,
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
@@ -417,6 +499,9 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                               child: isDrawingPanelVisible
                                   ? GestureDetector(
                                       behavior: HitTestBehavior.opaque,
+                                      onPanCancel: () => initializeDrawingPosition(),
+                                      onPanStart: (details) =>
+                                          updateDrawingPosition(details.localPosition),
                                       onPanDown: (details) =>
                                           updateDrawingPosition(details.localPosition),
                                       onPanUpdate: (details) =>
@@ -430,9 +515,9 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                   ),
                 ),
               ),
-              isTextEditPanelVisible ? getDrawingPanelWidgets() : new Row(),
+              isTextEditPanelVisible ? getColorPanelWidgets() : new Row(),
               isTextEditPanelVisible ? getTextPanelWidgets() : new Row(),
-              isDrawingPanelVisible ? getDrawingPanelWidgets() : new Row(),
+              isDrawingPanelVisible ? getColorPanelWidgets() : new Row(),
               isDrawingPanelVisible ? getDrawingLineDepthPanelWidgets() : new Row(),
               Row(
                 children: [
@@ -475,7 +560,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                                         ? OutlineRoundButton(
                                             radius: 15.0,
                                             foregroundColor: Colors.black,
-                                            onTap: () => onImageSettingButtonClicked(context),
+                                            onTap: () => onDrawingRollbackButtonClicked(context),
                                             child: const Center(
                                                 child: const Text(
                                               "되돌리기",
