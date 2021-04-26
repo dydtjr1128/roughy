@@ -139,12 +139,9 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
           onWidgetReleased: onRoughyTextWidgetReleased,
           onTapRoughyGestureTextRemove: onTapRoughyGestureTextRemove,
           key: Key((gestureTextList.length).toString()),
-          roughyTextPoint: new RoughyTextPoint(
-            offset: Offset(100, 100),
-            color: selectedDrawingColor,
-            roughyFont: selectedTextRoughyFont,
-            text: result,
-          )));
+          text: result,
+          fontName: selectedTextRoughyFont,
+          fontColor: selectedDrawingColor));
     });
   }
 
