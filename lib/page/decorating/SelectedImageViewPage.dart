@@ -5,8 +5,7 @@ import 'dart:ui' as ui;
 import 'package:Roughy/component/OutlineCircleButton.dart';
 import 'package:Roughy/component/OutlineRoundButton.dart';
 import 'package:Roughy/component/RoughyGestureTextController.dart';
-import 'package:Roughy/component/paintor/RoughyBackgroundPainter.dart';
-import 'package:Roughy/component/paintor/RoughyForegroundPainter.dart';
+import 'package:Roughy/component/painter/RoughyBackgroundPainter.dart';
 import 'package:Roughy/component/roughyDownloadAppBar.dart';
 import 'package:Roughy/component/roughyGestureText.dart';
 import 'package:Roughy/data/RoughyData.dart';
@@ -24,49 +23,49 @@ import 'package:path_provider/path_provider.dart';
 class SelectedImageViewPage extends StatefulWidget {
   final File templateImage, croppedImage;
 
-  SelectedImageViewPage({@required this.croppedImage, @required this.templateImage});
+  SelectedImageViewPage({required this.croppedImage, required this.templateImage});
 
   @override
   _SelectedImageViewPageState createState() => _SelectedImageViewPageState();
 }
 
 class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
-  File changedImage;
-  ui.Image _templateImage, _croppedImage;
-  bool isDrawingPanelVisible;
-  bool isTextEditPanelVisible;
+  late ui.Image _templateImage, _croppedImage;
+  bool isDrawingPanelVisible = false;
+  bool isTextEditPanelVisible = false;
   final List<dynamic> points = [];
-  final List<RoughyFont> textFontList = [];
+  final List<String> textFontList;
   final List<RoughyGestureText> gestureTextList = [];
-  RoughyGestureText selectedRoughyGestureText = null;
-  RoughyFont selectedTextRoughyFont;
-  Color selectedDrawingColor;
-  double selectedDrawingLineDepth;
-  final List<ui.Color> drawingColors = [];
-  final List<double> drawingLineDepths = [];
-  GlobalKey painterKey = GlobalKey();
-  int key = 1;
-  bool isCapturing;
+  RoughyGestureText? selectedRoughyGestureText;
+  final List<ui.Color> drawingColors;
+  final List<double> drawingLineDepths;
+  late String selectedTextRoughyFont;
+  late Color selectedDrawingColor;
+  late double selectedDrawingLineDepth;
+  GlobalKey captureKey = GlobalKey();
+  bool isCaptureMode = false;
 
-  _SelectedImageViewPageState() {
-    this.isCapturing = false;
-    this.isDrawingPanelVisible = false;
-    this.isTextEditPanelVisible = true;
-    this.drawingColors
-      ..add(Color.fromRGBO(255, 255, 255, 1))
-      ..add(Color.fromRGBO(126, 126, 126, 1))
-      ..add(Color.fromRGBO(0, 0, 0, 1))
-      ..add(Color.fromRGBO(229, 36, 36, 1))
-      ..add(Color.fromRGBO(255, 169, 36, 1))
-      ..add(Color.fromRGBO(12, 178, 101, 1))
-      ..add(Color.fromRGBO(0, 26, 197, 1));
-    drawingLineDepths..add(1)..add(3)..add(5)..add(7)..add(9);
-    textFontList
-      ..add(new RoughyFont(fontName: "AdobeHebrewRegular", fontSize: 13))
-      ..add(new RoughyFont(fontName: "AppleSDGothicNeoB", fontSize: 13))
-      ..add(new RoughyFont(fontName: "AlphaClouds", fontSize: 13))
-      ..add(new RoughyFont(fontName: "SimplicityRegular", fontSize: 19))
-      ..add(new RoughyFont(fontName: "Janitor", fontSize: 13));
+  _SelectedImageViewPageState()
+      : this.isCaptureMode = false,
+        this.isDrawingPanelVisible = false,
+        this.isTextEditPanelVisible = false,
+        this.drawingColors = [
+          Color.fromRGBO(255, 255, 255, 1),
+          Color.fromRGBO(126, 126, 126, 1),
+          Color.fromRGBO(0, 0, 0, 1),
+          Color.fromRGBO(229, 36, 36, 1),
+          Color.fromRGBO(255, 169, 36, 1),
+          Color.fromRGBO(12, 178, 101, 1),
+          Color.fromRGBO(0, 26, 197, 1)
+        ],
+        drawingLineDepths = [1, 3, 5, 7, 9],
+        textFontList = [
+          "AdobeHebrewRegular",
+          "AppleSDGothicNeoB",
+          "AlphaClouds",
+          "SimplicityRegular",
+          "Janitor"
+        ] {
     selectedTextRoughyFont = textFontList[1];
     selectedDrawingColor = drawingColors[2];
     selectedDrawingLineDepth = drawingLineDepths[2];
