@@ -6,7 +6,7 @@ import 'package:Roughy/component/OutlineCircleButton.dart';
 import 'package:Roughy/component/OutlineRoundButton.dart';
 import 'package:Roughy/component/RoughyGestureTextController.dart';
 import 'package:Roughy/component/painter/RoughyBackgroundPainter.dart';
-import 'package:Roughy/component/roughyDownloadAppBar.dart';
+import 'package:Roughy/component/roughyAppBar.dart';
 import 'package:Roughy/component/roughyGestureText.dart';
 import 'package:Roughy/data/RoughyData.dart';
 import 'package:Roughy/page/decorating/TextInputPage.dart';
@@ -50,13 +50,13 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         this.isDrawingPanelVisible = false,
         this.isTextEditPanelVisible = false,
         this.drawingColors = [
-          Color.fromRGBO(255, 255, 255, 1),
-          Color.fromRGBO(126, 126, 126, 1),
-          Color.fromRGBO(0, 0, 0, 1),
-          Color.fromRGBO(229, 36, 36, 1),
-          Color.fromRGBO(255, 169, 36, 1),
-          Color.fromRGBO(12, 178, 101, 1),
-          Color.fromRGBO(0, 26, 197, 1)
+          Color.fromRGBO(255, 255, 255, 1.0),
+          Color.fromRGBO(126, 126, 126, 1.0),
+          Color.fromRGBO(0, 0, 0, 1.0),
+          Color.fromRGBO(255, 58, 58, 1.0),
+          Color.fromRGBO(255, 251, 138, 1.0),
+          Color.fromRGBO(11, 209, 135, 1.0),
+          Color.fromRGBO(17, 0, 254, 1.0)
         ],
         drawingLineDepths = [1, 3, 5, 7, 9],
         textFontList = [
@@ -239,12 +239,20 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
               decoration: BoxDecoration(color: Colors.white),
               child: Center(
                   child: OutlineCircleButton(
-                radius: 15,
+                radius: 20,
                 borderColor: selectedDrawingColor == drawingColors[i]
                     ? Color.fromRGBO(0, 0, 0, 1)
                     : Color.fromRGBO(228, 231, 233, 1),
                 borderSize: 1.5,
                 foregroundColor: drawingColors[i],
+                child: selectedDrawingColor == drawingColors[i]
+                    ? Center(
+                        child: Container( child:Icon(
+                        Icons.check,
+                        color: Colors.white,
+                          size: 14.0,
+                      )))
+                    : null,
                 onTap: () {
                   onSelectDrawingColor(drawingColors[i], i);
                 },
@@ -424,48 +432,56 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
 
     return Scaffold(
       backgroundColor: Color.fromRGBO(235, 235, 235, 1),
-      appBar: RoughyDownloadAppBar(
-        onClickedCallback: () async {
-          setAllRoughyGestureTextWidgetChangToNotSelected();
-          setState(() {
-            isCaptureMode = true;
-          });
-          await showPlatformDialog(
-            context: context,
-            builder: (_) => PlatformAlertDialog(
-              title: Text('알림'),
-              content: Text('사진을 사진첩에 저장하시겠습니까?'),
-              actions: <Widget>[
-                PlatformDialogAction(
-                    child: PlatformText('Yes'),
-                    onPressed: () {
-                      _capturePng();
-                      Navigator.pop(context);
-                      showPlatformDialog(
-                          context: context,
-                          builder: (_) => PlatformAlertDialog(
-                                  title: Text('알림'),
-                                  content: Text('저장완료!'),
-                                  actions: <Widget>[
-                                    PlatformDialogAction(
-                                        child: PlatformText('Okay'),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                          Navigator.pop(context);
-                                        })
-                                  ]));
-                    }),
-                PlatformDialogAction(
-                  child: PlatformText('No'),
-                  onPressed: () => Navigator.pop(context),
+      appBar: RoughyAppBar(
+        iconWidget: new IconButton(
+          icon: SvgPicture.asset('assets/images/download.svg',
+              color: Colors.black, height: 25, width: 25),
+          tooltip: "Download",
+          onPressed: () {
+            setState(() {
+              setAllRoughyGestureTextWidgetChangToNotSelected();
+              setState(() {
+                isCaptureMode = true;
+              });
+              showPlatformDialog(
+                context: context,
+                builder: (_) => PlatformAlertDialog(
+                  title: Text('알림'),
+                  content: Text('사진을 사진첩에 저장하시겠습니까?'),
+                  actions: <Widget>[
+                    PlatformDialogAction(
+                        child: PlatformText('Yes'),
+                        onPressed: () {
+                          _capturePng();
+                          Navigator.pop(context);
+                          showPlatformDialog(
+                              context: context,
+                              builder: (_) => PlatformAlertDialog(
+                                      title: Text('알림'),
+                                      content: Text('저장완료!'),
+                                      actions: <Widget>[
+                                        PlatformDialogAction(
+                                            child: PlatformText('Okay'),
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                              Navigator.pop(context);
+                                            })
+                                      ]));
+                        }),
+                    PlatformDialogAction(
+                      child: PlatformText('No'),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          );
-          setState(() {
-            isCaptureMode = false;
-          });
-        },
+              );
+              setState(() {
+                isCaptureMode = false;
+              });
+            });
+          },
+          color: Colors.red,
+        ),
       ),
       body: Container(
           decoration: new BoxDecoration(

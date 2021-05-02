@@ -2,11 +2,9 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:Roughy/component/OutlineCircleButton.dart';
-import 'package:Roughy/component/roughyCenterAppBar.dart';
-import 'package:Roughy/page/decorating/SelectedImageViewPage.dart';
+import 'package:Roughy/component/roughyAppBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -28,8 +26,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
   final ImagePicker imagePicker = ImagePicker();
 
   _getImage({@required source}) async {
-    final pickedFile =
-        await imagePicker.getImage(source: source, imageQuality: 100);
+    final pickedFile = await imagePicker.getImage(source: source, imageQuality: 100);
     if (pickedFile != null) {
       File croppedImage = (await ImageCropper.cropImage(
         sourcePath: pickedFile.path,
@@ -39,7 +36,6 @@ class _ImageViewPageState extends State<ImageViewPage> {
         //maxWidth: 700,
         compressFormat: ImageCompressFormat.png,
       ))!;
-
     } else {
       print('No image selected.');
     }
@@ -84,23 +80,21 @@ class _ImageViewPageState extends State<ImageViewPage> {
     final double itemWidth = size.width;
     return Scaffold(
         backgroundColor: Color.fromRGBO(235, 235, 235, 1),
-        appBar: RoughyCenterAppBar(
-          title: "template",
+        appBar: RoughyAppBar(
+          titleText: "Template",
           isCenterTitle: true,
         ),
         body: Center(
             child: Container(
                 height: itemHeight,
                 width: itemWidth,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 15, horizontal: 0.0),
+                padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 0.0),
                 decoration: BoxDecoration(
                   color: Colors.white,
                 ),
                 child: Stack(
                   children: [
-                    Center(
-                        child: Image.asset(widget.path, fit: BoxFit.fitHeight)),
+                    Center(child: Image.asset(widget.path, fit: BoxFit.fitHeight)),
                   ],
                 ))),
         bottomNavigationBar: BottomAppBar(

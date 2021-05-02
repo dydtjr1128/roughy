@@ -126,7 +126,7 @@ class _MyAlbumWidgetState extends State<MyAlbumWidget> {
     ))
         .toList();
     return Scaffold(
-        appBar: RoughyAppBar(onClickedCallback: (bool isSelected) {}),
+        appBar: RoughyAppBar(),
         body: GridView.count(
             crossAxisCount: 2, childAspectRatio: (itemWidth / itemHeight), children: gridTileList));
   }

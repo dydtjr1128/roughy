@@ -131,6 +131,18 @@ class _FirstPageWidgetState extends State<FirstPageWidget> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 PlatformButton(
+                    child: Text("라이선스"),
+                    onPressed: () {
+                      showLicensePage(
+                        context: context
+                      );
+                    })
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                PlatformButton(
                     child: Text("이미지 확인"),
                     onPressed: () => {
                           Navigator.push(
