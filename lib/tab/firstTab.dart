@@ -6,6 +6,7 @@ import 'package:Roughy/tab/secondTab.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:flutter_svg/svg.dart';
 
 class FirstTabPage extends StatelessWidget {
   //페이지는 무조건 statelessWidget 으로 만들어져야함
@@ -21,6 +22,7 @@ class FirstTabPage extends StatelessWidget {
 
 class FirstPageWidget extends StatefulWidget {
   FirstPageWidget({required this.title, required this.toggleBrightness});
+
   final String title;
   final void Function() toggleBrightness;
   int titleValue = 100;
@@ -122,7 +124,9 @@ class _FirstPageWidgetState extends State<FirstPageWidget> {
                           platformPageRoute(
                               context: context,
                               builder: (context) {
-                                return SelectedImageViewPage(croppedImage: File("assets/images/test.jpg"), templateImage: File("assets/templates/base.png"));
+                                return SelectedImageViewPage(
+                                    croppedImage: File("assets/images/test.jpg"),
+                                    templateImage: File("assets/templates/base.png"));
                               }));
                     })
               ],
@@ -133,8 +137,24 @@ class _FirstPageWidgetState extends State<FirstPageWidget> {
                 PlatformButton(
                     child: Text("라이선스"),
                     onPressed: () {
+                      showAboutDialog(
+                          context: context,
+                          applicationIcon:
+                              SvgPicture.asset('assets/images/logo.svg', height: 100, width: 100),
+                          applicationName: "Roughy",
+                          applicationVersion: "1.0.0",
+                          applicationLegalese: "Developed by dydtjr1128",
+                          children: <Widget>[
+                            Text(
+                                "This is an application that helps you look like you're photographed with a polaroid camera.")
+                          ]);
                       showLicensePage(
-                        context: context
+                        context: context,
+                        applicationIcon:
+                            SvgPicture.asset('assets/images/logo.svg', height: 100, width: 100),
+                        applicationName: "Roughy",
+                        applicationVersion: "1.0.0",
+                        applicationLegalese: "Developed by dydtjr1128",
                       );
                     })
               ],
@@ -150,8 +170,7 @@ class _FirstPageWidgetState extends State<FirstPageWidget> {
                               platformPageRoute(
                                   context: context,
                                   builder: (context) {
-                                    return ImageViewPage(
-                                        path: "assets/templates/base.png");
+                                    return ImageViewPage(path: "assets/templates/base.png");
                                   }))
                         })
               ],
