@@ -138,7 +138,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
           onWidgetSelected: onRoughyTextWidgetSelected,
           onWidgetReleased: onRoughyTextWidgetReleased,
           onTapRoughyGestureTextRemove: onTapRoughyGestureTextRemove,
-          key: Key((gestureTextList.length).toString()),
+          key: UniqueKey(),//Key((gestureTextList.length).toString())
           text: result,
           fontName: selectedTextRoughyFont,
           fontColor: selectedDrawingColor));
