@@ -1,4 +1,4 @@
-import 'package:Roughy/component/roughyCenterAppBar.dart';
+import 'package:Roughy/component/roughyAppBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -23,10 +23,10 @@ class _TextInputPageState extends State<TextInputPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: RoughyCenterAppBar(
-          title: "Text",
+      appBar: RoughyAppBar(
+          titleText: "Text",
           isCenterTitle: true,
-          iconButton: new IconButton(
+          iconWidget: new IconButton(
             icon: new Icon(Icons.check),
             tooltip: 'Save text',
             onPressed: setThisText,
