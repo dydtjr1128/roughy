@@ -46,7 +46,7 @@ class _TemplateContainerState extends State<TemplateContainer> {
                     child: Container(
                       child: Image.asset(
                           "assets/templates/${widget.template.imageName}",
-                          fit: BoxFit.fitHeight),
+                          fit: BoxFit.contain),
                       height: MediaQuery.of(context).size.height,
                       margin:
                           EdgeInsets.symmetric(vertical: 15.0, horizontal: 0.0),
