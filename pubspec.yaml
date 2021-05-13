@@ -53,21 +53,24 @@ flutter:
   uses-material-design: true
 
   fonts:
-    - family: AdobeHebrewRegular
-      fonts:
-        - asset: assets/fonts/AdobeHebrewRegular.otf
-    - family: AlphaClouds
-      fonts:
-        - asset: assets/fonts/AlphaClouds.ttf
-    - family: AppleSDGothicNeoB
-      fonts:
-        - asset: assets/fonts/AppleSDGothicNeoB.ttf
-    - family: Janitor
-      fonts:
-        - asset: assets/fonts/Janitor.otf
     - family: SimplicityRegular
       fonts:
         - asset: assets/fonts/SimplicityRegular.otf
+    - family: ChosunNm
+      fonts:
+        - asset: assets/fonts/ChosunNm.ttf
+    - family: SpoqaHanSansNeoRegular
+      fonts:
+        - asset: assets/fonts/SpoqaHanSansNeoRegular.ttf
+    - family: HYUNJUNG
+      fonts:
+        - asset: assets/fonts/UhBee HYUNJUNG.ttf
+    - family: MiMi
+      fonts:
+        - asset: assets/fonts/UhBee MiMi.ttf
+    - family: SDSamliphopangcheTTFOutline
+      fonts:
+        - asset: assets/fonts/SDSamliphopangcheTTFOutline.ttf
     - family: Yanolja
       fonts:
         - asset: assets/fonts/야놀자 야체 Regular.ttf
