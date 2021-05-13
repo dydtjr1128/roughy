@@ -8,7 +8,6 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TemplateSelectWidget extends StatefulWidget {
-
   @override
   _TemplateSelectWidgetState createState() => _TemplateSelectWidgetState();
 }
@@ -27,19 +26,23 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
   Future<void> initializeTemplates() async {
     final List<Template> templateList = [];
     // 템플릿 셋팅 부분, 하트 정렬은 uniqueName 으로 셋팅하기 때문에 이미지 이름이 같아도 됨.
-    templateList.add(
-        new Template(uniqueName: "main_template", imageName: "template.png"));
-    for (int i = 0; i < 2; i++) {
-      templateList.add(new Template(
-          uniqueName: "base" + i.toString(), imageName: "base.png"));
-    }
     templateList
-        .add(new Template(uniqueName: "base2.jpg", imageName: "base2.jpg"));
+      ..add(new Template(imageName: "FRAME_circle1.png"))
+      ..add(new Template(imageName: "FRAME_circle2.png"))
+      ..add(new Template(imageName: "FRAME_circle3.png"))
+      ..add(new Template(imageName: "FRAME_circle4.png"))
+      ..add(new Template(imageName: "FRAME_circle5.png"))
+      ..add(new Template(imageName: "FRAME_free1.png"))
+      ..add(new Template(imageName: "FRAME_heart1.png"))
+      ..add(new Template(imageName: "FRAME_polaroid1.png"))
+      ..add(new Template(imageName: "FRAME_polaroid2.png"))
+      ..add(new Template(imageName: "FRAME_square1.png"))
+      ..add(new Template(imageName: "FRAME_square2.png"));
 
     // 사용자가 설정한 Favorite 값 로드
     final prefs = await SharedPreferences.getInstance();
     templateList.forEach((template) {
-      bool? temp = prefs.getBool(templateKey + template.uniqueName);
+      bool? temp = prefs.getBool(template.imageName);
       if (temp == true) {
         template.isFavorite = true;
       }
@@ -47,6 +50,7 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
 
     setState(() {
       for (int i = 0; i < templateList.length; i++) {
+        precacheImage(Image.asset("assets/templates/${templateList[i].imageName}").image, context);
         templateContainerList.add(new TemplateContainer(
           onTap: _onTemplateSelect,
           onFavoriteTap: _onTemplateFavoriteSelect,
@@ -57,21 +61,17 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
     });
   }
 
-  void _onTemplateFavoriteSelect(
-      int index, bool isSelected, BuildContext context) async {
-    print("call _onTemplateFavoriteSelect() $index page " +
-        isSelected.toString());
+  void _onTemplateFavoriteSelect(int index, bool isSelected, BuildContext context) async {
+    print("call _onTemplateFavoriteSelect() $index page " + isSelected.toString());
 
     setState(() {
       templateContainerList[index].template.isFavorite = isSelected;
     });
     final prefs = await SharedPreferences.getInstance();
     if (isSelected) {
-      prefs.setBool(
-          templateKey + templateContainerList[index].template.uniqueName, true);
+      prefs.setBool(templateKey + templateContainerList[index].template.imageName, true);
     } else {
-      prefs.remove(
-          templateKey + templateContainerList[index].template.uniqueName);
+      prefs.remove(templateKey + templateContainerList[index].template.imageName);
     }
   }
 
@@ -83,18 +83,10 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
         platformPageRoute(
             builder: (_) {
               return ImageViewPage(
-                path:
-                    "assets/templates/${templateContainerList[index].template.imageName}",
+                path: "assets/templates/${templateContainerList[index].template.imageName}",
               );
             },
             context: context));
-  }
-
-  void _onFavoriteButtonClicked(bool isFavoriteSelected) async {
-    setState(() {
-      _isFavoriteSelected = isFavoriteSelected;
-    });
-    print("_onFavoriteButtonClicked : " + isFavoriteSelected.toString());
   }
 
   @override
@@ -117,11 +109,23 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
             .toList();
 
     return Scaffold(
-      appBar: RoughyAppBar(onClickedCallback: _onFavoriteButtonClicked),
+      appBar: RoughyAppBar(
+          iconWidget: new IconButton(
+        icon: _isFavoriteSelected
+            ? Icon(context.platformIcons.favoriteSolid)
+            : Icon(context.platformIcons.favoriteOutline),
+        tooltip: "favorite",
+        onPressed: () {
+          setState(() {
+            _isFavoriteSelected = !_isFavoriteSelected;
+            print(_isFavoriteSelected);
+          });
+          print("_onFavoriteButtonClicked : " + _isFavoriteSelected.toString());
+        },
+        color: Colors.red,
+      )),
       body: new GridView.count(
-          crossAxisCount: 2,
-          childAspectRatio: (itemWidth / itemHeight),
-          children: gridTileList),
+          crossAxisCount: 2, childAspectRatio: (itemWidth / itemHeight), children: gridTileList),
     );
   }
 }
