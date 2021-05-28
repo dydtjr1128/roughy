@@ -60,11 +60,11 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         ],
         drawingLineDepths = [1, 3, 5, 7, 9],
         textFontList = [
-          "AdobeHebrewRegular",
-          "AppleSDGothicNeoB",
-          "AlphaClouds",
-          "SimplicityRegular",
-          "Janitor"
+          "ChosunNm",
+          "SpoqaHanSansNeoRegular",
+          "SDSamliphopangcheTTFOutline",
+          "MiMi",
+          "HYUNJUNG"
         ] {
     selectedTextRoughyFont = textFontList[1];
     selectedDrawingColor = drawingColors[2];
@@ -83,18 +83,18 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   }
 
   initializeImages() async {
-    /*ByteData data = await rootBundle.load(widget.templateImage.path);
+    ByteData data = await rootBundle.load(widget.templateImage.path);
 
     final templateImage = await loadImage(Uint8List.view(data.buffer));
 
     // croppedImage 와 같이 빌드시 만든 이미지가 아닌 경우 바이트 읽어와서 따로 처리해야함
-    final croppedImage = await loadImage(widget.croppedImage.readAsBytesSync());*/
+    final croppedImage = await loadImage(widget.croppedImage.readAsBytesSync());
 
     // @@@@ 이건 테스트 이미지 코드
-    ByteData data = await rootBundle.load(widget.templateImage.path);
+/*    ByteData data = await rootBundle.load(widget.templateImage.path);
     ByteData data2 = await rootBundle.load(widget.croppedImage.path);
     final templateImage = await loadImage(Uint8List.view(data.buffer));
-    final croppedImage = await loadImage(Uint8List.view(data2.buffer));
+    final croppedImage = await loadImage(Uint8List.view(data2.buffer));*/
 
     setState(() {
       _templateImage = templateImage;
@@ -138,7 +138,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
           onWidgetSelected: onRoughyTextWidgetSelected,
           onWidgetReleased: onRoughyTextWidgetReleased,
           onTapRoughyGestureTextRemove: onTapRoughyGestureTextRemove,
-          key: UniqueKey(),//Key((gestureTextList.length).toString())
+          key: UniqueKey(),
+          //Key((gestureTextList.length).toString())
           text: result,
           fontName: selectedTextRoughyFont,
           fontColor: selectedDrawingColor));
@@ -247,10 +248,11 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                 foregroundColor: drawingColors[i],
                 child: selectedDrawingColor == drawingColors[i]
                     ? Center(
-                        child: Container( child:Icon(
+                        child: Container(
+                            child: Icon(
                         Icons.check,
                         color: Colors.white,
-                          size: 14.0,
+                        size: 14.0,
                       )))
                     : null,
                 onTap: () {
@@ -381,7 +383,11 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     final double templateHeight = (itemHeight - 150) * 0.7;
     final double templateWidth =
         templateHeight * _templateImage.width.toDouble() / _templateImage.height.toDouble();
-
+    print("templateHeight : " +
+        templateHeight.toString() +
+        ", templateWidth : " +
+        templateWidth.toString());
+    print("itemHeight : " + itemHeight.toString() + ", itemWidth : " + itemWidth.toString());
     void updateDrawingPosition(ui.Offset localOffset) {
       if (isDrawingPanelVisible) {
         setState(() {
@@ -433,6 +439,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     return Scaffold(
       backgroundColor: Color.fromRGBO(235, 235, 235, 1),
       appBar: RoughyAppBar(
+        titleText: "Roughy",
+        isCenterTitle: true,
         iconWidget: new IconButton(
           icon: SvgPicture.asset('assets/images/download.svg',
               color: Colors.black, height: 25, width: 25),
@@ -501,28 +509,24 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                       Container(
                         decoration: BoxDecoration(color: Colors.transparent),
                       ),
-                      Container(
-                        child: Center(
-                          child: Container(
-                              width: templateWidth,
-                              height: templateHeight,
-                              decoration: new BoxDecoration(
-                                color: Colors.black,
-                              ),
-                              child: isDrawingPanelVisible
-                                  ? GestureDetector(
-                                      behavior: HitTestBehavior.opaque,
-                                      onPanCancel: () => initializeDrawingPosition(),
-                                      onPanStart: (details) =>
-                                          updateDrawingPosition(details.localPosition),
-                                      onPanDown: (details) =>
-                                          updateDrawingPosition(details.localPosition),
-                                      onPanUpdate: (details) =>
-                                          updateDrawingPosition(details.localPosition),
-                                      onPanEnd: (details) => initializeDrawingPosition(),
-                                      child: getCanvas(templateWidth, templateHeight))
-                                  : getCanvas(templateWidth, templateHeight)),
-                        ),
+                      FittedBox(
+                        fit: BoxFit.contain,
+                        alignment: Alignment.center,
+                        child: Padding(
+                            padding: const EdgeInsets.all(35),
+                            child: isDrawingPanelVisible
+                                ? GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
+                                    onPanCancel: () => initializeDrawingPosition(),
+                                    onPanStart: (details) =>
+                                        updateDrawingPosition(details.localPosition),
+                                    onPanDown: (details) =>
+                                        updateDrawingPosition(details.localPosition),
+                                    onPanUpdate: (details) =>
+                                        updateDrawingPosition(details.localPosition),
+                                    onPanEnd: (details) => initializeDrawingPosition(),
+                                    child: getCanvas(templateWidth, templateHeight))
+                                : getCanvas(templateWidth, templateHeight)),
                       ),
                     ],
                   ),
@@ -546,11 +550,12 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                                 radius: 45.0,
                                 foregroundColor: Colors.black,
                                 onTap: () => onTextEditButtonClicked(context),
-                                child: const Center(
-                                    child: const Text(
-                                  "T",
-                                  style: TextStyle(color: Colors.white, fontSize: 30),
-                                )))
+                                child: Center(
+                                    child: SvgPicture.asset('assets/icons/text.svg',
+                                        width: 18,
+                                        color: isTextEditPanelVisible
+                                            ? Color.fromRGBO(139, 169, 196, 1)
+                                            : Colors.white)))
                           ]),
                           Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
                             OutlineCircleButton(
@@ -559,7 +564,10 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                                 onTap: () => onDrawEditButtonClicked(context),
                                 child: Center(
                                     child: SvgPicture.asset('assets/images/logo.svg',
-                                        color: Colors.white, height: 25, width: 25)))
+                                        width: 25,
+                                        color: isDrawingPanelVisible
+                                            ? Color.fromRGBO(139, 169, 196, 1)
+                                            : Colors.white)))
                           ]),
                           Expanded(
                               child: Column(
