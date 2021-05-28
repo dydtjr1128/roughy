@@ -77,7 +77,7 @@ class _TemplateContainerState extends State<TemplateContainer> {
                               },
                               child: SvgPicture.asset('assets/icons/for_you.svg',
                                   color: _isFavoriteSelected
-                                      ? Color.fromRGBO(228, 231, 233, 1)
+                                      ? Color.fromRGBO(139, 169, 196, 1)
                                       : Color.fromRGBO(212, 244, 250, 1)),
                             ),
                           ]))),
