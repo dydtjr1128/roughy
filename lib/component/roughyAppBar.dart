@@ -29,6 +29,7 @@ class _RoughyAppBarState extends State<RoughyAppBar> {
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           AppBar(
             automaticallyImplyLeading: true,
+            elevation: 1,
             iconTheme: IconThemeData(
               color: Colors.black, //change your color here
             ),
