@@ -1,5 +1,6 @@
 import 'package:Roughy/tab/MyAlbumWidget.dart';
 import 'package:Roughy/tab/firstTab.dart';
+import 'package:Roughy/tab/settingWidget.dart';
 import 'package:Roughy/tab/templateSelectTab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -124,6 +125,8 @@ class _MainTabbedPageState extends State<MainTabbedPage> {
             return TemplateSelectWidget();
           case 1:
             return MyAlbumWidget();
+          case 2:
+            return SettingWidget();
           default:
             return FirstTabPage(widget.toggleBrightness);
         }
