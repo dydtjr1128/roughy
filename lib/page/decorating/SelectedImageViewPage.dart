@@ -44,11 +44,14 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   late double selectedDrawingLineDepth;
   GlobalKey captureKey = GlobalKey();
   bool isCaptureMode = false;
+  final Color selectedIconColor, unselectedIconColor;
 
   _SelectedImageViewPageState()
       : this.isCaptureMode = false,
         this.isDrawingPanelVisible = false,
         this.isTextEditPanelVisible = false,
+        this.selectedIconColor = Color.fromRGBO(134, 185, 232, 1),
+        this.unselectedIconColor = Color.fromRGBO(217, 217, 217, 1),
         this.drawingColors = [
           Color.fromRGBO(255, 255, 255, 1.0),
           Color.fromRGBO(126, 126, 126, 1.0),
@@ -541,7 +544,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                   Container(
                       width: itemWidth,
                       height: 50.0,
-                      decoration: new BoxDecoration(color: Colors.black),
+                      decoration: new BoxDecoration(color: Colors.white),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
                         child: Row(children: <Widget>[
@@ -554,8 +557,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                                     child: SvgPicture.asset('assets/icons/text.svg',
                                         width: 18,
                                         color: isTextEditPanelVisible
-                                            ? Color.fromRGBO(139, 169, 196, 1)
-                                            : Colors.white)))
+                                            ? selectedIconColor
+                                            : unselectedIconColor)))
                           ]),
                           Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
                             OutlineCircleButton(
@@ -566,8 +569,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                                     child: SvgPicture.asset('assets/images/logo.svg',
                                         width: 25,
                                         color: isDrawingPanelVisible
-                                            ? Color.fromRGBO(139, 169, 196, 1)
-                                            : Colors.white)))
+                                            ? selectedIconColor
+                                            : unselectedIconColor)))
                           ]),
                           Expanded(
                               child: Column(
@@ -580,12 +583,12 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                                     isDrawingPanelVisible
                                         ? OutlineRoundButton(
                                             radius: 15.0,
-                                            foregroundColor: Colors.black,
+                                            foregroundColor: Colors.white,
                                             onTap: () => onDrawingRollbackButtonClicked(context),
                                             child: const Center(
                                                 child: const Text(
                                               "되돌리기",
-                                              style: TextStyle(color: Colors.white, fontSize: 16),
+                                              style: TextStyle(color: Colors.black, fontSize: 16),
                                             )))
                                         : Container()
                                   ],
