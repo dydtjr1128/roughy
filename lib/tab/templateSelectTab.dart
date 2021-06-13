@@ -5,6 +5,7 @@ import 'package:Roughy/page/decorating/ImageViewPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TemplateSelectWidget extends StatefulWidget {
@@ -111,9 +112,10 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
     return Scaffold(
       appBar: RoughyAppBar(
           iconWidget: new IconButton(
-        icon: _isFavoriteSelected
-            ? Icon(context.platformIcons.favoriteSolid)
-            : Icon(context.platformIcons.favoriteOutline),
+        icon: SvgPicture.asset('assets/icons/for_you.svg',
+            color: _isFavoriteSelected
+                ? Color.fromRGBO(146, 196, 242, 1)
+                : Color.fromRGBO(217, 217, 217, 1)),
         tooltip: "favorite",
         onPressed: () {
           setState(() {
@@ -124,8 +126,11 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
         },
         color: Colors.red,
       )),
-      body: new GridView.count(
-          crossAxisCount: 2, childAspectRatio: (itemWidth / itemHeight), children: gridTileList),
+      body: Container(
+        decoration: BoxDecoration(color: Colors.white),
+        child: new GridView.count(
+            crossAxisCount: 2, childAspectRatio: (itemWidth / itemHeight), children: gridTileList),
+      ),
     );
   }
 }
