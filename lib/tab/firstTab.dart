@@ -148,14 +148,14 @@ class _FirstPageWidgetState extends State<FirstPageWidget> {
                             Text(
                                 "This is an application that helps you look like you're photographed with a polaroid camera.")
                           ]);
-                      showLicensePage(
+/*                      showLicensePage(
                         context: context,
                         applicationIcon:
                             SvgPicture.asset('assets/images/logo.svg', height: 100, width: 100),
                         applicationName: "Roughy",
                         applicationVersion: "1.0.0",
                         applicationLegalese: "Developed by dydtjr1128",
-                      );
+                      );*/
                     })
               ],
             ),
