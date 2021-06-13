@@ -1,10 +1,13 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
 import 'package:Roughy/component/OutlineCircleButton.dart';
 import 'package:Roughy/component/roughyAppBar.dart';
+import 'package:Roughy/page/decorating/SelectedImageViewPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -28,20 +31,42 @@ class _ImageViewPageState extends State<ImageViewPage> {
   _getImage({@required source}) async {
     final pickedFile = await imagePicker.getImage(source: source, imageQuality: 100);
     if (pickedFile != null) {
+      // 템플릿 이미지 가로 세로 길이 구하는 부분
+      final Image templateImage = Image(image: AssetImage(widget.path));
+      Completer<ui.Image> completer = new Completer<ui.Image>();
+      templateImage.image
+          .resolve(new ImageConfiguration())
+          .addListener(new ImageStreamListener((ImageInfo image, bool _) {
+        completer.complete(image.image);
+      }));
+      ui.Image info = await completer.future;
+      int width = info.width;
+      int height = info.height;
+
+      // 템플릿 이미지 가로 세로 사이즈에 맞게 자르도록 크롭
       File croppedImage = (await ImageCropper.cropImage(
         sourcePath: pickedFile.path,
-        aspectRatio: CropAspectRatio(ratioX: 68, ratioY: 108.4),
+        aspectRatio: CropAspectRatio(
+            ratioX: width.toDouble(), ratioY: height.toDouble()),
         compressQuality: 100,
         //maxHeight: 700,
         //maxWidth: 700,
         compressFormat: ImageCompressFormat.png,
       ))!;
+
+      await Navigator.push(
+          context,
+          platformPageRoute(
+              builder: (_) {
+                return SelectedImageViewPage(
+                    croppedImage: croppedImage, templateImage: File(widget.path));
+              },
+              context: context));
+      Navigator.of(context).pop();
     } else {
       print('No image selected.');
     }
   }
-
-  void mergeImage({bottomImage, topImage}) {}
 
   void _showPicker(context) {
     showModalBottomSheet(
@@ -79,7 +104,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
     final double itemHeight = size.height * 0.65;
     final double itemWidth = size.width;
     return Scaffold(
-        backgroundColor: Color.fromRGBO(235, 235, 235, 1),
+        backgroundColor: Color.fromRGBO(255, 255, 255, 1),
         appBar: RoughyAppBar(
           titleText: "Template",
           isCenterTitle: true,
