@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:Roughy/component/OutlineCircleButton.dart';
+import 'package:Roughy/component/RoughyBottomAppbar.dart';
 import 'package:Roughy/component/roughyAppBar.dart';
 import 'package:Roughy/page/decorating/SelectedImageViewPage.dart';
 import 'package:flutter/material.dart';
@@ -46,8 +47,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
       // 템플릿 이미지 가로 세로 사이즈에 맞게 자르도록 크롭
       File croppedImage = (await ImageCropper.cropImage(
         sourcePath: pickedFile.path,
-        aspectRatio: CropAspectRatio(
-            ratioX: width.toDouble(), ratioY: height.toDouble()),
+        aspectRatio: CropAspectRatio(ratioX: width.toDouble(), ratioY: height.toDouble()),
         compressQuality: 100,
         //maxHeight: 700,
         //maxWidth: 700,
@@ -104,7 +104,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
     final double itemHeight = size.height * 0.65;
     final double itemWidth = size.width;
     return Scaffold(
-        backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+        backgroundColor: Color.fromRGBO(249, 249, 249, 1),
         appBar: RoughyAppBar(
           titleText: "Template",
           isCenterTitle: true,
@@ -114,16 +114,12 @@ class _ImageViewPageState extends State<ImageViewPage> {
                 height: itemHeight,
                 width: itemWidth,
                 padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 0.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                ),
                 child: Stack(
                   children: [
                     Center(child: Image.asset(widget.path, fit: BoxFit.fitHeight)),
                   ],
                 ))),
-        bottomNavigationBar: BottomAppBar(
-          color: Colors.black,
+        bottomNavigationBar: RoughyBottomAppbar(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(0, 0, 15.0, 0),
             child: Row(
@@ -131,12 +127,12 @@ class _ImageViewPageState extends State<ImageViewPage> {
               children: <Widget>[
                 OutlineCircleButton(
                     radius: 50.0,
-                    foregroundColor: Colors.black,
+                    foregroundColor: Colors.white,
                     onTap: () => onClickDecorationButton(context),
                     child: Center(
                         child: Text(
                       "꾸미기",
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.black),
                     )))
               ],
             ),

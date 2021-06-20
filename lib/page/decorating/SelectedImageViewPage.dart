@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 
 import 'package:Roughy/component/OutlineCircleButton.dart';
 import 'package:Roughy/component/OutlineRoundButton.dart';
+import 'package:Roughy/component/RoughyBottomAppbar.dart';
 import 'package:Roughy/component/RoughyGestureTextController.dart';
 import 'package:Roughy/component/painter/RoughyBackgroundPainter.dart';
 import 'package:Roughy/component/roughyAppBar.dart';
@@ -30,6 +31,7 @@ class SelectedImageViewPage extends StatefulWidget {
 }
 
 class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
+  String titleText;
   late ui.Image _templateImage, _croppedImage;
   bool isDrawingPanelVisible = false;
   bool isTextEditPanelVisible = false;
@@ -47,7 +49,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   final Color selectedIconColor, unselectedIconColor;
 
   _SelectedImageViewPageState()
-      : this.isCaptureMode = false,
+      : this.titleText = "Roughy",
+        this.isCaptureMode = false,
         this.isDrawingPanelVisible = false,
         this.isTextEditPanelVisible = false,
         this.selectedIconColor = Color.fromRGBO(134, 185, 232, 1),
@@ -177,6 +180,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     setState(() {
       isTextEditPanelVisible = true;
       isDrawingPanelVisible = false;
+      titleText = "Text";
     });
   }
 
@@ -185,6 +189,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     setState(() {
       isTextEditPanelVisible = false;
       isDrawingPanelVisible = true;
+      titleText = "Brush";
     });
   }
 
@@ -267,15 +272,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         ),
       );
     }
-    return Container(
-        height: 50,
-        decoration: new BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: Color.fromRGBO(245, 245, 245, 1), width: 1)),
-        child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: list));
+    return RoughyBottomAppbar(
+        child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list));
   }
 
   Widget getDrawingLineDepthPanelWidgets() {
@@ -310,11 +308,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         ),
       ));
     }
-    return Container(
-      height: 50,
-      decoration: new BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: Color.fromRGBO(245, 245, 245, 1), width: 1)),
+    return RoughyBottomAppbar(
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list),
     );
   }
@@ -339,15 +333,11 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       );
     }
 
-    return Container(
-        height: 50,
-        decoration: new BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: Color.fromRGBO(245, 245, 245, 1), width: 1)),
+    return RoughyBottomAppbar(
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list),
-        ));
+      padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list),
+    ));
   }
 
   Widget getCanvas(templateWidth, templateHeight) {
@@ -442,7 +432,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     return Scaffold(
       backgroundColor: Color.fromRGBO(235, 235, 235, 1),
       appBar: RoughyAppBar(
-        titleText: "Roughy",
+        titleText: titleText,
         isCenterTitle: true,
         iconWidget: new IconButton(
           icon: SvgPicture.asset('assets/images/download.svg',
@@ -496,7 +486,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       ),
       body: Container(
           decoration: new BoxDecoration(
-            color: Colors.white,
+            color: Color.fromRGBO(249, 249, 249, 1),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.max,
@@ -539,65 +529,44 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
               isTextEditPanelVisible ? getTextPanelWidgets() : new Row(),
               isDrawingPanelVisible ? getColorPanelWidgets() : new Row(),
               isDrawingPanelVisible ? getDrawingLineDepthPanelWidgets() : new Row(),
-              Row(
-                children: [
-                  Container(
-                      width: itemWidth,
-                      height: 50.0,
-                      decoration: new BoxDecoration(color: Colors.white),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
-                        child: Row(children: <Widget>[
-                          Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                            OutlineCircleButton(
-                                radius: 45.0,
-                                foregroundColor: Colors.black,
-                                onTap: () => onTextEditButtonClicked(context),
-                                child: Center(
-                                    child: SvgPicture.asset('assets/icons/text.svg',
-                                        width: 18,
-                                        color: isTextEditPanelVisible
-                                            ? selectedIconColor
-                                            : unselectedIconColor)))
-                          ]),
-                          Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                            OutlineCircleButton(
-                                radius: 45.0,
-                                foregroundColor: Colors.black,
-                                onTap: () => onDrawEditButtonClicked(context),
-                                child: Center(
-                                    child: SvgPicture.asset('assets/images/logo.svg',
-                                        width: 25,
-                                        color: isDrawingPanelVisible
-                                            ? selectedIconColor
-                                            : unselectedIconColor)))
-                          ]),
-                          Expanded(
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: <Widget>[
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    isDrawingPanelVisible
-                                        ? OutlineRoundButton(
-                                            radius: 15.0,
-                                            foregroundColor: Colors.white,
-                                            onTap: () => onDrawingRollbackButtonClicked(context),
-                                            child: const Center(
-                                                child: const Text(
-                                              "되돌리기",
-                                              style: TextStyle(color: Colors.black, fontSize: 16),
-                                            )))
-                                        : Container()
-                                  ],
-                                )
-                              ])),
-                        ]),
-                      ))
-                ],
-              )
+              RoughyBottomAppbar(
+                  child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+                child: Row(children: <Widget>[
+                  OutlineCircleButton(
+                      radius: 45.0,
+                      onTap: () => onTextEditButtonClicked(context),
+                      child: Center(
+                          child: SvgPicture.asset('assets/icons/text.svg',
+                              width: 24,
+                              height: 24,
+                              color: isTextEditPanelVisible
+                                  ? selectedIconColor
+                                  : unselectedIconColor))),
+                  OutlineCircleButton(
+                      radius: 45.0,
+                      onTap: () => onDrawEditButtonClicked(context),
+                      child: Center(
+                          child: SvgPicture.asset('assets/icons/roughy_option.svg',
+                              width: 28,
+                              height: 24,
+                              color: isDrawingPanelVisible
+                                  ? selectedIconColor
+                                  : unselectedIconColor))),
+                  Expanded(child: SizedBox()),
+                  isDrawingPanelVisible
+                      ? OutlineRoundButton(
+                          radius: 15.0,
+                          foregroundColor: Colors.white,
+                          onTap: () => onDrawingRollbackButtonClicked(context),
+                          child: const Center(
+                              child: const Text(
+                            "되돌리기",
+                            style: TextStyle(color: Colors.black, fontSize: 16),
+                          )))
+                      : Container()
+                ]),
+              ))
             ],
           )),
     );
