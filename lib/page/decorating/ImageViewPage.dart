@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:ui';
+import 'dart:ui' as ui;
 
 import 'package:Roughy/component/OutlineCircleButton.dart';
 import 'package:Roughy/component/roughyAppBar.dart';
