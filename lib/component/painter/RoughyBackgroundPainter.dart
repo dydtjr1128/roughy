@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class RoughyBackgroundPainter extends CustomPainter {
-  final ui.Image templateImage, croppedImage;
+  final ui.Image templateImage;
 
   Color? drawingColor;
   double? drawingDepth;
@@ -17,7 +17,7 @@ class RoughyBackgroundPainter extends CustomPainter {
 
   RoughyBackgroundPainter({
     required this.templateImage,
-    required this.croppedImage,
+    /*required this.croppedImage,*/
     required this.points,
     required this.drawingColor,
     required this.drawingDepth,
@@ -28,13 +28,13 @@ class RoughyBackgroundPainter extends CustomPainter {
     //print("사이즈는요~ " + size.width.toString() + " " + size.height.toString());
     final double width = size.width.toDouble();
     final double height = size.height.toDouble();
-    if (croppedImage != null) {
+/*    if (croppedImage != null) {
       canvas.drawImageRect(
           croppedImage,
           Rect.fromLTRB(0, 0, croppedImage.width.toDouble(), croppedImage.height.toDouble()),
           Rect.fromLTRB(0, 0, width, height),
           Paint());
-    }
+    }*/
     if (templateImage != null) {
       canvas.drawImageRect(
           templateImage,

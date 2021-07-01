@@ -1,3 +1,4 @@
+/*
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -97,10 +98,12 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     final croppedImage = await loadImage(widget.croppedImage.readAsBytesSync());
 
     // @@@@ 이건 테스트 이미지 코드
+*/
 /*    ByteData data = await rootBundle.load(widget.templateImage.path);
     ByteData data2 = await rootBundle.load(widget.croppedImage.path);
     final templateImage = await loadImage(Uint8List.view(data.buffer));
-    final croppedImage = await loadImage(Uint8List.view(data2.buffer));*/
+    final croppedImage = await loadImage(Uint8List.view(data2.buffer));*//*
+
 
     setState(() {
       _templateImage = templateImage;
@@ -351,28 +354,22 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
             //size: Size(_templateImage.width.toDouble(), _templateImage.height.toDouble()),
             child: Stack(
               children: [
-                InteractiveViewer(
-                  constrained: false,
-                    child: Image.file(
-                        widget.croppedImage,
-                        width: templateWidth,
-                        height: templateHeight),
-
-                ),
+                InteractiveViewer(child: Image.asset(tiger))
                 for (var widget in gestureTextList) widget,
-                //Image.asset(widget.templateImage.path)
               ],
             ),
             painter: RoughyBackgroundPainter(
-                //croppedImage: _croppedImage,
+                croppedImage: _croppedImage,
                 templateImage: _templateImage,
                 points: points,
                 drawingColor: selectedDrawingColor,
                 drawingDepth: selectedDrawingLineDepth),
+*/
 /*                                          foregroundPainter: RoughyForegroundPainter(
                                               points: points,
                                               drawingColor: selectedDrawingColor,
-                                              drawingDepth: selectedDrawingLineDepth),*/
+                                              drawingDepth: selectedDrawingLineDepth),*//*
+
           )),
     );
   }
@@ -428,11 +425,13 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       print(fullPath);
       await file.writeAsBytes(pngBytes);
 
+*/
 /*      DateTime now = DateTime.now();
       String dir = (await getApplicationSupportDirectory()).path;
       String formattedDate = DateFormat('yyyyMMddHHmmss').format(now);
       screenshotController.captureAndSave(dir, //set path where screenshot will be saved
-          fileName: 'roughy_$formattedDate.png');*/
+          fileName: 'roughy_$formattedDate.png');*//*
+
       setState(() {
         isCaptureMode = false;
       });
@@ -581,3 +580,4 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     );
   }
 }
+*/

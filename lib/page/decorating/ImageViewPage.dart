@@ -45,6 +45,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
       int height = info.height;
 
       // 템플릿 이미지 가로 세로 사이즈에 맞게 자르도록 크롭
+/*
       File croppedImage = (await ImageCropper.cropImage(
         sourcePath: pickedFile.path,
         aspectRatio: CropAspectRatio(ratioX: width.toDouble(), ratioY: height.toDouble()),
@@ -53,13 +54,14 @@ class _ImageViewPageState extends State<ImageViewPage> {
         //maxWidth: 700,
         compressFormat: ImageCompressFormat.png,
       ))!;
+*/
 
       await Navigator.push(
           context,
           platformPageRoute(
               builder: (_) {
                 return SelectedImageViewPage(
-                    croppedImage: croppedImage, templateImage: File(widget.path));
+                    croppedImage: File(pickedFile.path), templateImage: File(widget.path));
               },
               context: context));
       Navigator.of(context).pop();
