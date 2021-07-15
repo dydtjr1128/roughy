@@ -45,7 +45,7 @@ class RoughyBackgroundPainter extends CustomPainter {
 
     ui.Paint paint = new ui.Paint()..strokeCap = StrokeCap.round;
     int len = points.length;
-    for (int i = 0; i < len &&  i+1 < len; i++) {
+    for (int i = 0; i < len && i + 1 < len; i++) {
       if (points[i] == null) {
         continue;
       } else if (points[i + 1] != null) {

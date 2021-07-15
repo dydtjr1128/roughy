@@ -47,6 +47,11 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   GlobalKey captureKey = GlobalKey();
   bool isCaptureMode = false;
   final Color selectedIconColor, unselectedIconColor;
+  List<Widget> stackChildren = [];
+  double croppedOpacity;
+  bool isInteractiveViewerFront;
+  late InteractiveViewer _croppedImageInteractiveViewer;
+  late CustomPaint _customPaint;
 
   _SelectedImageViewPageState()
       : this.titleText = "Roughy",
@@ -71,7 +76,9 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
           "SDSamliphopangcheTTFOutline",
           "MiMi",
           "HYUNJUNG"
-        ] {
+        ],
+        this.isInteractiveViewerFront = true,
+        this.croppedOpacity = 0.7 {
     selectedTextRoughyFont = textFontList[1];
     selectedDrawingColor = drawingColors[2];
     selectedDrawingLineDepth = drawingLineDepths[2];
@@ -79,6 +86,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
 
   @override
   void initState() {
+    super.initState();
     initializeImages();
   }
 
@@ -105,6 +113,9 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     setState(() {
       _templateImage = templateImage;
       _croppedImage = croppedImage;
+      _croppedImageInteractiveViewer = croppedImageInteractiveViewer(
+          templateImage.width.toDouble(), templateImage.height.toDouble());
+      _customPaint = roughyCustomPaint();
     });
   }
 
@@ -123,6 +134,13 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     setState(() {
       setAllRoughyGestureTextWidgetChangToNotSelected();
       switchToDrawingEditPanelPanel();
+    });
+  }
+
+  void onResizeButtonClicked(BuildContext context) {
+    selectedRoughyGestureText = null;
+    setState(() {
+      swapStackChildren();
     });
   }
 
@@ -340,7 +358,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     ));
   }
 
-  Widget getCanvas(templateWidth, templateHeight) {
+  /*Widget getCanvas(templateWidth, templateHeight) {
     return RepaintBoundary(
       key: captureKey,
       child: Container(
@@ -352,13 +370,18 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
             child: Stack(
               children: [
                 InteractiveViewer(
-                  constrained: false,
-                    child: Image.file(
-                        widget.croppedImage,
+                    constrained: false,
+                    child: Container(
                         width: templateWidth,
-                        height: templateHeight),
-
-                ),
+                        height: templateHeight,
+                        decoration: new BoxDecoration(
+                            image: DecorationImage(
+                                fit: BoxFit.cover,
+                                colorFilter: new ColorFilter.mode(
+                                    Colors.black.withOpacity(0.6), BlendMode.dstATop),
+                                image: FileImage(
+                                  widget.croppedImage
+                                ))))),
                 for (var widget in gestureTextList) widget,
                 //Image.asset(widget.templateImage.path)
               ],
@@ -369,12 +392,107 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                 points: points,
                 drawingColor: selectedDrawingColor,
                 drawingDepth: selectedDrawingLineDepth),
-/*                                          foregroundPainter: RoughyForegroundPainter(
+*/ /*                                          foregroundPainter: RoughyForegroundPainter(
                                               points: points,
                                               drawingColor: selectedDrawingColor,
-                                              drawingDepth: selectedDrawingLineDepth),*/
+                                              drawingDepth: selectedDrawingLineDepth),*/ /*
           )),
     );
+  }*/
+  Widget getCanvas(templateWidth, templateHeight) {
+    return RepaintBoundary(
+      key: captureKey,
+      child: Container(
+        width: templateWidth,
+        height: templateHeight,
+        child: Stack(children: getStackChildren()),
+      ),
+    );
+  }
+
+  CustomPaint roughyCustomPaint() {
+    return CustomPaint(
+      //size: Size(templateWidth, templateHeight),
+      //size: Size(_templateImage.width.toDouble(), _templateImage.height.toDouble()),
+      child: Stack(
+        children: [
+          for (var widget in gestureTextList) widget,
+          //Image.asset(widget.templateImage.path)
+        ],
+      ),
+      painter: RoughyBackgroundPainter(
+          //croppedImage: _croppedImage,
+          templateImage: _templateImage,
+          points: points,
+          drawingColor: selectedDrawingColor,
+          drawingDepth: selectedDrawingLineDepth),
+/*                                          foregroundPainter: RoughyForegroundPainter(
+                                                points: points,
+                                                drawingColor: selectedDrawingColor,
+                                                drawingDepth: selectedDrawingLineDepth),*/
+    );
+  }
+
+  void swapStackChildren() {
+    print("swap");
+    isInteractiveViewerFront = !isInteractiveViewerFront;
+/*    if(isInteractiveViewerFront == false) {
+      final temp = stackChildren[0];
+      stackChildren[0] = stackChildren[1];
+      stackChildren[1] = temp;
+    }*/
+  }
+
+  List<Widget> getStackChildren() {
+    print("@@@@");
+    if(stackChildren.length == 0){
+      stackChildren = [
+        _croppedImageInteractiveViewer,
+      ];
+    }
+    if (isInteractiveViewerFront) {
+      croppedOpacity = 0.7;
+      stackChildren = [
+        _croppedImageInteractiveViewer,
+      ];
+      print("true");
+    } else {
+      croppedOpacity = 1.0;
+      print("false");
+      stackChildren = [
+        croppedImageInteractiveViewer(_templateImage.width.toDouble(),_templateImage.height.toDouble()),
+        roughyCustomPaint(),//새로 안만들면 드로잉이 새로고침이 안됨(리페인트에서)
+      ];
+      //stackChildren[0] =  _croppedImageInteractiveViewer;
+      //stackChildren[1] =  new Container(width:100,height:100,decoration: BoxDecoration(color: Colors.red),);
+
+    }
+    return stackChildren;
+  }
+
+  InteractiveViewer croppedImageInteractiveViewer(double width, double height) {
+    return InteractiveViewer(
+        constrained: true,
+        panEnabled: true,
+        scaleEnabled: true,
+        onInteractionStart: (details) {
+          print("!!!dd");
+        },
+        onInteractionUpdate: (details) {
+          print("!!!" + details.toString());
+        },
+        onInteractionEnd: (details) {
+          print("@@@@@@" + details.toString());
+        },
+        child: Container(
+            width: width,
+            height: height,
+            decoration: new BoxDecoration(
+                image: DecorationImage(
+                    fit: BoxFit.cover,
+                    colorFilter: new ColorFilter.mode(
+                        Colors.black.withOpacity(croppedOpacity), BlendMode.dstATop),
+                    image: FileImage(widget.croppedImage)))));
   }
 
   @override
@@ -382,14 +500,16 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     var size = MediaQuery.of(context).size;
     final double itemHeight = size.height;
     final double itemWidth = size.width;
-    final double templateHeight = (itemHeight - 150) * 0.7;
-    final double templateWidth =
+    final templateHeight = (itemHeight - 150) * 0.7;
+    final templateWidth =
         templateHeight * _templateImage.width.toDouble() / _templateImage.height.toDouble();
     print("templateHeight : " +
         templateHeight.toString() +
         ", templateWidth : " +
         templateWidth.toString());
+
     print("itemHeight : " + itemHeight.toString() + ", itemWidth : " + itemWidth.toString());
+
     void updateDrawingPosition(ui.Offset localOffset) {
       if (isDrawingPanelVisible) {
         setState(() {
@@ -555,6 +675,16 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                   OutlineCircleButton(
                       radius: 45.0,
                       onTap: () => onDrawEditButtonClicked(context),
+                      child: Center(
+                          child: SvgPicture.asset('assets/icons/roughy_option.svg',
+                              width: 28,
+                              height: 24,
+                              color: isDrawingPanelVisible
+                                  ? selectedIconColor
+                                  : unselectedIconColor))),
+                  OutlineCircleButton(
+                      radius: 45.0,
+                      onTap: () => onResizeButtonClicked(context),
                       child: Center(
                           child: SvgPicture.asset('assets/icons/roughy_option.svg',
                               width: 28,
