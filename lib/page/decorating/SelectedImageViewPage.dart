@@ -52,6 +52,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   bool isInteractiveViewerFront;
   late InteractiveViewer _croppedImageInteractiveViewer;
   late CustomPaint _customPaint;
+  bool isIgnoreTouch;
 
   _SelectedImageViewPageState()
       : this.titleText = "Roughy",
@@ -77,6 +78,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
           "MiMi",
           "HYUNJUNG"
         ],
+        this.isIgnoreTouch = true,
         this.isInteractiveViewerFront = true,
         this.croppedOpacity = 0.7 {
     selectedTextRoughyFont = textFontList[1];
@@ -444,29 +446,21 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   }
 
   List<Widget> getStackChildren() {
-    print("@@@@");
-    if(stackChildren.length == 0){
-      stackChildren = [
-        _croppedImageInteractiveViewer,
-      ];
-    }
     if (isInteractiveViewerFront) {
-      croppedOpacity = 0.7;
-      stackChildren = [
-        _croppedImageInteractiveViewer,
-      ];
+      isIgnoreTouch = false;
       print("true");
     } else {
-      croppedOpacity = 1.0;
+      isIgnoreTouch = true;
       print("false");
-      stackChildren = [
-        croppedImageInteractiveViewer(_templateImage.width.toDouble(),_templateImage.height.toDouble()),
-        roughyCustomPaint(),//새로 안만들면 드로잉이 새로고침이 안됨(리페인트에서)
-      ];
-      //stackChildren[0] =  _croppedImageInteractiveViewer;
-      //stackChildren[1] =  new Container(width:100,height:100,decoration: BoxDecoration(color: Colors.red),);
-
     }
+    stackChildren = [
+      croppedImageInteractiveViewer(_templateImage.width.toDouble(),_templateImage.height.toDouble()),
+      IgnorePointer(
+        ignoring: isIgnoreTouch,
+        child:  roughyCustomPaint(),
+      )
+      ,//새로 안만들면 드로잉이 새로고침이 안됨(리페인트에서)
+    ];
     return stackChildren;
   }
 
