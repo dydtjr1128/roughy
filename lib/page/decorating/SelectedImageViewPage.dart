@@ -48,10 +48,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   bool isCaptureMode = false;
   final Color selectedIconColor, unselectedIconColor;
   List<Widget> stackChildren = [];
-  double croppedOpacity;
   bool isInteractiveViewerFront;
-  late InteractiveViewer _croppedImageInteractiveViewer;
-  late CustomPaint _customPaint;
+  bool isNextButtonClicked;
   bool isIgnoreTouch;
 
   _SelectedImageViewPageState()
@@ -78,9 +76,9 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
           "MiMi",
           "HYUNJUNG"
         ],
+        this.isNextButtonClicked = false,
         this.isIgnoreTouch = true,
-        this.isInteractiveViewerFront = true,
-        this.croppedOpacity = 0.7 {
+        this.isInteractiveViewerFront = true {
     selectedTextRoughyFont = textFontList[1];
     selectedDrawingColor = drawingColors[2];
     selectedDrawingLineDepth = drawingLineDepths[2];
@@ -115,9 +113,6 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     setState(() {
       _templateImage = templateImage;
       _croppedImage = croppedImage;
-      _croppedImageInteractiveViewer = croppedImageInteractiveViewer(
-          templateImage.width.toDouble(), templateImage.height.toDouble());
-      _customPaint = roughyCustomPaint();
     });
   }
 
@@ -129,6 +124,13 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         if (points.isEmpty || points[i] == null) break;
         points.removeLast();
       }
+    });
+  }
+
+  void onNextButtonClicked(BuildContext context) {
+    setState(() {
+      isIgnoreTouch = false;
+      isNextButtonClicked = true;
     });
   }
 
@@ -446,20 +448,13 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   }
 
   List<Widget> getStackChildren() {
-    if (isInteractiveViewerFront) {
-      isIgnoreTouch = false;
-      print("true");
-    } else {
-      isIgnoreTouch = true;
-      print("false");
-    }
     stackChildren = [
-      croppedImageInteractiveViewer(_templateImage.width.toDouble(),_templateImage.height.toDouble()),
+      croppedImageInteractiveViewer(
+          _templateImage.width.toDouble(), _templateImage.height.toDouble()),
       IgnorePointer(
         ignoring: isIgnoreTouch,
-        child:  roughyCustomPaint(),
-      )
-      ,//새로 안만들면 드로잉이 새로고침이 안됨(리페인트에서)
+        child: roughyCustomPaint(),
+      ), //새로 안만들면 드로잉이 새로고침이 안됨(리페인트에서)
     ];
     return stackChildren;
   }
@@ -469,15 +464,6 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         constrained: true,
         panEnabled: true,
         scaleEnabled: true,
-        onInteractionStart: (details) {
-          print("!!!dd");
-        },
-        onInteractionUpdate: (details) {
-          print("!!!" + details.toString());
-        },
-        onInteractionEnd: (details) {
-          print("@@@@@@" + details.toString());
-        },
         child: Container(
             width: width,
             height: height,
@@ -485,7 +471,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                 image: DecorationImage(
                     fit: BoxFit.cover,
                     colorFilter: new ColorFilter.mode(
-                        Colors.black.withOpacity(croppedOpacity), BlendMode.dstATop),
+                        Colors.black.withOpacity(1.0), BlendMode.dstATop),
                     image: FileImage(widget.croppedImage)))));
   }
 
@@ -652,56 +638,74 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
               isTextEditPanelVisible ? getTextPanelWidgets() : new Row(),
               isDrawingPanelVisible ? getColorPanelWidgets() : new Row(),
               isDrawingPanelVisible ? getDrawingLineDepthPanelWidgets() : new Row(),
-              RoughyBottomAppbar(
-                  child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-                child: Row(children: <Widget>[
-                  OutlineCircleButton(
-                      radius: 45.0,
-                      onTap: () => onTextEditButtonClicked(context),
-                      child: Center(
-                          child: SvgPicture.asset('assets/icons/text.svg',
-                              width: 24,
-                              height: 24,
-                              color: isTextEditPanelVisible
-                                  ? selectedIconColor
-                                  : unselectedIconColor))),
-                  OutlineCircleButton(
-                      radius: 45.0,
-                      onTap: () => onDrawEditButtonClicked(context),
-                      child: Center(
-                          child: SvgPicture.asset('assets/icons/roughy_option.svg',
-                              width: 28,
-                              height: 24,
-                              color: isDrawingPanelVisible
-                                  ? selectedIconColor
-                                  : unselectedIconColor))),
-                  OutlineCircleButton(
-                      radius: 45.0,
-                      onTap: () => onResizeButtonClicked(context),
-                      child: Center(
-                          child: SvgPicture.asset('assets/icons/roughy_option.svg',
-                              width: 28,
-                              height: 24,
-                              color: isDrawingPanelVisible
-                                  ? selectedIconColor
-                                  : unselectedIconColor))),
-                  Expanded(child: SizedBox()),
-                  isDrawingPanelVisible
-                      ? OutlineRoundButton(
-                          radius: 15.0,
-                          foregroundColor: Colors.white,
-                          onTap: () => onDrawingRollbackButtonClicked(context),
-                          child: const Center(
-                              child: const Text(
-                            "되돌리기",
-                            style: TextStyle(color: Colors.black, fontSize: 16),
-                          )))
-                      : Container()
-                ]),
-              ))
+              isNextButtonClicked
+                  ? buildRoughyBottomAppbar(context)
+                  : buildRoughyBottomResizeAppbar(context),
             ],
           )),
     );
+  }
+
+  RoughyBottomAppbar buildRoughyBottomResizeAppbar(BuildContext context) {
+    return RoughyBottomAppbar(
+        child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+            child: Row(children: <Widget>[
+              Expanded(child: SizedBox()),
+              OutlineRoundButton(
+                  radius: 15.0,
+                  foregroundColor: Colors.white,
+                  onTap: () => onNextButtonClicked(context),
+                  child: const Center(
+                      child: const Text(
+                    "다음",
+                    style: TextStyle(color: Colors.black, fontSize: 16),
+                  )))
+            ])));
+  }
+
+  RoughyBottomAppbar buildRoughyBottomAppbar(BuildContext context) {
+    return RoughyBottomAppbar(
+        child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+      child: Row(children: <Widget>[
+        OutlineCircleButton(
+            radius: 45.0,
+            onTap: () => onTextEditButtonClicked(context),
+            child: Center(
+                child: SvgPicture.asset('assets/icons/text.svg',
+                    width: 24,
+                    height: 24,
+                    color: isTextEditPanelVisible ? selectedIconColor : unselectedIconColor))),
+        OutlineCircleButton(
+            radius: 45.0,
+            onTap: () => onDrawEditButtonClicked(context),
+            child: Center(
+                child: SvgPicture.asset('assets/icons/roughy_option.svg',
+                    width: 28,
+                    height: 24,
+                    color: isDrawingPanelVisible ? selectedIconColor : unselectedIconColor))),
+        OutlineCircleButton(
+            radius: 45.0,
+            onTap: () => onResizeButtonClicked(context),
+            child: Center(
+                child: SvgPicture.asset('assets/icons/roughy_option.svg',
+                    width: 28,
+                    height: 24,
+                    color: isDrawingPanelVisible ? selectedIconColor : unselectedIconColor))),
+        Expanded(child: SizedBox()),
+        isDrawingPanelVisible
+            ? OutlineRoundButton(
+                radius: 15.0,
+                foregroundColor: Colors.white,
+                onTap: () => onDrawingRollbackButtonClicked(context),
+                child: const Center(
+                    child: const Text(
+                  "되돌리기",
+                  style: TextStyle(color: Colors.black, fontSize: 16),
+                )))
+            : Container()
+      ]),
+    ));
   }
 }
