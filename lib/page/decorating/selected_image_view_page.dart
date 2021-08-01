@@ -373,70 +373,32 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     ));
   }
 
-  /*Widget getCanvas(templateWidth, templateHeight) {
-    return RepaintBoundary(
-      key: captureKey,
-      child: Container(
-          width: templateWidth,
-          height: templateHeight,
-          child: CustomPaint(
-            //size: Size(templateWidth, templateHeight),
-            //size: Size(_templateImage.width.toDouble(), _templateImage.height.toDouble()),
-            child: Stack(
-              children: [
-                InteractiveViewer(
-                    constrained: false,
-                    child: Container(
-                        width: templateWidth,
-                        height: templateHeight,
-                        decoration: new BoxDecoration(
-                            image: DecorationImage(
-                                fit: BoxFit.cover,
-                                colorFilter: new ColorFilter.mode(
-                                    Colors.black.withOpacity(0.6), BlendMode.dstATop),
-                                image: FileImage(
-                                  widget.croppedImage
-                                ))))),
-                for (var widget in gestureTextList) widget,
-                //Image.asset(widget.templateImage.path)
-              ],
-            ),
-            painter: RoughyBackgroundPainter(
-                //croppedImage: _croppedImage,
-                templateImage: _templateImage,
-                points: points,
-                drawingColor: selectedDrawingColor,
-                drawingDepth: selectedDrawingLineDepth),
-*/ /*                                          foregroundPainter: RoughyForegroundPainter(
-                                              points: points,
-                                              drawingColor: selectedDrawingColor,
-                                              drawingDepth: selectedDrawingLineDepth),*/ /*
-          )),
-    );
-  }*/
   Widget getCanvas(double templateWidth, double templateHeight) {
     return RepaintBoundary(
       key: captureKey,
       child: SizedBox(
         width: templateWidth,
         height: templateHeight,
-        child: Stack(children: getStackChildren()),
+        child: Stack(children: [
+          croppedImageInteractiveViewer(
+              _templateImage.width.toDouble(), _templateImage.height.toDouble()),
+          IgnorePointer(
+            ignoring: isIgnoreTouch,
+            child: roughyCustomPaint(),
+          )
+        ]),
       ),
     );
   }
 
   CustomPaint roughyCustomPaint() {
     return CustomPaint(
-      //size: Size(templateWidth, templateHeight),
-      //size: Size(_templateImage.width.toDouble(), _templateImage.height.toDouble()),
       painter: RoughyBackgroundPainter(
           //croppedImage: _croppedImage,
           templateImage: _templateImage,
           points: points,
           drawingColor: selectedDrawingColor,
           drawingDepth: selectedDrawingLineDepth),
-      //size: Size(templateWidth, templateHeight),
-      //size: Size(_templateImage.width.toDouble(), _templateImage.height.toDouble()),
       child: Stack(
         children: [
           for (var widget in gestureTextList) widget,
@@ -453,23 +415,6 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   void swapStackChildren() {
     print("swap");
     isInteractiveViewerFront = !isInteractiveViewerFront;
-/*    if(isInteractiveViewerFront == false) {
-      final temp = stackChildren[0];
-      stackChildren[0] = stackChildren[1];
-      stackChildren[1] = temp;
-    }*/
-  }
-
-  List<Widget> getStackChildren() {
-    stackChildren = [
-      croppedImageInteractiveViewer(
-          _templateImage.width.toDouble(), _templateImage.height.toDouble()),
-      IgnorePointer(
-        ignoring: isIgnoreTouch,
-        child: roughyCustomPaint(),
-      ), //새로 안만들면 드로잉이 새로고침이 안됨(리페인트에서)
-    ];
-    return stackChildren;
   }
 
   InteractiveViewer croppedImageInteractiveViewer(double width, double height) {
@@ -704,16 +649,6 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         OutlineCircleButton(
             radius: 45.0,
             onTap: () => onDrawEditButtonClicked(context),
-            child: Center(
-                child: SvgPicture.asset('assets/icons/roughy_option.svg',
-                    width: 28,
-                    height: 24,
-                    color: isDrawingPanelVisible
-                        ? selectedIconColor
-                        : unselectedIconColor))),
-        OutlineCircleButton(
-            radius: 45.0,
-            onTap: () => onResizeButtonClicked(context),
             child: Center(
                 child: SvgPicture.asset('assets/icons/roughy_option.svg',
                     width: 28,
