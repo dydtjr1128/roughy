@@ -1,15 +1,12 @@
-import 'package:Roughy/component/roughyAppBar.dart';
 import 'package:Roughy/tab/my_album_widget.dart';
-import 'package:Roughy/tab/first_tab.dart';
 import 'package:Roughy/tab/setting_widget.dart';
 import 'package:Roughy/tab/template_select_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/svg.dart';
 
 class MainTabbedPage extends StatefulWidget {
-  MainTabbedPage(this.toggleBrightness);
+  const MainTabbedPage(this.toggleBrightness);
 
   final void Function() toggleBrightness;
 
@@ -31,7 +28,6 @@ class _MainTabbedPageState extends State<MainTabbedPage> {
     final List<BottomNavigationBarItem> items = [
       BottomNavigationBarItem(
         label: titles[0],
-        //icon: Icon(context.platformIcons.flag),
         activeIcon: SvgPicture.asset(
           'assets/icons/template_tab_icon.svg',
           width: 25,
