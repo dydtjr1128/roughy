@@ -1,3 +1,4 @@
+import 'package:Roughy/component/roughyAppBar.dart';
 import 'package:Roughy/tab/my_album_widget.dart';
 import 'package:Roughy/tab/first_tab.dart';
 import 'package:Roughy/tab/setting_widget.dart';
@@ -17,124 +18,65 @@ class MainTabbedPage extends StatefulWidget {
 }
 
 class _MainTabbedPageState extends State<MainTabbedPage> {
-  static final titles = ['템플릿', '앨범', '설정'];
-  final items = (BuildContext context) => [
-        BottomNavigationBarItem(
-          //label: titles[0],
-          //icon: Icon(context.platformIcons.flag),
-          icon : SvgPicture.asset('assets/images/logo.svg'),
-        ),
-        BottomNavigationBarItem(
-          label: titles[1],
-          icon: Icon(context.platformIcons.book),
-        ),
-        BottomNavigationBarItem(
-          label: titles[2],
-          icon: Icon(context.platformIcons.settings),
-        ),
-      ];
+  final titles = ['템플릿', '앨범', '설정'];
+  final List<Widget> bodyWidgets = [
+    TemplateSelectWidget(),
+    MyAlbumWidget(),
+    SettingWidget(),
+  ];
+  int _selectedIndex = 0;
 
-  // This needs to be captured here in a stateful widget
-  PlatformTabController tabController = PlatformTabController(
-    initialIndex: 1,
-  );
-
-  @override
-  void initState() {
-    super.initState();
+  List<BottomNavigationBarItem> generateBottomNavigationBarItems(
+      BuildContext context) {
+    final List<BottomNavigationBarItem> items = [
+      BottomNavigationBarItem(
+        label: titles[0],
+        //icon: Icon(context.platformIcons.flag),
+        activeIcon: SvgPicture.asset(
+          'assets/icons/template_tab_icon.svg',
+          width: 25,
+          color: const Color.fromRGBO(134, 185, 232, 1),
+        ),
+        icon: SvgPicture.asset('assets/icons/template_tab_icon.svg'),
+      ),
+      BottomNavigationBarItem(
+        label: titles[1],
+        activeIcon: SvgPicture.asset(
+          'assets/icons/album_tab_icon.svg',
+          width: 25,
+          color: const Color.fromRGBO(134, 185, 232, 1),
+        ),
+        icon: SvgPicture.asset('assets/icons/album_tab_icon.svg'),
+      ),
+      BottomNavigationBarItem(
+        label: titles[2],
+        activeIcon: SvgPicture.asset(
+          'assets/icons/setting_tab_icon.svg',
+          width: 25,
+          color: const Color.fromRGBO(134, 185, 232, 1),
+        ),
+        icon: SvgPicture.asset('assets/icons/setting_tab_icon.svg'),
+      ),
+    ];
+    return items;
   }
 
-  /*Widget bottomAppBar() {
-    return Container(
-      color: Colors.white,
-      child: Container(
-        height: 70,
-        padding: const EdgeInsets.only(bottom: 10, top: 5),
-        child: TabBar(
-          isScrollable: false,
-
-          indicatorSize: TabBarIndicatorSize.label,
-          indicatorColor: Colors.transparent,
-          labelColor: const Color.fromRGBO(217, 217, 217, 1),
-          unselectedLabelColor: Colors.grey,
-          labelStyle: const TextStyle(fontFamily: 'Yanolja'),
-          tabs: [
-            Tab(
-              icon : SvgPicture.asset('assets/images/logo.svg', height: 15),
-
-            ),
-            Tab(
-              icon: Icon(context.platformIcons.book),
-              text: titles[1],
-            ),
-            Tab(
-              icon: Icon(context.platformIcons.settings),
-              text: titles[2],
-            )
-          ],
-        ),
-      ),
-    );
-  }*/
-
-/*  @override
-  Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(*//*
-        appBar: AppBar(
-          title: Text("Tab demo"),
-        ),*//*
-        bottomNavigationBar: bottomAppBar(),
-        body: TabBarView(
-          children: <Widget>[
-            TemplateSelectWidget(),
-            MyAlbumWidget(),
-            FirstTabPage(widget.toggleBrightness),
-          ],
-        ),
-      ),
-    );
-  }*/
-
-/*@override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: RoughyCenterAppBar(title: "rrr",),
-      bottomNavigationBar: DefaultTabController(
-          length: 3,
-          child: Scaffold(
-            body: TabBarView(
-              children: [
-                TemplateSelectWidget(),
-                MyAlbumWidget(),
-                FirstTabPage(widget.toggleBrightness),
-              ],
-            ),
-            bottomNavigationBar: bottomAppBar(),
-          )),
-    );
-  }*/
-
   @override
   Widget build(BuildContext context) {
-    return PlatformTabScaffold(
-      pageBackgroundColor: Colors.white,
-      tabController: tabController,
-      bodyBuilder: (context, index) {
-        print(index);
-        switch (index) {
-          case 0:
-            return TemplateSelectWidget();
-          case 1:
-            return MyAlbumWidget();
-          case 2:
-            return SettingWidget();
-          default:
-            return FirstTabPage(widget.toggleBrightness);
-        }
-      },
-      items: items(context),
-    );
+    return Scaffold(
+        bottomNavigationBar: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            backgroundColor: Colors.white,
+            currentIndex: _selectedIndex,
+            //현재 선택된 Index
+            onTap: (int index) {
+              setState(() {
+                _selectedIndex = index;
+              });
+            },
+            items: generateBottomNavigationBarItems(context)),
+        body: Center(child: bodyWidgets.elementAt(_selectedIndex)));
   }
 }
