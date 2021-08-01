@@ -1,10 +1,11 @@
-import 'package:Roughy/tab/MyAlbumWidget.dart';
-import 'package:Roughy/tab/firstTab.dart';
-import 'package:Roughy/tab/settingWidget.dart';
-import 'package:Roughy/tab/templateSelectTab.dart';
+import 'package:Roughy/tab/my_album_widget.dart';
+import 'package:Roughy/tab/first_tab.dart';
+import 'package:Roughy/tab/setting_widget.dart';
+import 'package:Roughy/tab/template_select_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:flutter_svg/svg.dart';
 
 class MainTabbedPage extends StatefulWidget {
   MainTabbedPage(this.toggleBrightness);
@@ -19,8 +20,9 @@ class _MainTabbedPageState extends State<MainTabbedPage> {
   static final titles = ['템플릿', '앨범', '설정'];
   final items = (BuildContext context) => [
         BottomNavigationBarItem(
-          label: titles[0],
-          icon: Icon(context.platformIcons.flag),
+          //label: titles[0],
+          //icon: Icon(context.platformIcons.flag),
+          icon : SvgPicture.asset('assets/images/logo.svg'),
         ),
         BottomNavigationBarItem(
           label: titles[1],
@@ -42,23 +44,24 @@ class _MainTabbedPageState extends State<MainTabbedPage> {
     super.initState();
   }
 
-  Widget bottomAppBar() {
+  /*Widget bottomAppBar() {
     return Container(
       color: Colors.white,
       child: Container(
         height: 70,
-        padding: EdgeInsets.only(bottom: 10, top: 5),
+        padding: const EdgeInsets.only(bottom: 10, top: 5),
         child: TabBar(
+          isScrollable: false,
+
           indicatorSize: TabBarIndicatorSize.label,
-          indicatorColor: Colors.red,
-          indicatorWeight: 2,
-          labelColor: Colors.blueAccent,
+          indicatorColor: Colors.transparent,
+          labelColor: const Color.fromRGBO(217, 217, 217, 1),
           unselectedLabelColor: Colors.grey,
-          labelStyle: TextStyle(fontFamily: 'Yanolja'),
+          labelStyle: const TextStyle(fontFamily: 'Yanolja'),
           tabs: [
             Tab(
-              icon: Icon(context.platformIcons.flag),
-              text: titles[0],
+              icon : SvgPicture.asset('assets/images/logo.svg', height: 15),
+
             ),
             Tab(
               icon: Icon(context.platformIcons.book),
@@ -72,16 +75,16 @@ class _MainTabbedPageState extends State<MainTabbedPage> {
         ),
       ),
     );
-  }
+  }*/
 
-  /*@override
+/*  @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 3,
-      child: Scaffold(
+      child: Scaffold(*//*
         appBar: AppBar(
           title: Text("Tab demo"),
-        ),
+        ),*//*
         bottomNavigationBar: bottomAppBar(),
         body: TabBarView(
           children: <Widget>[
@@ -118,7 +121,7 @@ class _MainTabbedPageState extends State<MainTabbedPage> {
     return PlatformTabScaffold(
       pageBackgroundColor: Colors.white,
       tabController: tabController,
-      bodyBuilder: ((context, index) {
+      bodyBuilder: (context, index) {
         print(index);
         switch (index) {
           case 0:
@@ -130,7 +133,7 @@ class _MainTabbedPageState extends State<MainTabbedPage> {
           default:
             return FirstTabPage(widget.toggleBrightness);
         }
-      }),
+      },
       items: items(context),
     );
   }

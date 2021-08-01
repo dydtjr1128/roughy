@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-import 'package:Roughy/page/mainTabbedPage.dart';
+import 'package:Roughy/page/main_tabbed_page.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class SplashPage extends StatefulWidget {
-  SplashPage(this.toggleBrightness);
+  const SplashPage(this.toggleBrightness);
 
   final void Function() toggleBrightness;
 
@@ -48,7 +48,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   }
 
   Future<bool> _delayedSplashPage() async {
-    await Future.delayed(Duration(milliseconds: 1500), () {});
+    await Future.delayed(const Duration(milliseconds: 1500), () {});
     return true;
   }
 

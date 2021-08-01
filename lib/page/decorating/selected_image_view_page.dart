@@ -10,7 +10,7 @@ import 'package:Roughy/component/painter/RoughyBackgroundPainter.dart';
 import 'package:Roughy/component/roughyAppBar.dart';
 import 'package:Roughy/component/roughyGestureText.dart';
 import 'package:Roughy/data/RoughyData.dart';
-import 'package:Roughy/page/decorating/TextInputPage.dart';
+import 'package:Roughy/page/decorating/text_input_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -24,7 +24,8 @@ import 'package:path_provider/path_provider.dart';
 class SelectedImageViewPage extends StatefulWidget {
   final File templateImage, croppedImage;
 
-  SelectedImageViewPage({required this.croppedImage, required this.templateImage});
+  const SelectedImageViewPage(
+      {required this.croppedImage, required this.templateImage});
 
   @override
   _SelectedImageViewPageState createState() => _SelectedImageViewPageState();
@@ -53,20 +54,20 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   bool isIgnoreTouch;
 
   _SelectedImageViewPageState()
-      : this.titleText = "Roughy",
-        this.isCaptureMode = false,
-        this.isDrawingPanelVisible = false,
-        this.isTextEditPanelVisible = false,
-        this.selectedIconColor = Color.fromRGBO(134, 185, 232, 1),
-        this.unselectedIconColor = Color.fromRGBO(217, 217, 217, 1),
-        this.drawingColors = [
-          Color.fromRGBO(255, 255, 255, 1.0),
-          Color.fromRGBO(126, 126, 126, 1.0),
-          Color.fromRGBO(0, 0, 0, 1.0),
-          Color.fromRGBO(255, 58, 58, 1.0),
-          Color.fromRGBO(255, 251, 138, 1.0),
-          Color.fromRGBO(11, 209, 135, 1.0),
-          Color.fromRGBO(17, 0, 254, 1.0)
+      : titleText = "Roughy",
+        isCaptureMode = false,
+        isDrawingPanelVisible = false,
+        isTextEditPanelVisible = false,
+        selectedIconColor = const Color.fromRGBO(134, 185, 232, 1),
+        unselectedIconColor = const Color.fromRGBO(217, 217, 217, 1),
+        drawingColors = [
+          const Color.fromRGBO(255, 255, 255, 1.0),
+          const Color.fromRGBO(126, 126, 126, 1.0),
+          const Color.fromRGBO(0, 0, 0, 1.0),
+          const Color.fromRGBO(255, 58, 58, 1.0),
+          const Color.fromRGBO(255, 251, 138, 1.0),
+          const Color.fromRGBO(11, 209, 135, 1.0),
+          const Color.fromRGBO(17, 0, 254, 1.0)
         ],
         drawingLineDepths = [1, 3, 5, 7, 9],
         textFontList = [
@@ -76,8 +77,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
           "MiMi",
           "HYUNJUNG"
         ],
-        this.isNextButtonClicked = false,
-        this.isIgnoreTouch = true,
+        isNextButtonClicked = false,
+        isIgnoreTouch = true,
         this.isInteractiveViewerFront = true {
     selectedTextRoughyFont = textFontList[1];
     selectedDrawingColor = drawingColors[2];
@@ -96,7 +97,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     return fi.image;
   }
 
-  initializeImages() async {
+  void initializeImages() async {
     ByteData data = await rootBundle.load(widget.templateImage.path);
 
     final templateImage = await loadImage(Uint8List.view(data.buffer));
@@ -161,7 +162,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     }
     setState(() {
       switchToTextEditPanel();
-      gestureTextList.add(new RoughyGestureText(
+      gestureTextList.add(RoughyGestureText(
           roughyGestureTextController: RoughyGestureTextController(),
           onWidgetSelected: onRoughyTextWidgetSelected,
           onWidgetReleased: onRoughyTextWidgetReleased,
@@ -228,22 +229,28 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       this.selectedTextRoughyFont = selectedFontName;
     });
     if (selectedRoughyGestureText != null && isTextEditPanelVisible) {
-      selectedRoughyGestureText!.roughyGestureTextController.setFont(selectedFontName);
+      selectedRoughyGestureText!.roughyGestureTextController
+          .setFont(selectedFontName);
     }
   }
 
   void onSelectDrawingColor(ui.Color selectedDrawingColor, int index) {
-    print("색상 선택 : " + selectedDrawingColor.toString() + " " + index.toString());
+    print(
+        "색상 선택 : " + selectedDrawingColor.toString() + " " + index.toString());
     setState(() {
       this.selectedDrawingColor = selectedDrawingColor;
     });
     if (selectedRoughyGestureText != null && isTextEditPanelVisible) {
-      selectedRoughyGestureText!.roughyGestureTextController.setFontColor(selectedDrawingColor);
+      selectedRoughyGestureText!.roughyGestureTextController
+          .setFontColor(selectedDrawingColor);
     }
   }
 
   void onSelectDrawingDepth(double selectedDrawingLineDepth, int index) {
-    print("두께 선택 : " + selectedDrawingLineDepth.toString() + " " + index.toString());
+    print("두께 선택 : " +
+        selectedDrawingLineDepth.toString() +
+        " " +
+        index.toString());
     setState(() {
       this.selectedDrawingLineDepth = selectedDrawingLineDepth;
     });
@@ -276,18 +283,18 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                     : Color.fromRGBO(228, 231, 233, 1),
                 borderSize: 1.5,
                 foregroundColor: drawingColors[i],
+                onTap: () {
+                  onSelectDrawingColor(drawingColors[i], i);
+                },
                 child: selectedDrawingColor == drawingColors[i]
                     ? Center(
                         child: Container(
-                            child: Icon(
+                            child: const Icon(
                         Icons.check,
                         color: Colors.white,
                         size: 14.0,
                       )))
                     : null,
-                onTap: () {
-                  onSelectDrawingColor(drawingColors[i], i);
-                },
               )),
             ),
           ),
@@ -295,7 +302,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       );
     }
     return RoughyBottomAppbar(
-        child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list));
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list));
   }
 
   Widget getDrawingLineDepthPanelWidgets() {
@@ -307,31 +315,31 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
             onSelectDrawingDepth(drawingLineDepths[i], i);
           },
           child: Container(
-            decoration: BoxDecoration(color: Colors.white),
+            decoration: const BoxDecoration(color: Colors.white),
             child: Center(
                 child: OutlineCircleButton(
               radius: 25,
+              onTap: () {
+                onSelectDrawingDepth(drawingLineDepths[i], i);
+              },
               child: Padding(
-                padding: EdgeInsets.all(.0),
+                padding: const EdgeInsets.all(.0),
                 child: SvgPicture.asset(
-                  'assets/images/logo_depth' + (i + 1).toString() + '.svg',
-                  fit: BoxFit.contain,
+                  'assets/images/logo_depth${i + 1}.svg',
                   color: selectedDrawingLineDepth == drawingLineDepths[i]
                       ? Colors.black
                       : Colors.black12,
                   allowDrawingOutsideViewBox: true,
                 ),
               ),
-              onTap: () {
-                onSelectDrawingDepth(drawingLineDepths[i], i);
-              },
             )),
           ),
         ),
       ));
     }
     return RoughyBottomAppbar(
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list),
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list),
     );
   }
 
@@ -349,7 +357,9 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                 style: TextStyle(
                     fontFamily: textFontList[i],
                     fontSize: 14,
-                    color: selectedTextRoughyFont == textFontList[i] ? Colors.black : Colors.grey),
+                    color: selectedTextRoughyFont == textFontList[i]
+                        ? Colors.black
+                        : Colors.grey),
               ))),
         ),
       );
@@ -357,8 +367,9 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
 
     return RoughyBottomAppbar(
         child: Padding(
-      padding: EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list),
+      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list),
     ));
   }
 
@@ -403,10 +414,10 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
           )),
     );
   }*/
-  Widget getCanvas(templateWidth, templateHeight) {
+  Widget getCanvas(double templateWidth,double templateHeight) {
     return RepaintBoundary(
       key: captureKey,
-      child: Container(
+      child: SizedBox(
         width: templateWidth,
         height: templateHeight,
         child: Stack(children: getStackChildren()),
@@ -418,18 +429,20 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     return CustomPaint(
       //size: Size(templateWidth, templateHeight),
       //size: Size(_templateImage.width.toDouble(), _templateImage.height.toDouble()),
-      child: Stack(
-        children: [
-          for (var widget in gestureTextList) widget,
-          //Image.asset(widget.templateImage.path)
-        ],
-      ),
       painter: RoughyBackgroundPainter(
           //croppedImage: _croppedImage,
           templateImage: _templateImage,
           points: points,
           drawingColor: selectedDrawingColor,
           drawingDepth: selectedDrawingLineDepth),
+      //size: Size(templateWidth, templateHeight),
+      //size: Size(_templateImage.width.toDouble(), _templateImage.height.toDouble()),
+      child: Stack(
+        children: [
+          for (var widget in gestureTextList) widget,
+          //Image.asset(widget.templateImage.path)
+        ],
+      ),
 /*                                          foregroundPainter: RoughyForegroundPainter(
                                                 points: points,
                                                 drawingColor: selectedDrawingColor,
@@ -467,10 +480,10 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         child: Container(
             width: width,
             height: height,
-            decoration: new BoxDecoration(
+            decoration: BoxDecoration(
                 image: DecorationImage(
                     fit: BoxFit.cover,
-                    colorFilter: new ColorFilter.mode(
+                    colorFilter: ColorFilter.mode(
                         Colors.black.withOpacity(1.0), BlendMode.dstATop),
                     image: FileImage(widget.croppedImage)))));
   }
@@ -481,21 +494,19 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     final double itemHeight = size.height;
     final double itemWidth = size.width;
     final templateHeight = (itemHeight - 150) * 0.7;
-    final templateWidth =
-        templateHeight * _templateImage.width.toDouble() / _templateImage.height.toDouble();
-    print("templateHeight : " +
-        templateHeight.toString() +
-        ", templateWidth : " +
-        templateWidth.toString());
+    final templateWidth = templateHeight *
+        _templateImage.width.toDouble() /
+        _templateImage.height.toDouble();
+    print("templateHeight : $templateHeight, templateWidth : $templateWidth");
 
-    print("itemHeight : " + itemHeight.toString() + ", itemWidth : " + itemWidth.toString());
+    print("itemHeight : $itemHeight, itemWidth : $itemWidth");
 
     void updateDrawingPosition(ui.Offset localOffset) {
       if (isDrawingPanelVisible) {
         setState(() {
           if (isInsideOffset(localOffset, templateWidth, templateHeight)) {
             setState(() {
-              points.add(new RoughyDrawingPoint(
+              points.add(RoughyDrawingPoint(
                   offset: localOffset,
                   color: selectedDrawingColor,
                   depth: selectedDrawingLineDepth));
@@ -514,10 +525,11 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     }
 
     Future<void> _capturePng() async {
-      RenderRepaintBoundary boundary =
-          captureKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+      RenderRepaintBoundary boundary = captureKey.currentContext!
+          .findRenderObject()! as RenderRepaintBoundary;
       ui.Image image = await boundary.toImage(pixelRatio: 3);
-      ByteData byteData = (await image.toByteData(format: ui.ImageByteFormat.png))!;
+      ByteData byteData =
+          (await image.toByteData(format: ui.ImageByteFormat.png))!;
       Uint8List pngBytes = byteData.buffer.asUint8List();
 
       String dir = (await getApplicationSupportDirectory()).path;
@@ -543,7 +555,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       appBar: RoughyAppBar(
         titleText: titleText,
         isCenterTitle: true,
-        iconWidget: new IconButton(
+        iconWidget: IconButton(
           icon: SvgPicture.asset('assets/images/download.svg',
               color: Colors.black, height: 25, width: 25),
           tooltip: "Download",
@@ -556,31 +568,31 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
               showPlatformDialog(
                 context: context,
                 builder: (_) => PlatformAlertDialog(
-                  title: Text('알림'),
+                  title: const Text('알림'),
                   content: Text('사진을 사진첩에 저장하시겠습니까?'),
                   actions: <Widget>[
                     PlatformDialogAction(
-                        child: PlatformText('Yes'),
                         onPressed: () {
                           _capturePng();
                           Navigator.pop(context);
                           showPlatformDialog(
                               context: context,
                               builder: (_) => PlatformAlertDialog(
-                                      title: Text('알림'),
-                                      content: Text('저장완료!'),
+                                      title: const Text('알림'),
+                                      content: const Text('저장완료!'),
                                       actions: <Widget>[
                                         PlatformDialogAction(
-                                            child: PlatformText('Okay'),
                                             onPressed: () {
                                               Navigator.pop(context);
                                               Navigator.pop(context);
-                                            })
+                                            },
+                                            child: PlatformText('Okay'))
                                       ]));
-                        }),
+                        },
+                        child: PlatformText('Yes')),
                     PlatformDialogAction(
-                      child: PlatformText('No'),
                       onPressed: () => Navigator.pop(context),
+                      child: PlatformText('No'),
                     ),
                   ],
                 ),
@@ -594,7 +606,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         ),
       ),
       body: Container(
-          decoration: new BoxDecoration(
+          decoration: const BoxDecoration(
             color: Color.fromRGBO(249, 249, 249, 1),
           ),
           child: Column(
@@ -609,7 +621,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                     fit: StackFit.expand,
                     children: [
                       Container(
-                        decoration: BoxDecoration(color: Colors.transparent),
+                        decoration:
+                            const BoxDecoration(color: Colors.transparent),
                       ),
                       FittedBox(
                         fit: BoxFit.contain,
@@ -619,28 +632,38 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                             child: isDrawingPanelVisible
                                 ? GestureDetector(
                                     behavior: HitTestBehavior.opaque,
-                                    onPanCancel: () => initializeDrawingPosition(),
+                                    onPanCancel: () =>
+                                        initializeDrawingPosition(),
                                     onPanStart: (details) =>
-                                        updateDrawingPosition(details.localPosition),
+                                        updateDrawingPosition(
+                                            details.localPosition),
                                     onPanDown: (details) =>
-                                        updateDrawingPosition(details.localPosition),
+                                        updateDrawingPosition(
+                                            details.localPosition),
                                     onPanUpdate: (details) =>
-                                        updateDrawingPosition(details.localPosition),
-                                    onPanEnd: (details) => initializeDrawingPosition(),
-                                    child: getCanvas(templateWidth, templateHeight))
+                                        updateDrawingPosition(
+                                            details.localPosition),
+                                    onPanEnd: (details) =>
+                                        initializeDrawingPosition(),
+                                    child: getCanvas(
+                                        templateWidth, templateHeight))
                                 : getCanvas(templateWidth, templateHeight)),
                       ),
                     ],
                   ),
                 ),
               ),
-              isTextEditPanelVisible ? getColorPanelWidgets() : new Row(),
-              isTextEditPanelVisible ? getTextPanelWidgets() : new Row(),
-              isDrawingPanelVisible ? getColorPanelWidgets() : new Row(),
-              isDrawingPanelVisible ? getDrawingLineDepthPanelWidgets() : new Row(),
-              isNextButtonClicked
-                  ? buildRoughyBottomAppbar(context)
-                  : buildRoughyBottomResizeAppbar(context),
+              if (isTextEditPanelVisible) getColorPanelWidgets() else Row(),
+              if (isTextEditPanelVisible) getTextPanelWidgets() else Row(),
+              if (isDrawingPanelVisible) getColorPanelWidgets() else Row(),
+              if (isDrawingPanelVisible)
+                getDrawingLineDepthPanelWidgets()
+              else
+                Row(),
+              if (isNextButtonClicked)
+                buildRoughyBottomAppbar(context)
+              else
+                buildRoughyBottomResizeAppbar(context),
             ],
           )),
     );
@@ -651,13 +674,12 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
             child: Row(children: <Widget>[
-              Expanded(child: SizedBox()),
+              const Expanded(child: SizedBox()),
               OutlineRoundButton(
                   radius: 15.0,
-                  foregroundColor: Colors.white,
                   onTap: () => onNextButtonClicked(context),
                   child: const Center(
-                      child: const Text(
+                      child: Text(
                     "다음",
                     style: TextStyle(color: Colors.black, fontSize: 16),
                   )))
@@ -676,7 +698,9 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                 child: SvgPicture.asset('assets/icons/text.svg',
                     width: 24,
                     height: 24,
-                    color: isTextEditPanelVisible ? selectedIconColor : unselectedIconColor))),
+                    color: isTextEditPanelVisible
+                        ? selectedIconColor
+                        : unselectedIconColor))),
         OutlineCircleButton(
             radius: 45.0,
             onTap: () => onDrawEditButtonClicked(context),
@@ -684,7 +708,9 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                 child: SvgPicture.asset('assets/icons/roughy_option.svg',
                     width: 28,
                     height: 24,
-                    color: isDrawingPanelVisible ? selectedIconColor : unselectedIconColor))),
+                    color: isDrawingPanelVisible
+                        ? selectedIconColor
+                        : unselectedIconColor))),
         OutlineCircleButton(
             radius: 45.0,
             onTap: () => onResizeButtonClicked(context),
@@ -692,19 +718,22 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                 child: SvgPicture.asset('assets/icons/roughy_option.svg',
                     width: 28,
                     height: 24,
-                    color: isDrawingPanelVisible ? selectedIconColor : unselectedIconColor))),
-        Expanded(child: SizedBox()),
-        isDrawingPanelVisible
-            ? OutlineRoundButton(
-                radius: 15.0,
-                foregroundColor: Colors.white,
-                onTap: () => onDrawingRollbackButtonClicked(context),
-                child: const Center(
-                    child: const Text(
-                  "되돌리기",
-                  style: TextStyle(color: Colors.black, fontSize: 16),
-                )))
-            : Container()
+                    color: isDrawingPanelVisible
+                        ? selectedIconColor
+                        : unselectedIconColor))),
+        const Expanded(child: SizedBox()),
+        if (isDrawingPanelVisible)
+          OutlineRoundButton(
+              radius: 15.0,
+              foregroundColor: Colors.white,
+              onTap: () => onDrawingRollbackButtonClicked(context),
+              child: const Center(
+                  child: Text(
+                "되돌리기",
+                style: TextStyle(color: Colors.black, fontSize: 16),
+              )))
+        else
+          Container()
       ]),
     ));
   }

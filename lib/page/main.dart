@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:Roughy/page/splashPage.dart';
+import 'package:Roughy/page/splash_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -32,18 +32,18 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
-    final materialTheme = new ThemeData(
+    final materialTheme = ThemeData(
       fontFamily: 'Yanolja',
       primarySwatch: Colors.purple,
     );
-    final materialDarkTheme = new ThemeData(
+    final materialDarkTheme = ThemeData(
       brightness: Brightness.dark,
       primarySwatch: Colors.teal,
     );
 
-    final cupertinoTheme = new CupertinoThemeData(
+    final cupertinoTheme = CupertinoThemeData(
       brightness: brightness, // if null will use the system theme
-      primaryColor: CupertinoDynamicColor.withBrightness(
+      primaryColor: const CupertinoDynamicColor.withBrightness(
         color: Colors.purple,
         darkColor: Colors.cyan,
       ),
@@ -58,9 +58,10 @@ class _MyHomePageState extends State<MyHomePage> {
             DefaultCupertinoLocalizations.delegate,
           ],
           title: "Roughy App",
-          debugShowCheckedModeBanner: false,//디버그용 체크 코드
+          debugShowCheckedModeBanner: false,
+          //디버그용 체크 코드
           material: (_, __) {
-            return new MaterialAppData(
+            return MaterialAppData(
               theme: materialTheme,
               darkTheme: materialDarkTheme,
               themeMode: brightness == Brightness.light
@@ -68,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   : ThemeMode.dark,
             );
           },
-          cupertino: (_, __) => new CupertinoAppData(
+          cupertino: (_, __) => CupertinoAppData(
             theme: cupertinoTheme,
           ),
           home: SplashPage(() {

@@ -5,7 +5,7 @@ import 'dart:ui' as ui;
 import 'package:Roughy/component/OutlineCircleButton.dart';
 import 'package:Roughy/component/RoughyBottomAppbar.dart';
 import 'package:Roughy/component/roughyAppBar.dart';
-import 'package:Roughy/page/decorating/SelectedImageViewPage.dart';
+import 'package:Roughy/page/decorating/selected_image_view_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -15,7 +15,7 @@ import 'package:image_picker/image_picker.dart';
 class ImageViewPage extends StatefulWidget {
   final String path;
 
-  ImageViewPage({required this.path});
+  const ImageViewPage({required this.path});
 
   @override
   _ImageViewPageState createState() => _ImageViewPageState();
@@ -29,15 +29,16 @@ class _ImageViewPageState extends State<ImageViewPage> {
 
   final ImagePicker imagePicker = ImagePicker();
 
-  _getImage({@required source}) async {
-    final pickedFile = await imagePicker.getImage(source: source, imageQuality: 100);
+  void _getImage({required ImageSource source}) async {
+    final pickedFile =
+        await imagePicker.getImage(source: source, imageQuality: 100);
     if (pickedFile != null) {
       // 템플릿 이미지 가로 세로 길이 구하는 부분
       final Image templateImage = Image(image: AssetImage(widget.path));
-      Completer<ui.Image> completer = new Completer<ui.Image>();
+      final Completer<ui.Image> completer = Completer<ui.Image>();
       templateImage.image
-          .resolve(new ImageConfiguration())
-          .addListener(new ImageStreamListener((ImageInfo image, bool _) {
+          .resolve(const ImageConfiguration())
+          .addListener(ImageStreamListener((ImageInfo image, bool _) {
         completer.complete(image.image);
       }));
       ui.Image info = await completer.future;
@@ -61,7 +62,8 @@ class _ImageViewPageState extends State<ImageViewPage> {
           platformPageRoute(
               builder: (_) {
                 return SelectedImageViewPage(
-                    croppedImage: File(pickedFile.path), templateImage: File(widget.path));
+                    croppedImage: File(pickedFile.path),
+                    templateImage: File(widget.path));
               },
               context: context));
       Navigator.of(context).pop();
@@ -70,24 +72,24 @@ class _ImageViewPageState extends State<ImageViewPage> {
     }
   }
 
-  void _showPicker(context) {
+  void _showPicker(BuildContext context) {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext bc) {
           return SafeArea(
             child: Container(
-              child: new Wrap(
+              child: Wrap(
                 children: <Widget>[
-                  new ListTile(
-                      leading: new Icon(Icons.photo_library),
-                      title: new Text('앨범'),
+                  ListTile(
+                      leading: const Icon(Icons.photo_library),
+                      title: const Text('앨범'),
                       onTap: () {
                         _getImage(source: ImageSource.gallery);
                         Navigator.of(context).pop();
                       }),
-                  new ListTile(
-                    leading: new Icon(Icons.photo_camera),
-                    title: new Text('카메라'),
+                  ListTile(
+                    leading: const Icon(Icons.photo_camera),
+                    title: const Text('카메라'),
                     onTap: () {
                       _getImage(source: ImageSource.camera);
                       Navigator.of(context).pop();
@@ -106,7 +108,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
     final double itemHeight = size.height * 0.65;
     final double itemWidth = size.width;
     return Scaffold(
-        backgroundColor: Color.fromRGBO(249, 249, 249, 1),
+        backgroundColor: const Color.fromRGBO(249, 249, 249, 1),
         appBar: RoughyAppBar(
           titleText: "Template",
           isCenterTitle: true,
@@ -115,10 +117,12 @@ class _ImageViewPageState extends State<ImageViewPage> {
             child: Container(
                 height: itemHeight,
                 width: itemWidth,
-                padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 0.0),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 15, horizontal: 0.0),
                 child: Stack(
                   children: [
-                    Center(child: Image.asset(widget.path, fit: BoxFit.fitHeight)),
+                    Center(
+                        child: Image.asset(widget.path, fit: BoxFit.fitHeight)),
                   ],
                 ))),
         bottomNavigationBar: RoughyBottomAppbar(
@@ -131,7 +135,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
                     radius: 50.0,
                     foregroundColor: Colors.white,
                     onTap: () => onClickDecorationButton(context),
-                    child: Center(
+                    child: const Center(
                         child: Text(
                       "꾸미기",
                       style: TextStyle(color: Colors.black),
