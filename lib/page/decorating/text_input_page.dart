@@ -1,6 +1,7 @@
-import 'package:Roughy/component/roughyAppBar.dart';
+import 'package:Roughy/component/roughy_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class TextInputPage extends StatefulWidget {
   @override
@@ -13,9 +14,9 @@ class _TextInputPageState extends State<TextInputPage> {
 
   setThisText() {
     final form = _formKey.currentState;
-    print("@@@@" + form!.validate().toString() + " " +  _textController.text.toString() + "!@@");
+    print("@@@@${form!.validate()} ${_textController.text}!@@");
     if (form.validate()) {
-      print("@@@ " + _textController.text);
+      print("@@@ ${_textController.text}");
       Navigator.pop(context, _textController.text);
     }
   }
@@ -26,30 +27,28 @@ class _TextInputPageState extends State<TextInputPage> {
       appBar: RoughyAppBar(
           titleText: "Text",
           isCenterTitle: true,
-          iconWidget: new IconButton(
-            icon: new Icon(Icons.check),
+          iconWidget: IconButton(
+            icon: SvgPicture.asset('assets/icons/text_check_icon.svg'),
             tooltip: 'Save text',
             onPressed: setThisText,
           )),
-      body: Container(
-          child: Form(
-              key: _formKey,
-              child: new TextFormField(
-                  maxLines: 10,
-                  autofocus: true,
-                  controller: _textController,
-                  decoration: new InputDecoration(
-                      labelText: '텍스트',
-                      hintText: 'Please enter text',
-
-                      //border: InputBorder.none,
-                      contentPadding: const EdgeInsets.all(16.0)),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "Please enter text";
-                    }
-                    return null;
-                  }))),
+      body: Form(
+          key: _formKey,
+          child: TextFormField(
+              autofocus: true,
+              maxLines: 100,
+              style: const TextStyle(fontSize: 27, fontFamily: 'SimplicityRegular'),
+              controller: _textController,
+              decoration: const InputDecoration(
+                  hintText: 'Please enter text',
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.all(16.0)),
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return "Please enter text";
+                }
+                return null;
+              })),
     );
   }
 }
