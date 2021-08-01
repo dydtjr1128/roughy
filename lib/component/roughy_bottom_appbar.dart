@@ -12,20 +12,20 @@ class RoughyBottomAppbar extends StatelessWidget {
   final Function? onTap;
   final double height;
   final Color foregroundColor;
-  final child;
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
     return Container(
         height: height,
-        decoration: new BoxDecoration(
+        decoration: BoxDecoration(
             color: foregroundColor,
-            border: new Border(
+            border: const Border(
               top: BorderSide(
                 color: Color.fromRGBO(112, 112, 112, 1),
                 width: 0.1,
               ),
             )),
-        child: child ?? SizedBox());
+        child: child ?? const SizedBox());
   }
 }

@@ -2,14 +2,13 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as ui;
 
-import 'package:Roughy/component/OutlineCircleButton.dart';
-import 'package:Roughy/component/RoughyBottomAppbar.dart';
-import 'package:Roughy/component/roughyAppBar.dart';
+import 'package:Roughy/component/outline_circle_button.dart';
+import 'package:Roughy/component/roughy_app_bar.dart';
+import 'package:Roughy/component/roughy_bottom_appbar.dart';
 import 'package:Roughy/page/decorating/selected_image_view_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImageViewPage extends StatefulWidget {
@@ -133,7 +132,6 @@ class _ImageViewPageState extends State<ImageViewPage> {
               children: <Widget>[
                 OutlineCircleButton(
                     radius: 50.0,
-                    foregroundColor: Colors.white,
                     onTap: () => onClickDecorationButton(context),
                     child: const Center(
                         child: Text(

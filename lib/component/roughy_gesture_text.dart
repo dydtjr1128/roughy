@@ -1,8 +1,7 @@
 import 'dart:math' as math;
 
-import 'package:Roughy/component/RoughyGestureTextController.dart';
-import 'package:Roughy/component/RoundShadowButton.dart';
-import 'package:Roughy/data/RoughyData.dart';
+import 'package:Roughy/component/roughy_gesture_text_controller.dart';
+import 'package:Roughy/component/round_shadow_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -28,8 +27,8 @@ class RoughyGestureText extends StatefulWidget {
       : super(key: key);
 
   @override
-  _RoughyGestureTextState createState() =>
-      _RoughyGestureTextState(roughyGestureTextController, text, fontName, fontColor);
+  _RoughyGestureTextState createState() => _RoughyGestureTextState(
+      roughyGestureTextController, text, fontName, fontColor);
 }
 
 class _RoughyGestureTextState extends State<RoughyGestureText> {
@@ -47,8 +46,8 @@ class _RoughyGestureTextState extends State<RoughyGestureText> {
   String fontName;
   Color fontColor;
 
-  _RoughyGestureTextState(
-      RoughyGestureTextController _controller, this.text, this.fontName, this.fontColor) {
+  _RoughyGestureTextState(RoughyGestureTextController _controller, this.text,
+      this.fontName, this.fontColor) {
     _controller.setWidgetSelected = setWidgetSelected;
     _controller.setFont = setFont;
     _controller.setFontColor = setFontColor;
@@ -98,13 +97,15 @@ class _RoughyGestureTextState extends State<RoughyGestureText> {
       Offset delta = details.focalPoint - _previousOffset;
       _previousOffset = details.focalPoint;
       setState(() {
-        localOffset = Offset(localOffset.dx + delta.dx, localOffset.dy + delta.dy);
+        localOffset =
+            Offset(localOffset.dx + delta.dx, localOffset.dy + delta.dy);
       });
     } else {
       setState(() {
         _scale = _previousScale * details.scale;
-        double tempRotation = _rotation - _previousRotation - details.rotation;
-        var deg = tempRotation.abs() * (180 / math.pi);
+        final double tempRotation =
+            _rotation - _previousRotation - details.rotation;
+        final deg = tempRotation.abs() * (180 / math.pi);
         if (deg < 20) {
           _rotation = 0;
           _previousRotation = 0;
@@ -154,7 +155,10 @@ class _RoughyGestureTextState extends State<RoughyGestureText> {
             children: [
               Text(text,
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontFamily: fontName, color: fontColor, fontSize: 30 * _scale)),
+                  style: TextStyle(
+                      fontFamily: fontName,
+                      color: fontColor,
+                      fontSize: 30 * _scale)),
             ]),
       ),
     ]);

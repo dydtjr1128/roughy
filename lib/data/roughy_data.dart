@@ -1,13 +1,5 @@
 import 'dart:ui' as ui;
 
-import 'package:flutter/widgets.dart';
-
-/*class RoughyInfo {
-  bool isDrawing;
-
-  RoughyInfo({@required this.isDrawing});
-}*/
-
 class RoughyDrawingPoint {
   ui.Offset offset;
   ui.Color? color;

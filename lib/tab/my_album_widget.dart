@@ -1,8 +1,8 @@
 import 'dart:collection';
 import 'dart:io';
 
-import 'package:Roughy/component/albumContainer.dart';
-import 'package:Roughy/component/roughyAppBar.dart';
+import 'package:Roughy/component/album_container.dart';
+import 'package:Roughy/component/roughy_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:gallery_saver/gallery_saver.dart';
@@ -16,7 +16,7 @@ class MyAlbumWidget extends StatefulWidget {
 
 class _MyAlbumWidgetState extends State<MyAlbumWidget> {
   final LinkedHashMap<String, AlbumContainer> albumContainers =
-  LinkedHashMap<String, AlbumContainer>();
+      LinkedHashMap<String, AlbumContainer>();
 
   @override
   void initState() {
@@ -36,21 +36,21 @@ class _MyAlbumWidgetState extends State<MyAlbumWidget> {
     return true;
   }
 
-  showSnackBar(String text) {
-    Scaffold.of(context).showSnackBar(new SnackBar(
-      content: new Text(text),
+  void showSnackBar(String text) {
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text(text),
     ));
   }
 
-  onAlbumSaveToPhoto(String path) async {
-    print("이미지 저장 : " + path.toString());
+  void onAlbumSaveToPhoto(String path) async {
+    print("이미지 저장 : $path");
     GallerySaver.saveImage(path).then((path) {
       showSnackBar("저장 성공!");
     });
   }
 
-  onAlbumDeleteFromMyAlbum(String path) async {
-    print("이미지 제거 : " + path.toString());
+  void onAlbumDeleteFromMyAlbum(String path) async {
+    print("이미지 제거 : $path");
     if (await deleteFile(path)) {
       setState(() {
         albumContainers.remove(path);
@@ -61,28 +61,29 @@ class _MyAlbumWidgetState extends State<MyAlbumWidget> {
     }
   }
 
-  onAlbumSelected(int index, String path, BuildContext context) async {
-    print("이미지 선택 : " + path.toString() + " " + index.toString());
+  void onAlbumSelected(int index, String path, BuildContext context) async {
+    print("이미지 선택 : $path $index");
     await showDialog(
-      context: context, builder: (BuildContext context) {
-      return SimpleDialog(
-        title: Text('선택'),
-        children: <Widget>[
-          SimpleDialogOption(
-              child: Text('사진을 사진첩에 저장'),
-              onPressed: () {
-                onAlbumSaveToPhoto(path);
-                Navigator.pop(context);
-              }),
-          SimpleDialogOption(
-              child: Text('사진을 My Album 에서 삭제'),
-              onPressed: () {
-                onAlbumDeleteFromMyAlbum(path);
-                Navigator.pop(context);
-              }),
-        ],
-      );
-    },
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          title: const Text('선택'),
+          children: <Widget>[
+            SimpleDialogOption(
+                onPressed: () {
+                  onAlbumSaveToPhoto(path);
+                  Navigator.pop(context);
+                },
+                child: const Text('사진을 사진첩에 저장')),
+            SimpleDialogOption(
+                onPressed: () {
+                  onAlbumDeleteFromMyAlbum(path);
+                  Navigator.pop(context);
+                },
+                child: const Text('사진을 My Album 에서 삭제')),
+          ],
+        );
+      },
     );
   }
 
@@ -105,56 +106,30 @@ class _MyAlbumWidgetState extends State<MyAlbumWidget> {
 
     setState(() {
       for (int i = 0; i < pathList.length; i++) {
-        albumContainers[pathList[i]] =
-        new AlbumContainer(onTap: onAlbumSelected, containerIndex: i, path: pathList[i]);
+        albumContainers[pathList[i]] = AlbumContainer(
+            onTap: onAlbumSelected, containerIndex: i, path: pathList[i]);
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery
-        .of(context)
-        .size;
+    final size = MediaQuery.of(context).size;
     final double itemHeight = (size.height) / 2;
     final double itemWidth = size.width / 2;
 
-    var gridTileList = albumContainers.values
-        .map((container) =>
-    new GridTile(
-      child: container,
-    ))
+    final gridTileList = albumContainers.values
+        .map((container) => GridTile(
+              child: container,
+            ))
         .toList();
     return Scaffold(
         appBar: RoughyAppBar(
           titleText: "MY ALBUM",
         ),
         body: GridView.count(
-            crossAxisCount: 2, childAspectRatio: (itemWidth / itemHeight), children: gridTileList));
+            crossAxisCount: 2,
+            childAspectRatio: itemWidth / itemHeight,
+            children: gridTileList));
   }
-
-/*@override
-  Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    final double itemHeight = (size.height) / 2;
-    final double itemWidth = size.width / 2;
-    int i = 0;
-    return Scaffold(
-        appBar: RoughyAppBar(onClickedCallback: (bool isSelected) {}),
-        body: new FutureBuilder(
-          future: initializeTemplates(),
-          builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
-            List<AlbumContainer> albumContainers = List();
-            if (snapshot.hasData) {
-              for (String path in snapshot.data)
-                albumContainers.add(
-                    new AlbumContainer(onTap: onAlbumSelected, containerIndex: i++, path: path));
-            }
-            return GridView.count(
-                crossAxisCount: 2,
-                childAspectRatio: (itemWidth / itemHeight),
-                children: albumContainers);
-          },
-        ));
-  }*/
 }

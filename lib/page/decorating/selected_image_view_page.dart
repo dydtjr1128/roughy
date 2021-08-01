@@ -2,14 +2,14 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:Roughy/component/OutlineCircleButton.dart';
-import 'package:Roughy/component/OutlineRoundButton.dart';
-import 'package:Roughy/component/RoughyBottomAppbar.dart';
-import 'package:Roughy/component/RoughyGestureTextController.dart';
-import 'package:Roughy/component/painter/RoughyBackgroundPainter.dart';
-import 'package:Roughy/component/roughyAppBar.dart';
-import 'package:Roughy/component/roughyGestureText.dart';
-import 'package:Roughy/data/RoughyData.dart';
+import 'package:Roughy/component/outline_circle_button.dart';
+import 'package:Roughy/component/outline_round_button.dart';
+import 'package:Roughy/component/painter/roughy_background_painter.dart';
+import 'package:Roughy/component/roughy_app_bar.dart';
+import 'package:Roughy/component/roughy_bottom_appbar.dart';
+import 'package:Roughy/component/roughy_gesture_text.dart';
+import 'package:Roughy/component/roughy_gesture_text_controller.dart';
+import 'package:Roughy/data/roughy_data.dart';
 import 'package:Roughy/page/decorating/text_input_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -414,7 +414,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
           )),
     );
   }*/
-  Widget getCanvas(double templateWidth,double templateHeight) {
+  Widget getCanvas(double templateWidth, double templateHeight) {
     return RepaintBoundary(
       key: captureKey,
       child: SizedBox(

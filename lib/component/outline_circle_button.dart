@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class OutlineCircleButton extends StatelessWidget {
-  OutlineCircleButton({
+  const OutlineCircleButton({
     this.onTap,
-    this.borderSize: 0.5, 
-    this.radius: 20.0,
-    this.borderColor: Colors.transparent,
-    this.foregroundColor: Colors.white,
+    this.borderSize = 0.5,
+    this.radius = 20.0,
+    this.borderColor = Colors.transparent,
+    this.foregroundColor = Colors.white,
     this.child,
   });
 
@@ -16,29 +16,28 @@ class OutlineCircleButton extends StatelessWidget {
   final double borderSize;
   final Color borderColor;
   final Color foregroundColor;
-  final child;
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
-    return ClipOval(      
+    return ClipOval(
       child: Container(
         width: radius,
         height: radius,
         decoration: BoxDecoration(
           border: Border.all(color: borderColor, width: borderSize),
           color: foregroundColor,
-          shape: BoxShape.circle,     
+          shape: BoxShape.circle,
         ),
-      child: Material(
-        color: Colors.transparent,
+        child: Material(
+          color: Colors.transparent,
           child: InkWell(
-            child: child??SizedBox(),
-            onTap: () async {
-              if(onTap != null) {
-                onTap!();
-              }          
-            } 
-          ),
+              onTap: () async {
+                if (onTap != null) {
+                  onTap!();
+                }
+              },
+              child: child ?? const SizedBox()),
         ),
       ),
     );

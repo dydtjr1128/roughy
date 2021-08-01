@@ -1,9 +1,6 @@
 import 'dart:ui' as ui;
 
-import 'package:flutter/widgets.dart';
-import 'dart:ui' as ui;
-
-import 'package:Roughy/data/RoughyData.dart';
+import 'package:Roughy/data/roughy_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -38,7 +35,8 @@ class RoughyBackgroundPainter extends CustomPainter {
     if (templateImage != null) {
       canvas.drawImageRect(
           templateImage,
-          Rect.fromLTRB(0, 0, templateImage.width.toDouble(), templateImage.height.toDouble()),
+          Rect.fromLTRB(0, 0, templateImage.width.toDouble(),
+              templateImage.height.toDouble()),
           Rect.fromLTRB(0, 0, width, height),
           Paint());
     }

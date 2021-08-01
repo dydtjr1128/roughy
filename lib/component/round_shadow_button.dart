@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 class RoundShadowButton extends StatelessWidget {
   bool isSelect;
   final onRemove;
-  final child;
+  final Widget? child;
 
   RoundShadowButton({
     this.onRemove,
@@ -19,9 +19,9 @@ class RoundShadowButton extends StatelessWidget {
     final double itemWidth = size.width;
     return Stack(children: [
       Container(
-        padding: EdgeInsets.all(30),
+        padding: const EdgeInsets.all(30),
         child: ConstrainedBox(
-          constraints: new BoxConstraints(
+          constraints: BoxConstraints(
             minHeight: 80,
             minWidth: 120,
             maxHeight: itemHeight,
@@ -30,7 +30,7 @@ class RoundShadowButton extends StatelessWidget {
           child: Container(
               child: CustomPaint(
                   painter: MyPainter(isSelect),
-                  child: Container(padding: EdgeInsets.all(10), child: child))),
+                  child: Container(padding: const EdgeInsets.all(10), child: child))),
         ),
       ),
       if (isSelect)
@@ -41,15 +41,15 @@ class RoundShadowButton extends StatelessWidget {
             child: Material(
               color: Colors.black,
               child: InkWell(
-                splashColor: Colors.red, // inkwell color
-                child: Icon(
+                splashColor: Colors.red,
+                onTap: () {
+                  onRemove();
+                }, // inkwell color
+                child: const Icon(
                   Icons.horizontal_rule,
                   color: Colors.white,
                   size: 28,
                 ),
-                onTap: () {
-                  onRemove();
-                },
               ),
             ),
           ),
@@ -69,14 +69,14 @@ class MyPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     if (isSelect) {
-      final rrectBorder = RRect.fromRectAndRadius(Offset.zero & size, Radius.circular(_kRadius));
-      final rrectShadow = RRect.fromRectAndRadius(Offset(0, 3) & size, Radius.circular(_kRadius));
+      final rrectBorder = RRect.fromRectAndRadius(Offset.zero & size, const Radius.circular(_kRadius));
+      final rrectShadow = RRect.fromRectAndRadius(const Offset(0, 3) & size, const Radius.circular(_kRadius));
 
       final shadowPaint = Paint()
         ..strokeWidth = 1
         ..color = Colors.grey
         ..style = PaintingStyle.stroke
-        ..maskFilter = MaskFilter.blur(BlurStyle.normal, 6);
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
       final borderPaint = Paint()
         ..strokeWidth = _kBorderWidth
         ..color = Colors.white

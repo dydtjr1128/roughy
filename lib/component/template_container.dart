@@ -28,16 +28,16 @@ class _TemplateContainerState extends State<TemplateContainer> {
     _isFavoriteSelected = widget.template.isFavorite;
     return Card(
       elevation: 0,
-      color: Color.fromRGBO(255, 255, 255, 1),
+      color: const Color.fromRGBO(255, 255, 255, 1),
       //shadowColor: Colors.blue,
       shape: RoundedRectangleBorder(
         borderRadius: widget._baseBorderRadius,
-        side: BorderSide(
+        side: const BorderSide(
           color: Colors.grey,
           width: 0.5,
         ),
       ),
-      margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
+      margin: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
       child: InkWell(
           borderRadius: widget._baseBorderRadius,
           onTap: () => widget.onTap(widget.containerIndex, context),
@@ -46,23 +46,23 @@ class _TemplateContainerState extends State<TemplateContainer> {
                 borderRadius: widget._baseBorderRadius,
                 color: Colors.transparent,
               ),
-              child: new Stack(
+              child: Stack(
                 children: <Widget>[
                   ClipRRect(
                       child: Center(
                     child: Container(
+                      height: MediaQuery.of(context).size.height,
+                      margin: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 0.0),
                       child: Image.asset("assets/templates/${widget.template.imageName}",
                           fit: BoxFit.contain),
-                      height: MediaQuery.of(context).size.height,
-                      margin: EdgeInsets.symmetric(vertical: 15.0, horizontal: 0.0),
                     ),
                   )),
-                  new Positioned(
+                  Positioned(
                       left: 5.0,
                       top: 5.0,
-                      child: new Container(
+                      child: Container(
                           //decoration: new BoxDecoration(color: Colors.red),
-                          child: new Row(
+                          child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
@@ -77,8 +77,8 @@ class _TemplateContainerState extends State<TemplateContainer> {
                               },
                               child: SvgPicture.asset('assets/icons/for_you.svg',
                                   color: _isFavoriteSelected
-                                      ? Color.fromRGBO(146, 196, 242, 1)
-                                      : Color.fromRGBO(217, 217, 217, 1)),
+                                      ? const Color.fromRGBO(146, 196, 242, 1)
+                                      : const Color.fromRGBO(217, 217, 217, 1)),
                             ),
                           ]))),
                 ],

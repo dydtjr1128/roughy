@@ -1,6 +1,6 @@
 import 'dart:ui' as ui;
 
-import 'package:Roughy/data/RoughyData.dart';
+import 'package:Roughy/data/roughy_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -20,7 +20,7 @@ class RoughyForegroundPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) async {
     ui.Paint paint = new ui.Paint()..strokeCap = StrokeCap.round;
     int len = points.length;
-    for (int i = 0; i < len &&  i+1 < len; i++) {
+    for (int i = 0; i < len && i + 1 < len; i++) {
       if (points[i] == null) {
         continue;
       } else if (points[i + 1] != null) {
