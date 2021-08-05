@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:Roughy/component/roughy_app_bar.dart';
 import 'package:Roughy/component/template_container.dart';
 import 'package:Roughy/data/Template.dart';
@@ -27,7 +29,19 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
   Future<void> initializeTemplates() async {
     final List<Template> templateList = [];
     // 템플릿 셋팅 부분, 하트 정렬은 uniqueName 으로 셋팅하기 때문에 이미지 이름이 같아도 됨.
-    templateList
+    final manifestJson = await DefaultAssetBundle.of(context).loadString('AssetManifest.json');
+    final imagePaths = json
+        .decode(manifestJson)
+        .keys
+        .where((String key) => key.startsWith('assets/templates'))
+        .where((String key) => key.endsWith('.png'))
+        .map((e) => e.substring(e.lastIndexOf("/")))
+        .toList();
+
+    for (final String path in imagePaths) {
+      templateList.add(Template(imageName: path));
+    }
+/*    templateList
       ..add(Template(imageName: "FRAME_circle1.png"))
       ..add(Template(imageName: "FRAME_circle2.png"))
       ..add(Template(imageName: "FRAME_circle3.png"))
@@ -38,22 +52,20 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
       ..add(Template(imageName: "FRAME_polaroid1.png"))
       ..add(Template(imageName: "FRAME_polaroid2.png"))
       ..add(Template(imageName: "FRAME_square1.png"))
-      ..add(Template(imageName: "FRAME_square2.png"));
+      ..add(Template(imageName: "FRAME_square2.png"));*/
 
     // 사용자가 설정한 Favorite 값 로드
     final prefs = await SharedPreferences.getInstance();
-    templateList.forEach((template) {
-      bool? temp = prefs.getBool(template.imageName);
+    for (final Template template in templateList) {
+      final bool? temp = prefs.getBool(template.imageName);
       if (temp == true) {
         template.isFavorite = true;
       }
-    });
+    }
 
     setState(() {
       for (int i = 0; i < templateList.length; i++) {
-        precacheImage(
-            Image.asset("assets/templates/${templateList[i].imageName}").image,
-            context);
+        precacheImage(Image.asset("assets/templates/${templateList[i].imageName}").image, context);
         templateContainerList.add(TemplateContainer(
           onTap: _onTemplateSelect,
           onFavoriteTap: _onTemplateFavoriteSelect,
@@ -64,8 +76,7 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
     });
   }
 
-  void _onTemplateFavoriteSelect(
-      int index, bool isSelected, BuildContext context) async {
+  void _onTemplateFavoriteSelect(int index, bool isSelected, BuildContext context) async {
     print("${"call _onTemplateFavoriteSelect() $index page "}$isSelected");
 
     setState(() {
@@ -73,11 +84,9 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
     });
     final prefs = await SharedPreferences.getInstance();
     if (isSelected) {
-      prefs.setBool(
-          templateKey + templateContainerList[index].template.imageName, true);
+      prefs.setBool(templateKey + templateContainerList[index].template.imageName, true);
     } else {
-      prefs.remove(
-          templateKey + templateContainerList[index].template.imageName);
+      prefs.remove(templateKey + templateContainerList[index].template.imageName);
     }
   }
 
@@ -89,8 +98,7 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
         platformPageRoute(
             builder: (_) {
               return ImageViewPage(
-                path:
-                    "assets/templates/${templateContainerList[index].template.imageName}",
+                path: "assets/templates/${templateContainerList[index].template.imageName}",
               );
             },
             context: context));
@@ -135,9 +143,7 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
       body: Container(
         decoration: const BoxDecoration(color: Colors.white),
         child: GridView.count(
-            crossAxisCount: 2,
-            childAspectRatio: itemWidth / itemHeight,
-            children: gridTileList),
+            crossAxisCount: 2, childAspectRatio: itemWidth / itemHeight, children: gridTileList),
       ),
     );
   }
