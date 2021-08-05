@@ -110,7 +110,7 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
     final double itemHeight = (size.height) / 3.5;
     final double itemWidth = size.width / 2;
 
-    var gridTileList = _isFavoriteSelected
+    final gridTileList = _isFavoriteSelected
         ? templateContainerList
             .where((container) => container.template.isFavorite)
             .map((container) => GridTile(
