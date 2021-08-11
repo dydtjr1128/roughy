@@ -123,13 +123,14 @@ class _MyAlbumWidgetState extends State<MyAlbumWidget> {
               child: container,
             ))
         .toList();
+    print("@@@@@${itemWidth / itemHeight}이에요~");
     return Scaffold(
         appBar: RoughyAppBar(
           titleText: "MY ALBUM",
         ),
         body: GridView.count(
             crossAxisCount: 2,
-            childAspectRatio: itemWidth / itemHeight,
+            childAspectRatio: 0.7,
             children: gridTileList));
   }
 }
