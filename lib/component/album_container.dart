@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class AlbumContainer extends StatefulWidget {
   final Function onTap;
@@ -38,7 +37,7 @@ class _AlbumContainerState extends State<AlbumContainer> {
                     height: 20,
                     color: Colors.black,
                     child: Center(
-                      child: PlatformText((widget.containerIndex + 1).toString(),
+                      child: Text((widget.containerIndex + 1).toString(),
                           style: const TextStyle(
                               fontFamily: 'SimplicityRegular', fontSize: 15, color: Colors.white)),
                     ),

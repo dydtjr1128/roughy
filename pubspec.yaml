@@ -30,13 +30,13 @@ dependencies:
   image: ^3.0.2
   dotted_border: ^2.0.0+1
   cupertino_icons: ^1.0.2
-  flutter_platform_widgets: ^1.2.0
+  flutter_platform_widgets: ^1.9.5
   shared_preferences: ^2.0.5
   flutter_svg: ^0.22.0
   path_provider: ^2.0.1
   path: ^1.7.0
   intl: ^0.17.0
-  gallery_saver: ^2.1.0
+  gallery_saver: ^2.1.3
   url_launcher: ^6.0.9
   flutter_launcher_icons: ^0.9.1
   lint: ^1.5.3
@@ -82,7 +82,9 @@ flutter:
     - family: Yanolja
       fonts:
         - asset: assets/fonts/야놀자 야체 Regular.ttf
-
+    - family: AppleSDGothicNeoSB
+      fonts:
+        - asset: assets/fonts/AppleSDGothicNeoSB.ttf
 
   assets:
     - assets/images/

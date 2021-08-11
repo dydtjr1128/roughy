@@ -30,13 +30,13 @@ class _RoughyAppBarState extends State<RoughyAppBar> {
           AppBar(
             automaticallyImplyLeading: true,
             elevation: 1,
-            iconTheme: IconThemeData(
+            iconTheme: const IconThemeData(
               color: Colors.black, //change your color here
             ),
             toolbarHeight: widget.appBarHeight,
-            title: PlatformText(widget.titleText,
+            title: Text(widget.titleText,
                 style:
-                    TextStyle(fontFamily: 'SimplicityRegular', fontSize: 37, color: Colors.black)),
+                    const TextStyle(fontFamily: 'SimplicityRegular', fontSize: 37, color: Colors.black)),
             backgroundColor: Colors.white,
             centerTitle: widget.isCenterTitle,
             actions: widget.iconWidget == null ? null : <Widget>[widget.iconWidget!],
