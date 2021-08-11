@@ -1,3 +1,4 @@
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -14,7 +15,7 @@ class RoundShadowButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
     final double itemHeight = size.height;
     final double itemWidth = size.width;
     return Stack(children: [
@@ -27,10 +28,14 @@ class RoundShadowButton extends StatelessWidget {
             maxHeight: itemHeight,
             maxWidth: itemWidth,
           ),
-          child: Container(
+          /*child: Container(
               child: CustomPaint(
                   painter: MyPainter(isSelect),
-                  child: Container(padding: const EdgeInsets.all(10), child: child))),
+                  child: Container(padding: const EdgeInsets.all(10), child: child))),*/
+          child: DottedBorder(
+              color: Colors.black,
+              strokeWidth: isSelect ? 1 : 0,
+              child: Container(padding: const EdgeInsets.all(10), child: child)),
         ),
       ),
       if (isSelect)
@@ -46,7 +51,7 @@ class RoundShadowButton extends StatelessWidget {
                   onRemove();
                 }, // inkwell color
                 child: const Icon(
-                  Icons.horizontal_rule,
+                  Icons.close_rounded,
                   color: Colors.white,
                   size: 28,
                 ),
@@ -69,8 +74,10 @@ class MyPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     if (isSelect) {
-      final rrectBorder = RRect.fromRectAndRadius(Offset.zero & size, const Radius.circular(_kRadius));
-      final rrectShadow = RRect.fromRectAndRadius(const Offset(0, 3) & size, const Radius.circular(_kRadius));
+      final rrectBorder =
+          RRect.fromRectAndRadius(Offset.zero & size, const Radius.circular(_kRadius));
+      final rrectShadow =
+          RRect.fromRectAndRadius(const Offset(0, 3) & size, const Radius.circular(_kRadius));
 
       final shadowPaint = Paint()
         ..strokeWidth = 1
