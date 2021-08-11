@@ -33,8 +33,9 @@ class RoundShadowButton extends StatelessWidget {
                   painter: MyPainter(isSelect),
                   child: Container(padding: const EdgeInsets.all(10), child: child))),*/
           child: DottedBorder(
-              color: Colors.black,
-              strokeWidth: isSelect ? 1 : 0,
+              color: isSelect ? Colors.black : Colors.transparent,
+              dashPattern: [8, 4],
+              strokeWidth: 2,
               child: Container(padding: const EdgeInsets.all(10), child: child)),
         ),
       ),
