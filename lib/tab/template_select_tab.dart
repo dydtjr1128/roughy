@@ -35,10 +35,12 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
         .keys
         .where((String key) => key.startsWith('assets/templates'))
         .where((String key) => key.endsWith('.png'))
-        .map((e) => e.substring(e.lastIndexOf("/")))
+        .map((e) => e.substring(e.lastIndexOf("/")+1))
         .toList();
 
+
     for (final String path in imagePaths) {
+      print("@@@@@${path}");
       templateList.add(Template(imageName: path));
     }
 /*    templateList
