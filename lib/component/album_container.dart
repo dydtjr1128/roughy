@@ -31,23 +31,27 @@ class _AlbumContainerState extends State<AlbumContainer> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  ClipOval(
-                      child: Container(
-                    width: 20,
-                    height: 20,
-                    color: Colors.black,
-                    child: Center(
-                      child: Text((widget.containerIndex + 1).toString(),
-                          style: const TextStyle(
-                              fontFamily: 'SimplicityRegular', fontSize: 15, color: Colors.white)),
-                    ),
-                  )),
+                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                    ClipOval(
+                        child: Container(
+                      width: 20,
+                      height: 20,
+                      color: Colors.black,
+                      child: Center(
+                        child: Text((widget.containerIndex + 1).toString(),
+                            style: const TextStyle(
+                                fontFamily: 'SimplicityRegular',
+                                fontSize: 15,
+                                color: Colors.white)),
+                      ),
+                    ))
+                  ]),
                   Expanded(
                       child: Container(
                     margin: const EdgeInsets.only(top: 10),
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                          fit: BoxFit.scaleDown, image: FileImage(File(widget.path))),
+                          fit: BoxFit.contain, image: FileImage(File(widget.path))),
                     ),
                   ))
                 ],
