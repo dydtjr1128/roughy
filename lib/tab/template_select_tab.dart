@@ -4,6 +4,7 @@ import 'package:Roughy/component/roughy_app_bar.dart';
 import 'package:Roughy/component/template_container.dart';
 import 'package:Roughy/data/Template.dart';
 import 'package:Roughy/page/decorating/image_view_page.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -29,16 +30,18 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
   Future<void> initializeTemplates() async {
     final List<Template> templateList = [];
     // 템플릿 셋팅 부분, 하트 정렬은 uniqueName 으로 셋팅하기 때문에 이미지 이름이 같아도 됨.
-    final manifestJson = await DefaultAssetBundle.of(context).loadString('AssetManifest.json');
-    final imagePaths = json
-        .decode(manifestJson)
-        .keys
+    final String manifestJson =
+        await DefaultAssetBundle.of(context).loadString('AssetManifest.json');
+
+    final Iterable iterable = json.decode(manifestJson).keys as Iterable;
+    final List<String> imagePaths = iterable
+        .map((v) => v as String)
         .where((String key) => key.startsWith('assets/templates'))
         .where((String key) => key.endsWith('.png'))
-        .map((e) => e.substring(e.lastIndexOf("/")+1))
+        .map((String key) => key.substring(key.lastIndexOf("/") + 1))
         .toList();
 
-
+    imagePaths.sort(compareNatural);
     for (final String path in imagePaths) {
       print("@@@@@${path}");
       templateList.add(Template(imageName: path));
