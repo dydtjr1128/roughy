@@ -37,6 +37,7 @@ dependencies:
   path: ^1.7.0
   intl: ^0.17.0
   gallery_saver: ^2.1.0
+  url_launcher: ^6.0.9
   flutter_launcher_icons: ^0.9.1
   lint: ^1.5.3
 dev_dependencies:
