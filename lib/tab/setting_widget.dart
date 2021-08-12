@@ -18,9 +18,6 @@ class SettingWidget extends StatelessWidget {
           titleText: "SETTING",
         ),
         body: ListView(children: <Widget>[
-          const ListTile(
-            title: Text('약관 및 정책'),
-          ),
           ListTile(
             title: const Text('오픈 소스 라이센스'),
             onTap: () {
@@ -43,7 +40,7 @@ class SettingWidget extends StatelessWidget {
                   "https://docs.google.com/forms/d/1dYwS5T_-CsumfTOQjWvrKBPiHH-5lDgWkps9OKoc_tg/edit?usp=sharing")),
           ListTile(
               title: const Text('공식 인스타그램'),
-              onTap: () => launchBrowser("https://www.instagram.com/vanila_people/"))
+              onTap: () { launchBrowser("https://www.instagram.com/vanila_people/");})
         ]));
   }
 }
