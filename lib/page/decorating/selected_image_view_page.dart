@@ -71,11 +71,10 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         ],
         drawingLineDepths = [1, 3, 5, 7, 9],
         textFontList = [
-          "ChosunNm",
-          "SpoqaHanSansNeoRegular",
-          "SDSamliphopangcheTTFOutline",
-          "MiMi",
-          "HYUNJUNG"
+          "Eulyoo1945-SemiBold",
+          "Pretendard-Medium",
+          "SolInsany",
+          "PFStardust",
         ],
         isNextButtonClicked = false,
         isIgnoreTouch = true,
