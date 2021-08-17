@@ -116,7 +116,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     });
   }
 
-  void onDrawingRollbackButtonClicked(BuildContext context) {
+  void onDrawingRollbackButtonClicked() {
     if (points.isEmpty) return;
     setState(() {
       points.removeLast();
@@ -127,28 +127,28 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     });
   }
 
-  void onNextButtonClicked(BuildContext context) {
+  void onNextButtonClicked() {
     setState(() {
       isIgnoreTouch = false;
       isNextButtonClicked = true;
     });
   }
 
-  void onDrawEditButtonClicked(BuildContext context) {
+  void onDrawEditButtonClicked() {
     setState(() {
       setAllRoughyGestureTextWidgetChangToNotSelected();
       switchToDrawingEditPanelPanel();
     });
   }
 
-  void onResizeButtonClicked(BuildContext context) {
+  void onResizeButtonClicked() {
     selectedRoughyGestureText = null;
     setState(() {
       swapStackChildren();
     });
   }
 
-  void onTextEditButtonClicked(BuildContext context) async {
+  void onTextEditButtonClicked() async {
     final String? result = await Navigator.push(
       context,
       platformPageRoute(
@@ -379,8 +379,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         width: templateWidth,
         height: templateHeight,
         child: Stack(children: [
-          croppedImageInteractiveViewer(
-              _templateImage.width.toDouble(), _templateImage.height.toDouble()),
+          croppedImageInteractiveViewer(_templateImage.width.toDouble(),
+              _templateImage.height.toDouble()),
           IgnorePointer(
             ignoring: isIgnoreTouch,
             child: roughyCustomPaint(),
@@ -446,6 +446,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     print("itemHeight : $itemHeight, itemWidth : $itemWidth");
 
     void updateDrawingPosition(ui.Offset localOffset) {
+      print("@@@${localOffset.toString()}");
       if (isDrawingPanelVisible) {
         setState(() {
           if (isInsideOffset(localOffset, templateWidth, templateHeight)) {
@@ -494,7 +495,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       });
     }
 
-    return Scaffold(
+    return SafeArea(
+        child: Scaffold(
       backgroundColor: Color.fromRGBO(235, 235, 235, 1),
       appBar: RoughyAppBar(
         titleText: titleText,
@@ -575,7 +577,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                             padding: const EdgeInsets.all(35),
                             child: isDrawingPanelVisible
                                 ? GestureDetector(
-                                    behavior: HitTestBehavior.opaque,
+                                    /*
+                                    behavior: HitTestBehavior.opaque,*/
                                     onPanCancel: () =>
                                         initializeDrawingPosition(),
                                     onPanStart: (details) =>
@@ -605,39 +608,35 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
               else
                 Row(),
               if (isNextButtonClicked)
-                buildRoughyBottomAppbar(context)
+                buildRoughyBottomAppbar()
               else
-                buildRoughyBottomResizeAppbar(context),
+                buildRoughyBottomResizeAppbar(),
             ],
           )),
-    );
+    ));
   }
 
-  RoughyBottomAppbar buildRoughyBottomResizeAppbar(BuildContext context) {
+  RoughyBottomAppbar buildRoughyBottomResizeAppbar() {
     return RoughyBottomAppbar(
-        child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
-            child: Row(children: <Widget>[
-              const Expanded(child: SizedBox()),
-              OutlineRoundButton(
-                  radius: 15.0,
-                  onTap: () => onNextButtonClicked(context),
-                  child: const Center(
-                      child: Text(
-                    "다음",
-                    style: TextStyle(color: Colors.black, fontSize: 16),
-                  )))
-            ])));
+        child: Row(children: <Widget>[
+      const Expanded(child: SizedBox()),
+      OutlineRoundButton(
+          radius: 15.0,
+          onTap: () => onNextButtonClicked(),
+          child: const Center(
+              child: Text(
+            "다음",
+            style: TextStyle(color: Colors.black, fontSize: 16),
+          )))
+    ]));
   }
 
-  RoughyBottomAppbar buildRoughyBottomAppbar(BuildContext context) {
+  RoughyBottomAppbar buildRoughyBottomAppbar() {
     return RoughyBottomAppbar(
-        child: Padding(
-      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 15),
       child: Row(children: <Widget>[
         OutlineCircleButton(
             radius: 45.0,
-            onTap: () => onTextEditButtonClicked(context),
+            onTap: () => onTextEditButtonClicked(),
             child: Center(
                 child: SvgPicture.asset('assets/icons/text.svg',
                     width: 24,
@@ -647,7 +646,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                         : unselectedIconColor))),
         OutlineCircleButton(
             radius: 45.0,
-            onTap: () => onDrawEditButtonClicked(context),
+            onTap: () => onDrawEditButtonClicked(),
             child: Center(
                 child: SvgPicture.asset('assets/icons/roughy_option.svg',
                     width: 28,
@@ -660,7 +659,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
           OutlineRoundButton(
               radius: 15.0,
               foregroundColor: Colors.white,
-              onTap: () => onDrawingRollbackButtonClicked(context),
+              onTap: () => onDrawingRollbackButtonClicked(),
               child: const Center(
                   child: Text(
                 "되돌리기",
@@ -669,6 +668,6 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         else
           Container()
       ]),
-    ));
+    );
   }
 }

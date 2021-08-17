@@ -16,8 +16,11 @@ class RoughyBottomAppbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double additionalBottomPadding =
+        MediaQuery.of(context).padding.bottom;
+    print("@@!!${additionalBottomPadding}!!");
     return Container(
-        height: height,
+        height: height + additionalBottomPadding,
         decoration: BoxDecoration(
             color: foregroundColor,
             border: const Border(
@@ -26,6 +29,8 @@ class RoughyBottomAppbar extends StatelessWidget {
                 width: 0.1,
               ),
             )),
-        child: child ?? const SizedBox());
+        child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: child ?? const SizedBox()));
   }
 }

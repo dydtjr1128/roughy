@@ -107,40 +107,38 @@ class _ImageViewPageState extends State<ImageViewPage> {
     final double itemHeight = size.height * 0.65;
     final double itemWidth = size.width;
     return Scaffold(
-        backgroundColor: const Color.fromRGBO(249, 249, 249, 1),
-        appBar: RoughyAppBar(
-          titleText: "Template",
-          isCenterTitle: true,
+      backgroundColor: const Color.fromRGBO(249, 249, 249, 1),
+      appBar: RoughyAppBar(
+        titleText: "Template",
+        isCenterTitle: true,
+      ),
+      body: Center(
+          child: Container(
+              height: itemHeight,
+              width: itemWidth,
+              padding:
+                  const EdgeInsets.symmetric(vertical: 15, horizontal: 0.0),
+              child: Stack(
+                children: [
+                  Center(
+                      child: Image.asset(widget.path, fit: BoxFit.fitHeight)),
+                ],
+              ))),
+      bottomNavigationBar: RoughyBottomAppbar(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            OutlineCircleButton(
+                radius: 50.0,
+                onTap: () => onClickDecorationButton(context),
+                child: const Center(
+                    child: Text(
+                  "꾸미기",
+                  style: TextStyle(color: Colors.black),
+                )))
+          ],
         ),
-        body: Center(
-            child: Container(
-                height: itemHeight,
-                width: itemWidth,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 15, horizontal: 0.0),
-                child: Stack(
-                  children: [
-                    Center(
-                        child: Image.asset(widget.path, fit: BoxFit.fitHeight)),
-                  ],
-                ))),
-        bottomNavigationBar: RoughyBottomAppbar(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 15.0, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                OutlineCircleButton(
-                    radius: 50.0,
-                    onTap: () => onClickDecorationButton(context),
-                    child: const Center(
-                        child: Text(
-                      "꾸미기",
-                      style: TextStyle(color: Colors.black),
-                    )))
-              ],
-            ),
-          ),
-        ));
+      ),
+    );
   }
 }
