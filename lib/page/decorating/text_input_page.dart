@@ -37,7 +37,8 @@ class _TextInputPageState extends State<TextInputPage> {
           child: TextFormField(
               autofocus: true,
               maxLines: 100,
-              style: const TextStyle(fontSize: 27, fontFamily: 'SimplicityRegular'),
+              cursorColor: Colors.black,
+              style: const TextStyle(fontSize: 27, fontFamily: 'SimplicityRegular',color: Colors.black),
               controller: _textController,
               decoration: const InputDecoration(
                   hintText: 'Please enter text',
