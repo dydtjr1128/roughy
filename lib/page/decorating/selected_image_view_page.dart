@@ -22,10 +22,10 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
 class SelectedImageViewPage extends StatefulWidget {
-  final File templateImage, croppedImage;
+  final File templateImage;
+  final File croppedImage;
 
-  const SelectedImageViewPage(
-      {required this.croppedImage, required this.templateImage});
+  const SelectedImageViewPage({required this.croppedImage, required this.templateImage});
 
   @override
   _SelectedImageViewPageState createState() => _SelectedImageViewPageState();
@@ -33,7 +33,7 @@ class SelectedImageViewPage extends StatefulWidget {
 
 class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   String titleText;
-  late ui.Image _templateImage, _croppedImage;
+  late ui.Image _templateImage;
   bool isDrawingPanelVisible = false;
   bool isTextEditPanelVisible = false;
   final List<dynamic> points = [];
@@ -47,7 +47,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   late double selectedDrawingLineDepth;
   GlobalKey captureKey = GlobalKey();
   bool isCaptureMode = false;
-  final Color selectedIconColor, unselectedIconColor;
+  final Color selectedIconColor;
+  final Color unselectedIconColor;
   List<Widget> stackChildren = [];
   bool isInteractiveViewerFront;
   bool isNextButtonClicked;
@@ -78,7 +79,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         ],
         isNextButtonClicked = false,
         isIgnoreTouch = true,
-        this.isInteractiveViewerFront = true {
+        isInteractiveViewerFront = true {
     selectedTextRoughyFont = textFontList[1];
     selectedDrawingColor = drawingColors[2];
     selectedDrawingLineDepth = drawingLineDepths[2];
@@ -91,29 +92,25 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   }
 
   Future<ui.Image> loadImage(Uint8List list) async {
-    ui.Codec codec = await ui.instantiateImageCodec(list);
-    ui.FrameInfo fi = await codec.getNextFrame();
+    final ui.Codec codec = await ui.instantiateImageCodec(list);
+    final ui.FrameInfo fi = await codec.getNextFrame();
     return fi.image;
   }
 
-  void initializeImages() async {
-    ByteData data = await rootBundle.load(widget.templateImage.path);
+  Future<ui.Image> initializeImages() async {
+    final ByteData data = await rootBundle.load(widget.templateImage.path);
 
-    final templateImage = await loadImage(Uint8List.view(data.buffer));
+    final ui.Image templateImage = await loadImage(Uint8List.view(data.buffer));
 
     // croppedImage 와 같이 빌드시 만든 이미지가 아닌 경우 바이트 읽어와서 따로 처리해야함
-    final croppedImage = await loadImage(widget.croppedImage.readAsBytesSync());
+    final ui.Image croppedImage = await loadImage(widget.croppedImage.readAsBytesSync());
 
     // @@@@ 이건 테스트 이미지 코드
 /*    ByteData data = await rootBundle.load(widget.templateImage.path);
     ByteData data2 = await rootBundle.load(widget.croppedImage.path);
     final templateImage = await loadImage(Uint8List.view(data.buffer));
     final croppedImage = await loadImage(Uint8List.view(data2.buffer));*/
-
-    setState(() {
-      _templateImage = templateImage;
-      _croppedImage = croppedImage;
-    });
+    return templateImage;
   }
 
   void onDrawingRollbackButtonClicked() {
