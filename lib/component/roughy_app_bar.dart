@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 class RoughyAppBar extends StatefulWidget with PreferredSizeWidget {
   final double appBarHeight = 60.0;
@@ -15,7 +14,7 @@ class RoughyAppBar extends StatefulWidget with PreferredSizeWidget {
       this.isCenterTitle = false});
 
   @override
-  get preferredSize => Size.fromHeight(appBarHeight);
+  Size get preferredSize => Size.fromHeight(appBarHeight);
 
   @override
   _RoughyAppBarState createState() => _RoughyAppBarState();
@@ -35,8 +34,8 @@ class _RoughyAppBarState extends State<RoughyAppBar> {
             ),
             toolbarHeight: widget.appBarHeight,
             title: Text(widget.titleText,
-                style:
-                    const TextStyle(fontFamily: 'SimplicityRegular', fontSize: 37, color: Colors.black)),
+                style: const TextStyle(
+                    fontFamily: 'SimplicityRegular', fontSize: 37, color: Colors.black)),
             backgroundColor: Colors.white,
             centerTitle: widget.isCenterTitle,
             actions: widget.iconWidget == null ? null : <Widget>[widget.iconWidget!],

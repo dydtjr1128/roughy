@@ -177,7 +177,7 @@ class _FirstPageWidgetState extends State<FirstPageWidget> {
                               platformPageRoute(
                                   context: context,
                                   builder: (context) {
-                                    return ImageViewPage(
+                                    return const ImageViewPage(
                                         path: "assets/templates/base.png");
                                   }))
                         },

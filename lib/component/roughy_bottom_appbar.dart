@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class RoughyBottomAppbar extends StatelessWidget {
-  RoughyBottomAppbar({
+  const RoughyBottomAppbar({
     this.onTap,
-    this.height: 50.0,
-    this.foregroundColor: Colors.white,
+    this.height = 50.0,
+    this.foregroundColor = Colors.white,
     this.child,
   });
 
@@ -16,9 +16,8 @@ class RoughyBottomAppbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double additionalBottomPadding =
-        MediaQuery.of(context).padding.bottom;
-    print("@@!!${additionalBottomPadding}!!");
+    final double additionalBottomPadding = MediaQuery.of(context).padding.bottom;
+    print("@@!!$additionalBottomPadding!!");
     return Container(
         height: height + additionalBottomPadding,
         decoration: BoxDecoration(
@@ -30,7 +29,6 @@ class RoughyBottomAppbar extends StatelessWidget {
               ),
             )),
         child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15),
-            child: child ?? const SizedBox()));
+            padding: const EdgeInsets.symmetric(horizontal: 15), child: child ?? const SizedBox()));
   }
 }
