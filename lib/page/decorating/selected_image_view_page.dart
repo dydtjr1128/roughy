@@ -232,28 +232,22 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       this.selectedTextRoughyFont = selectedFontName;
     });
     if (selectedRoughyGestureText != null && isTextEditPanelVisible) {
-      selectedRoughyGestureText!.roughyGestureTextController
-          .setFont(selectedFontName);
+      selectedRoughyGestureText!.roughyGestureTextController.setFont(selectedFontName);
     }
   }
 
   void onSelectDrawingColor(ui.Color selectedDrawingColor, int index) {
-    print(
-        "색상 선택 : " + selectedDrawingColor.toString() + " " + index.toString());
+    print("색상 선택 : " + selectedDrawingColor.toString() + " " + index.toString());
     setState(() {
       this.selectedDrawingColor = selectedDrawingColor;
     });
     if (selectedRoughyGestureText != null && isTextEditPanelVisible) {
-      selectedRoughyGestureText!.roughyGestureTextController
-          .setFontColor(selectedDrawingColor);
+      selectedRoughyGestureText!.roughyGestureTextController.setFontColor(selectedDrawingColor);
     }
   }
 
   void onSelectDrawingDepth(double selectedDrawingLineDepth, int index) {
-    print("두께 선택 : " +
-        selectedDrawingLineDepth.toString() +
-        " " +
-        index.toString());
+    print("두께 선택 : " + selectedDrawingLineDepth.toString() + " " + index.toString());
     setState(() {
       this.selectedDrawingLineDepth = selectedDrawingLineDepth;
     });
