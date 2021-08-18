@@ -53,12 +53,14 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   bool isInteractiveViewerFront;
   bool isNextButtonClicked;
   bool isIgnoreTouch;
+  bool isImageLoaded;
 
   _SelectedImageViewPageState()
       : titleText = "Roughy",
         isCaptureMode = false,
         isDrawingPanelVisible = false,
         isTextEditPanelVisible = false,
+        isImageLoaded = false,
         selectedIconColor = const Color.fromRGBO(134, 185, 232, 1),
         unselectedIconColor = const Color.fromRGBO(217, 217, 217, 1),
         drawingColors = [
@@ -88,7 +90,12 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   @override
   void initState() {
     super.initState();
-    initializeImages();
+    initializeImages().then((templateImage) {
+      setState(() {
+        _templateImage = templateImage;
+        isImageLoaded = true;
+      });
+    });
   }
 
   Future<ui.Image> loadImage(Uint8List list) async {
@@ -408,20 +415,23 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     isInteractiveViewerFront = !isInteractiveViewerFront;
   }
 
-  InteractiveViewer croppedImageInteractiveViewer(double width, double height) {
+  Widget croppedImageInteractiveViewer(double width, double height, double twidth, double theight) {
     return InteractiveViewer(
-        constrained: true,
+        constrained: false,
         panEnabled: true,
         scaleEnabled: true,
-        child: Container(
-            width: width,
-            height: height,
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                        Colors.black.withOpacity(1.0), BlendMode.dstATop),
-                    image: FileImage(widget.croppedImage)))));
+        maxScale: 10.0,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: width, maxHeight: height),
+          child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  image: DecorationImage(
+                      fit: BoxFit.contain,
+                      colorFilter:
+                          ColorFilter.mode(Colors.black.withOpacity(1.0), BlendMode.dstATop),
+                      image: FileImage(widget.croppedImage)))),
+        ));
   }
 
   @override
@@ -430,12 +440,11 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     final double itemHeight = size.height;
     final double itemWidth = size.width;
     final templateHeight = (itemHeight - 150) * 0.7;
-    final templateWidth = templateHeight *
-        _templateImage.width.toDouble() /
-        _templateImage.height.toDouble();
-    print("templateHeight : $templateHeight, templateWidth : $templateWidth");
-
+    final templateWidth = isImageLoaded
+        ? templateHeight * _templateImage.width.toDouble() / _templateImage.height.toDouble()
+        : 0.0;
     print("itemHeight : $itemHeight, itemWidth : $itemWidth");
+    print("templateHeight : $templateHeight, templateWidth : $templateWidth");
 
     void updateDrawingPosition(ui.Offset localOffset) {
       print("@@@${localOffset.toString()}");
@@ -462,11 +471,10 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     }
 
     Future<void> _capturePng() async {
-      RenderRepaintBoundary boundary = captureKey.currentContext!
-          .findRenderObject()! as RenderRepaintBoundary;
+      RenderRepaintBoundary boundary =
+          captureKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
       ui.Image image = await boundary.toImage(pixelRatio: 3);
-      ByteData byteData =
-          (await image.toByteData(format: ui.ImageByteFormat.png))!;
+      ByteData byteData = (await image.toByteData(format: ui.ImageByteFormat.png))!;
       Uint8List pngBytes = byteData.buffer.asUint8List();
 
       String dir = (await getApplicationSupportDirectory()).path;
@@ -564,28 +572,25 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                       FittedBox(
                         fit: BoxFit.contain,
                         alignment: Alignment.center,
-                        child: Padding(
-                            padding: const EdgeInsets.all(35),
-                            child: isDrawingPanelVisible
-                                ? GestureDetector(
-                                    /*
+                        child: isImageLoaded
+                            ? Padding(
+                                padding: const EdgeInsets.all(35),
+                                child: isDrawingPanelVisible
+                                    ? GestureDetector(
+                                        /*
                                     behavior: HitTestBehavior.opaque,*/
-                                    onPanCancel: () =>
-                                        initializeDrawingPosition(),
-                                    onPanStart: (details) =>
-                                        updateDrawingPosition(
-                                            details.localPosition),
-                                    onPanDown: (details) =>
-                                        updateDrawingPosition(
-                                            details.localPosition),
-                                    onPanUpdate: (details) =>
-                                        updateDrawingPosition(
-                                            details.localPosition),
-                                    onPanEnd: (details) =>
-                                        initializeDrawingPosition(),
-                                    child: getCanvas(
-                                        templateWidth, templateHeight))
-                                : getCanvas(templateWidth, templateHeight)),
+                                        onPanCancel: () => initializeDrawingPosition(),
+                                        onPanStart: (details) =>
+                                            updateDrawingPosition(details.localPosition),
+                                        onPanDown: (details) =>
+                                            updateDrawingPosition(details.localPosition),
+                                        onPanUpdate: (details) =>
+                                            updateDrawingPosition(details.localPosition),
+                                        onPanEnd: (details) => initializeDrawingPosition(),
+                                        child: getCanvas(templateWidth, templateHeight))
+                                    : getCanvas(templateWidth, templateHeight))
+                            : const Padding(
+                                padding: EdgeInsets.all(100), child: CircularProgressIndicator()),
                       ),
                     ],
                   ),
