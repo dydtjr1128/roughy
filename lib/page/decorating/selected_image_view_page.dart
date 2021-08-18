@@ -298,8 +298,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       );
     }
     return RoughyBottomAppbar(
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list));
+        child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list));
   }
 
   Widget getDrawingLineDepthPanelWidgets() {
@@ -334,8 +333,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       ));
     }
     return RoughyBottomAppbar(
-      child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list),
     );
   }
 
@@ -353,9 +351,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                 style: TextStyle(
                     fontFamily: textFontList[i],
                     fontSize: 14,
-                    color: selectedTextRoughyFont == textFontList[i]
-                        ? Colors.black
-                        : Colors.grey),
+                    color: selectedTextRoughyFont == textFontList[i] ? Colors.black : Colors.grey),
               ))),
         ),
       );
@@ -364,8 +360,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     return RoughyBottomAppbar(
         child: Padding(
       padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-      child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list),
     ));
   }
 
@@ -376,8 +371,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         width: templateWidth,
         height: templateHeight,
         child: Stack(children: [
-          croppedImageInteractiveViewer(_templateImage.width.toDouble(),
-              _templateImage.height.toDouble()),
+          croppedImageInteractiveViewer(templateWidth, templateHeight,
+              _templateImage.width.toDouble(), _templateImage.height.toDouble()),
           IgnorePointer(
             ignoring: isIgnoreTouch,
             child: roughyCustomPaint(),
@@ -494,7 +489,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
 
     return SafeArea(
         child: Scaffold(
-      backgroundColor: Color.fromRGBO(235, 235, 235, 1),
+      backgroundColor: const Color.fromRGBO(235, 235, 235, 1),
       appBar: RoughyAppBar(
         titleText: titleText,
         isCenterTitle: true,
@@ -564,8 +559,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                     fit: StackFit.expand,
                     children: [
                       Container(
-                        decoration:
-                            const BoxDecoration(color: Colors.transparent),
+                        decoration: const BoxDecoration(color: Colors.transparent),
                       ),
                       FittedBox(
                         fit: BoxFit.contain,
@@ -600,10 +594,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
               if (isTextEditPanelVisible) getColorPanelWidgets() else Row(),
               if (isTextEditPanelVisible) getTextPanelWidgets() else Row(),
               if (isDrawingPanelVisible) getColorPanelWidgets() else Row(),
-              if (isDrawingPanelVisible)
-                getDrawingLineDepthPanelWidgets()
-              else
-                Row(),
+              if (isDrawingPanelVisible) getDrawingLineDepthPanelWidgets() else Row(),
               if (isNextButtonClicked)
                 buildRoughyBottomAppbar()
               else
@@ -638,9 +629,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                 child: SvgPicture.asset('assets/icons/text.svg',
                     width: 24,
                     height: 24,
-                    color: isTextEditPanelVisible
-                        ? selectedIconColor
-                        : unselectedIconColor))),
+                    color: isTextEditPanelVisible ? selectedIconColor : unselectedIconColor))),
         OutlineCircleButton(
             radius: 45.0,
             onTap: () => onDrawEditButtonClicked(),
@@ -648,9 +637,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                 child: SvgPicture.asset('assets/icons/roughy_option.svg',
                     width: 28,
                     height: 24,
-                    color: isDrawingPanelVisible
-                        ? selectedIconColor
-                        : unselectedIconColor))),
+                    color: isDrawingPanelVisible ? selectedIconColor : unselectedIconColor))),
         const Expanded(child: SizedBox()),
         if (isDrawingPanelVisible)
           OutlineRoundButton(
