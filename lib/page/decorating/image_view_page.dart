@@ -29,8 +29,8 @@ class _ImageViewPageState extends State<ImageViewPage> {
   final ImagePicker imagePicker = ImagePicker();
 
   void _getImage({required ImageSource source}) async {
-    final pickedFile =
-        await imagePicker.getImage(source: source, imageQuality: 100);
+    final XFile? pickedFile =
+        await imagePicker.pickImage(source: source, imageQuality: 100);
     if (pickedFile != null) {
       // 템플릿 이미지 가로 세로 길이 구하는 부분
       final Image templateImage = Image(image: AssetImage(widget.path));
@@ -43,18 +43,6 @@ class _ImageViewPageState extends State<ImageViewPage> {
       ui.Image info = await completer.future;
       int width = info.width;
       int height = info.height;
-
-      // 템플릿 이미지 가로 세로 사이즈에 맞게 자르도록 크롭
-/*
-      File croppedImage = (await ImageCropper.cropImage(
-        sourcePath: pickedFile.path,
-        aspectRatio: CropAspectRatio(ratioX: width.toDouble(), ratioY: height.toDouble()),
-        compressQuality: 100,
-        //maxHeight: 700,
-        //maxWidth: 700,
-        compressFormat: ImageCompressFormat.png,
-      ))!;
-*/
 
       await Navigator.push(
           context,
@@ -103,7 +91,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
     final double itemHeight = size.height * 0.65;
     final double itemWidth = size.width;
     return Scaffold(
