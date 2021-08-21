@@ -76,9 +76,9 @@ flutter:
     - family: UhBee-Rice
       fonts:
         - asset: assets/fonts/decorate_fonts/3.UhBee-Rice.ttf
-    - family: SolInsany
+    - family: Solinsunny
       fonts:
-        - asset: assets/fonts/decorate_fonts/4.솔인써니체.ttf
+        - asset: assets/fonts/decorate_fonts/4.Solinsunny.ttf
     - family: PFStardust
       fonts:
         - asset: assets/fonts/decorate_fonts/5.PFStardust.otf

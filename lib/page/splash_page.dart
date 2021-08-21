@@ -1,7 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter/widgets.dart';
 import 'package:Roughy/page/main_tabbed_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -15,7 +16,6 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
-
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -28,8 +28,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
         value: 0,
         lowerBound: 0,
         upperBound: 1);
-    _animation =
-        CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn);
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn);
     _controller.forward();
     _animation.addStatusListener((state) {
       if (state == AnimationStatus.completed) {}
@@ -57,8 +56,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
         context,
         platformPageRoute(
             context: context,
-            builder: (BuildContext context) =>
-                MainTabbedPage(widget.toggleBrightness)));
+            builder: (BuildContext context) => MainTabbedPage(widget.toggleBrightness)));
   }
 
   @override
@@ -68,9 +66,12 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
         child: FadeTransition(
             opacity: _animation,
             // The green box must be a child of the AnimatedOpacity widget.
-            child: Container(
-              child: SvgPicture.asset('assets/images/logo.svg', height: 100, width: 100),
-            )),
+            child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              SvgPicture.asset('assets/images/splash_logo.svg', height: 100, width: 100),
+              const Text("ROUGHY",
+                  style: TextStyle(
+                      fontFamily: 'SimplicityRegular', fontSize: 37, color: Colors.black)),
+            ])),
       ),
     );
   }
