@@ -73,6 +73,9 @@ flutter:
     - family: Pretendard-Medium
       fonts:
         - asset: assets/fonts/decorate_fonts/2.Pretendard-Medium.otf
+    - family: UhBee-Rice
+      fonts:
+        - asset: assets/fonts/decorate_fonts/3.UhBee-Rice.ttf
     - family: SolInsany
       fonts:
         - asset: assets/fonts/decorate_fonts/4.솔인써니체.ttf

@@ -73,6 +73,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         textFontList = [
           "Eulyoo1945-SemiBold",
           "Pretendard-Medium",
+          "UhBee-Rice",
           "SolInsany",
           "PFStardust",
         ],
