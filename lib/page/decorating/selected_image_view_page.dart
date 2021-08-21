@@ -25,7 +25,8 @@ class SelectedImageViewPage extends StatefulWidget {
   final File templateImage;
   final File croppedImage;
 
-  const SelectedImageViewPage({required this.croppedImage, required this.templateImage});
+  const SelectedImageViewPage(
+      {required this.croppedImage, required this.templateImage});
 
   @override
   _SelectedImageViewPageState createState() => _SelectedImageViewPageState();
@@ -111,7 +112,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     final ui.Image templateImage = await loadImage(Uint8List.view(data.buffer));
 
     // croppedImage 와 같이 빌드시 만든 이미지가 아닌 경우 바이트 읽어와서 따로 처리해야함
-    final ui.Image croppedImage = await loadImage(widget.croppedImage.readAsBytesSync());
+    final ui.Image croppedImage =
+        await loadImage(widget.croppedImage.readAsBytesSync());
 
     // @@@@ 이건 테스트 이미지 코드
 /*    ByteData data = await rootBundle.load(widget.templateImage.path);
@@ -233,22 +235,28 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       this.selectedTextRoughyFont = selectedFontName;
     });
     if (selectedRoughyGestureText != null && isTextEditPanelVisible) {
-      selectedRoughyGestureText!.roughyGestureTextController.setFont(selectedFontName);
+      selectedRoughyGestureText!.roughyGestureTextController
+          .setFont(selectedFontName);
     }
   }
 
   void onSelectDrawingColor(ui.Color selectedDrawingColor, int index) {
-    print("색상 선택 : " + selectedDrawingColor.toString() + " " + index.toString());
+    print(
+        "색상 선택 : " + selectedDrawingColor.toString() + " " + index.toString());
     setState(() {
       this.selectedDrawingColor = selectedDrawingColor;
     });
     if (selectedRoughyGestureText != null && isTextEditPanelVisible) {
-      selectedRoughyGestureText!.roughyGestureTextController.setFontColor(selectedDrawingColor);
+      selectedRoughyGestureText!.roughyGestureTextController
+          .setFontColor(selectedDrawingColor);
     }
   }
 
   void onSelectDrawingDepth(double selectedDrawingLineDepth, int index) {
-    print("두께 선택 : " + selectedDrawingLineDepth.toString() + " " + index.toString());
+    print("두께 선택 : " +
+        selectedDrawingLineDepth.toString() +
+        " " +
+        index.toString());
     setState(() {
       this.selectedDrawingLineDepth = selectedDrawingLineDepth;
     });
@@ -300,7 +308,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       );
     }
     return RoughyBottomAppbar(
-        child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list));
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list));
   }
 
   Widget getDrawingLineDepthPanelWidgets() {
@@ -335,7 +344,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       ));
     }
     return RoughyBottomAppbar(
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list),
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list),
     );
   }
 
@@ -353,7 +363,9 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                 style: TextStyle(
                     fontFamily: textFontList[i],
                     fontSize: 14,
-                    color: selectedTextRoughyFont == textFontList[i] ? Colors.black : Colors.grey),
+                    color: selectedTextRoughyFont == textFontList[i]
+                        ? Colors.black
+                        : Colors.grey),
               ))),
         ),
       );
@@ -362,7 +374,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     return RoughyBottomAppbar(
         child: Padding(
       padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list),
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween, children: list),
     ));
   }
 
@@ -373,8 +386,11 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
         width: templateWidth,
         height: templateHeight,
         child: Stack(children: [
-          croppedImageInteractiveViewer(templateWidth, templateHeight,
-              _templateImage.width.toDouble(), _templateImage.height.toDouble()),
+          croppedImageInteractiveViewer(
+              templateWidth,
+              templateHeight,
+              _templateImage.width.toDouble(),
+              _templateImage.height.toDouble()),
           IgnorePointer(
             ignoring: isIgnoreTouch,
             child: roughyCustomPaint(),
@@ -410,7 +426,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     isInteractiveViewerFront = !isInteractiveViewerFront;
   }
 
-  Widget croppedImageInteractiveViewer(double width, double height, double twidth, double theight) {
+  Widget croppedImageInteractiveViewer(
+      double width, double height, double twidth, double theight) {
     return InteractiveViewer(
         constrained: false,
         panEnabled: true,
@@ -423,8 +440,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                   color: Colors.white,
                   image: DecorationImage(
                       fit: BoxFit.contain,
-                      colorFilter:
-                          ColorFilter.mode(Colors.black.withOpacity(1.0), BlendMode.dstATop),
+                      colorFilter: ColorFilter.mode(
+                          Colors.black.withOpacity(1.0), BlendMode.dstATop),
                       image: FileImage(widget.croppedImage)))),
         ));
   }
@@ -436,8 +453,13 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     final double itemWidth = size.width;
     final templateHeight = (itemHeight - 150) * 0.7;
     final templateWidth = isImageLoaded
-        ? templateHeight * _templateImage.width.toDouble() / _templateImage.height.toDouble()
+        ? templateHeight *
+            _templateImage.width.toDouble() /
+            _templateImage.height.toDouble()
         : 0.0;
+    final double additionalBottomPadding =
+        MediaQuery.of(context).padding.bottom;
+    print("@@@@@@@@@$additionalBottomPadding!!");
     print("itemHeight : $itemHeight, itemWidth : $itemWidth");
     print("templateHeight : $templateHeight, templateWidth : $templateWidth");
 
@@ -466,10 +488,11 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     }
 
     Future<void> _capturePng() async {
-      RenderRepaintBoundary boundary =
-          captureKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+      RenderRepaintBoundary boundary = captureKey.currentContext!
+          .findRenderObject()! as RenderRepaintBoundary;
       ui.Image image = await boundary.toImage(pixelRatio: 3);
-      ByteData byteData = (await image.toByteData(format: ui.ImageByteFormat.png))!;
+      ByteData byteData =
+          (await image.toByteData(format: ui.ImageByteFormat.png))!;
       Uint8List pngBytes = byteData.buffer.asUint8List();
 
       String dir = (await getApplicationSupportDirectory()).path;
@@ -490,8 +513,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       });
     }
 
-    return SafeArea(
-        child: Scaffold(
+    return Scaffold(
       backgroundColor: const Color.fromRGBO(235, 235, 235, 1),
       appBar: RoughyAppBar(
         titleText: titleText,
@@ -562,7 +584,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                     fit: StackFit.expand,
                     children: [
                       Container(
-                        decoration: const BoxDecoration(color: Colors.transparent),
+                        decoration:
+                            const BoxDecoration(color: Colors.transparent),
                       ),
                       FittedBox(
                         fit: BoxFit.contain,
@@ -574,18 +597,25 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                                     ? GestureDetector(
                                         /*
                                     behavior: HitTestBehavior.opaque,*/
-                                        onPanCancel: () => initializeDrawingPosition(),
+                                        onPanCancel: () =>
+                                            initializeDrawingPosition(),
                                         onPanStart: (details) =>
-                                            updateDrawingPosition(details.localPosition),
+                                            updateDrawingPosition(
+                                                details.localPosition),
                                         onPanDown: (details) =>
-                                            updateDrawingPosition(details.localPosition),
+                                            updateDrawingPosition(
+                                                details.localPosition),
                                         onPanUpdate: (details) =>
-                                            updateDrawingPosition(details.localPosition),
-                                        onPanEnd: (details) => initializeDrawingPosition(),
-                                        child: getCanvas(templateWidth, templateHeight))
+                                            updateDrawingPosition(
+                                                details.localPosition),
+                                        onPanEnd: (details) =>
+                                            initializeDrawingPosition(),
+                                        child: getCanvas(
+                                            templateWidth, templateHeight))
                                     : getCanvas(templateWidth, templateHeight))
                             : const Padding(
-                                padding: EdgeInsets.all(100), child: CircularProgressIndicator()),
+                                padding: EdgeInsets.all(100),
+                                child: CircularProgressIndicator()),
                       ),
                     ],
                   ),
@@ -594,17 +624,26 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
               if (isTextEditPanelVisible) getColorPanelWidgets() else Row(),
               if (isTextEditPanelVisible) getTextPanelWidgets() else Row(),
               if (isDrawingPanelVisible) getColorPanelWidgets() else Row(),
-              if (isDrawingPanelVisible) getDrawingLineDepthPanelWidgets() else Row(),
-              if (isNextButtonClicked)
+              if (isDrawingPanelVisible)
+                getDrawingLineDepthPanelWidgets()
+              else
+                Row(),
+              /*   if (isNextButtonClicked)
                 buildRoughyBottomAppbar()
               else
-                buildRoughyBottomResizeAppbar(),
+                buildRoughyBottomResizeAppbar(),*/
             ],
           )),
-    ));
+      bottomNavigationBar: isNextButtonClicked
+          ? buildRoughyBottomAppbar()
+          : buildRoughyBottomResizeAppbar(),
+    );
   }
 
   RoughyBottomAppbar buildRoughyBottomResizeAppbar() {
+    final double additionalBottomPadding =
+        MediaQuery.of(context).padding.bottom;
+    print("@@123123!!$additionalBottomPadding!!");
     return RoughyBottomAppbar(
         child: Row(children: <Widget>[
       const Expanded(child: SizedBox()),
@@ -629,7 +668,9 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                 child: SvgPicture.asset('assets/icons/text.svg',
                     width: 24,
                     height: 24,
-                    color: isTextEditPanelVisible ? selectedIconColor : unselectedIconColor))),
+                    color: isTextEditPanelVisible
+                        ? selectedIconColor
+                        : unselectedIconColor))),
         OutlineCircleButton(
             radius: 45.0,
             onTap: () => onDrawEditButtonClicked(),
@@ -637,7 +678,9 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                 child: SvgPicture.asset('assets/icons/roughy_option.svg',
                     width: 28,
                     height: 24,
-                    color: isDrawingPanelVisible ? selectedIconColor : unselectedIconColor))),
+                    color: isDrawingPanelVisible
+                        ? selectedIconColor
+                        : unselectedIconColor))),
         const Expanded(child: SizedBox()),
         if (isDrawingPanelVisible)
           OutlineRoundButton(
