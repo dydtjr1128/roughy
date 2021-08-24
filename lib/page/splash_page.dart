@@ -28,7 +28,8 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
         value: 0,
         lowerBound: 0,
         upperBound: 1);
-    _animation = CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn);
+    _animation =
+        CurvedAnimation(parent: _controller, curve: Curves.fastOutSlowIn);
     _controller.forward();
     _animation.addStatusListener((state) {
       if (state == AnimationStatus.completed) {}
@@ -56,21 +57,32 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
         context,
         platformPageRoute(
             context: context,
-            builder: (BuildContext context) => MainTabbedPage(widget.toggleBrightness)));
+            builder: (BuildContext context) =>
+                MainTabbedPage(widget.toggleBrightness)));
   }
 
   @override
   Widget build(BuildContext context) {
-    return PlatformScaffold(
+    return Scaffold(
       body: Center(
         child: FadeTransition(
             opacity: _animation,
             // The green box must be a child of the AnimatedOpacity widget.
-            child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              SvgPicture.asset('assets/images/splash_logo.svg', height: 100, width: 100),
-              const Text("ROUGHY",
-                  style: TextStyle(
-                      fontFamily: 'SimplicityRegular', fontSize: 37, color: Colors.black)),
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              SvgPicture.asset('assets/images/splash_logo.svg',
+                  height: 100, width: 100),
+              const RotationTransition(
+                  turns: AlwaysStoppedAnimation(3 / 360),
+                  child: Text("ROUGHY",
+                      style: TextStyle(
+                          fontFamily: 'SimplicityRegular',
+                          fontSize: 37,
+                          color: Colors.black))),
+              Text('Some sample text'),
+              Text('Some sample text 1.1', textScaleFactor: 1.1),
+              Text('Some sample text 1,2', textScaleFactor: 1.2),
+                  Text('Some sample text 1,3', textScaleFactor: 1.3),
             ])),
       ),
     );
