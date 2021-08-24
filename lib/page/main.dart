@@ -26,7 +26,7 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+/*class _MyHomePageState extends State<MyHomePage> {
   Brightness brightness = Brightness.light;
 
   @override
@@ -34,7 +34,6 @@ class _MyHomePageState extends State<MyHomePage> {
     SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
     final materialTheme = ThemeData(
       fontFamily: 'Yanolja',
-      primarySwatch: Colors.purple,
     );
     final materialDarkTheme = ThemeData(
       brightness: Brightness.dark,
@@ -44,7 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final cupertinoTheme = CupertinoThemeData(
       brightness: brightness, // if null will use the system theme
       primaryColor: const CupertinoDynamicColor.withBrightness(
-        color: Colors.purple,
+        color: Colors.black,
         darkColor: Colors.cyan,
       ),
     );
@@ -82,5 +81,27 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
+  }
+}*/
+class _MyHomePageState extends State<MyHomePage> {
+  Brightness brightness = Brightness.light;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        title: "Roughy App",
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+            fontFamily: 'Yanolja',
+            textTheme: Theme.of(context)
+                .textTheme
+                .apply(fontSizeFactor: 1.2,fontFamily: 'Yanolja')),
+        home: SplashPage(() {
+          setState(() {
+            brightness = brightness == Brightness.light
+                ? Brightness.dark
+                : Brightness.light;
+          });
+        }));
   }
 }
