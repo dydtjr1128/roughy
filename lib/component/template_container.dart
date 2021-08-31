@@ -28,7 +28,7 @@ class _TemplateContainerState extends State<TemplateContainer> {
     _isFavoriteSelected = widget.template.isFavorite;
     return Card(
       elevation: 0,
-      color: const Color.fromRGBO(255, 255, 255, 1),
+      color: const Color.fromRGBO(245, 245, 245, 1),
       //shadowColor: Colors.blue,
       shape: RoundedRectangleBorder(
         borderRadius: widget._baseBorderRadius,
