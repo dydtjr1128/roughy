@@ -79,10 +79,10 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                           fontFamily: 'SimplicityRegular',
                           fontSize: 37,
                           color: Colors.black))),
-              Text('Some sample text'),
+       /*       Text('Some sample text'),
               Text('Some sample text 1.1', textScaleFactor: 1.1),
               Text('Some sample text 1,2', textScaleFactor: 1.2),
-                  Text('Some sample text 1,3', textScaleFactor: 1.3),
+                  Text('Some sample text 1,3', textScaleFactor: 1.3),*/
             ])),
       ),
     );
