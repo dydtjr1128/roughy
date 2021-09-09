@@ -457,11 +457,8 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
             _templateImage.width.toDouble() /
             _templateImage.height.toDouble()
         : 0.0;
-    final double additionalBottomPadding =
-        MediaQuery.of(context).padding.bottom;
-    print("@@@@@@@@@$additionalBottomPadding!!");
-    print("itemHeight : $itemHeight, itemWidth : $itemWidth");
-    print("templateHeight : $templateHeight, templateWidth : $templateWidth");
+    /*print("itemHeight : $itemHeight, itemWidth : $itemWidth");
+    print("templateHeight : $templateHeight, templateWidth : $templateWidth");*/
 
     void updateDrawingPosition(ui.Offset localOffset) {
       print("@@@${localOffset.toString()}");
@@ -597,18 +594,18 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                                     ? GestureDetector(
                                         /*
                                     behavior: HitTestBehavior.opaque,*/
-                                        onPanCancel: () =>
-                                            initializeDrawingPosition(),
-                                        onPanStart: (details) =>
+                                        /*onPanCancel: () =>
+                                            initializeDrawingPosition(),*/
+                                        onScaleStart: (details) =>
                                             updateDrawingPosition(
-                                                details.localPosition),
-                                        onPanDown: (details) =>
+                                                details.localFocalPoint),
+                                        /*onPanDown: (details) =>
                                             updateDrawingPosition(
-                                                details.localPosition),
-                                        onPanUpdate: (details) =>
+                                                details.localPosition),*/
+                                        onScaleUpdate: (details) =>
                                             updateDrawingPosition(
-                                                details.localPosition),
-                                        onPanEnd: (details) =>
+                                                details.localFocalPoint),
+                                        onScaleEnd: (details) =>
                                             initializeDrawingPosition(),
                                         child: getCanvas(
                                             templateWidth, templateHeight))
