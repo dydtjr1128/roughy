@@ -14,8 +14,7 @@ class _TextInputPageState extends State<TextInputPage> {
 
   setThisText() {
     final form = _formKey.currentState;
-    print("@@@@${form!.validate()} ${_textController.text}!@@");
-    if (form.validate()) {
+    if (form!.validate()) {
       print("@@@ ${_textController.text}");
       Navigator.pop(context, _textController.text);
     }
