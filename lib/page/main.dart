@@ -88,6 +88,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    // 세로 위쪽 방향 고정
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return MaterialApp(
         title: "Roughy App",
         debugShowCheckedModeBanner: false,
