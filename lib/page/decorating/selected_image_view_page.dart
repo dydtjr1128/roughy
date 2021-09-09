@@ -544,7 +544,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                                         PlatformDialogAction(
                                             onPressed: () {
                                               Navigator.pop(context);
-                                              Navigator.pop(context);
+                                              Navigator.pop(context, true);
                                             },
                                             child: PlatformText('Okay'))
                                       ]));
