@@ -16,11 +16,6 @@ class MainTabbedPage extends StatefulWidget {
 
 class _MainTabbedPageState extends State<MainTabbedPage> {
   final titles = ['템플릿', '앨범', '설정'];
-  final List<Widget> bodyWidgets = [
-    TemplateSelectWidget(),
-    MyAlbumWidget(),
-    SettingWidget(),
-  ];
   int _selectedIndex = 0;
 
   List<BottomNavigationBarItem> generateBottomNavigationBarItems(
@@ -59,6 +54,15 @@ class _MainTabbedPageState extends State<MainTabbedPage> {
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> bodyWidgets = [
+      TemplateSelectWidget((int index) {
+        setState(() {
+          _selectedIndex = index;
+        });
+      }),
+      MyAlbumWidget(),
+      SettingWidget(),
+    ];
     return Scaffold(
         bottomNavigationBar: BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
