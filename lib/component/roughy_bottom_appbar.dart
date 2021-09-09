@@ -17,7 +17,6 @@ class RoughyBottomAppbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double additionalBottomPadding = MediaQuery.of(context).padding.bottom;
-    print("@@!!$additionalBottomPadding!!");
     return Container(
         height: height + additionalBottomPadding,
         decoration: BoxDecoration(
