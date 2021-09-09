@@ -44,7 +44,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
       int width = info.width;
       int height = info.height;
 
-      await Navigator.push(
+      bool ?result = await Navigator.push(
           context,
           platformPageRoute(
               builder: (_) {
@@ -53,7 +53,9 @@ class _ImageViewPageState extends State<ImageViewPage> {
                     templateImage: File(widget.path));
               },
               context: context));
-      Navigator.of(context).pop();
+      if(result == true) {
+        Navigator.pop(context, true);
+      }
     } else {
       print('No image selected.');
     }

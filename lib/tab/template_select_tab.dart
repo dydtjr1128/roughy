@@ -12,6 +12,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TemplateSelectWidget extends StatefulWidget {
+  const TemplateSelectWidget(this.setTabIndex);
+  final void Function(int index) setTabIndex;
+
   @override
   _TemplateSelectWidgetState createState() => _TemplateSelectWidgetState();
 }
@@ -43,7 +46,6 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
 
     imagePaths.sort(compareNatural);
     for (final String path in imagePaths) {
-      print("@@@@@${path}");
       templateList.add(Template(imageName: path));
     }
 /*    templateList
@@ -95,10 +97,10 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
     }
   }
 
-  void _onTemplateSelect(int index, BuildContext context) {
+  Future<void> _onTemplateSelect(int index, BuildContext context) async {
     print("call _onTemplateSelect() $index page");
 
-    Navigator.push(
+    final bool? result = await Navigator.push(
         context,
         platformPageRoute(
             builder: (_) {
@@ -107,6 +109,9 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
               );
             },
             context: context));
+    if(result == true) {
+      widget.setTabIndex(1);
+    }
   }
 
   @override
