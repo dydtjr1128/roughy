@@ -1,8 +1,7 @@
+import 'package:Roughy/page/splash_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:Roughy/page/splash_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -97,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
             fontFamily: 'Yanolja',
             textTheme: Theme.of(context)
                 .textTheme
-                .apply(fontSizeFactor: 1.2,fontFamily: 'Yanolja')),
+                .apply(fontSizeFactor: 1.2, fontFamily: 'Yanolja')),
         home: SplashPage(() {
           setState(() {
             brightness = brightness == Brightness.light
