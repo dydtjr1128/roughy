@@ -21,19 +21,19 @@ class ImageViewPage extends StatefulWidget {
 }
 
 class _ImageViewPageState extends State<ImageViewPage> {
+  final ImagePicker imagePicker = ImagePicker();
+
   void onClickDecorationButton(BuildContext context) {
     print("클릭~");
     _showPicker(context);
   }
 
-  final ImagePicker imagePicker = ImagePicker();
-
   void _getImage({required ImageSource source}) async {
-    final XFile? pickedFile =
-        await imagePicker.pickImage(source: source, imageQuality: 100);
+    final pickedFile =
+        await imagePicker.getImage(source: source, imageQuality: 100);
     if (pickedFile != null) {
       // 템플릿 이미지 가로 세로 길이 구하는 부분
-      final Image templateImage = Image(image: AssetImage(widget.path));
+      /*  final Image templateImage = Image(image: AssetImage(widget.path));
       final Completer<ui.Image> completer = Completer<ui.Image>();
       templateImage.image
           .resolve(const ImageConfiguration())
@@ -42,9 +42,9 @@ class _ImageViewPageState extends State<ImageViewPage> {
       }));
       ui.Image info = await completer.future;
       int width = info.width;
-      int height = info.height;
-
-      bool ?result = await Navigator.push(
+      int height = info.height;*/
+      if (!mounted) return;
+      final bool? result = await Navigator.push(
           context,
           platformPageRoute(
               builder: (_) {
@@ -53,7 +53,7 @@ class _ImageViewPageState extends State<ImageViewPage> {
                     templateImage: File(widget.path));
               },
               context: context));
-      if(result == true) {
+      if (result == true) {
         Navigator.pop(context, true);
       }
     } else {
