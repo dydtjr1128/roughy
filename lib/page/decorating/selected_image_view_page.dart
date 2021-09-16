@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -168,23 +169,29 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     }
     setState(() {
       switchToTextEditPanel();
-      gestureTextList.add(RoughyGestureText(
+      final RoughyGestureText target = RoughyGestureText(
           roughyGestureTextController: RoughyGestureTextController(),
           onWidgetSelected: onRoughyTextWidgetSelected,
           onWidgetReleased: onRoughyTextWidgetReleased,
           onTapRoughyGestureTextRemove: onTapRoughyGestureTextRemove,
           key: UniqueKey(),
-          //Key((gestureTextList.length).toString())
           text: result,
           fontName: selectedTextRoughyFont,
-          fontColor: selectedDrawingColor));
+          fontColor: selectedDrawingColor,
+          isWidgetSelected: true);
+      gestureTextList.add(target);
+      selectedRoughyGestureText = target;
+      for (final widget in gestureTextList) {
+        print("@@@@!@#$widget :: $target");
+        widget.roughyGestureTextController.setWidgetSelected(widget == target);
+      }
     });
   }
 
   void onRoughyTextWidgetSelected(RoughyGestureText target) {
     print("onRoughyTextWidgetSelected");
     selectedRoughyGestureText = target;
-    for (var widget in gestureTextList) {
+    for (final widget in gestureTextList) {
       if (widget != target) {
         widget.roughyGestureTextController.setWidgetSelected(false);
       }
@@ -487,7 +494,7 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
     Future<void> _capturePng() async {
       RenderRepaintBoundary boundary = captureKey.currentContext!
           .findRenderObject()! as RenderRepaintBoundary;
-      ui.Image image = await boundary.toImage(pixelRatio: 3);
+      ui.Image image = await boundary.toImage(pixelRatio: 2.5);
       ByteData byteData =
           (await image.toByteData(format: ui.ImageByteFormat.png))!;
       Uint8List pngBytes = byteData.buffer.asUint8List();
@@ -497,17 +504,45 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
       String formattedDate = DateFormat('yyyyMMddHHmmss').format(now);
       String fullPath = '$dir/roughy_$formattedDate.png';
       File file = File(fullPath);
-      print(fullPath);
-      await file.writeAsBytes(pngBytes);
+      log(fullPath);
 
 /*      DateTime now = DateTime.now();
       String dir = (await getApplicationSupportDirectory()).path;
       String formattedDate = DateFormat('yyyyMMddHHmmss').format(now);
       screenshotController.captureAndSave(dir, //set path where screenshot will be saved
           fileName: 'roughy_$formattedDate.png');*/
-      setState(() {
-        isCaptureMode = false;
-      });
+
+      await file.writeAsBytes(pngBytes);
+    }
+
+    Stack buildMainStack(double templateWidth, double templateHeight) {
+      return Stack(
+        fit: StackFit.expand,
+        children: [
+          Container(
+            decoration: const BoxDecoration(color: Colors.transparent),
+          ),
+          FittedBox(
+            fit: BoxFit.contain,
+            alignment: Alignment.center,
+            child: isImageLoaded
+                ? Padding(
+                    padding: const EdgeInsets.all(35),
+                    child: isDrawingPanelVisible
+                        ? GestureDetector(
+                            onPanStart: (details) =>
+                                updateDrawingPosition(details.localPosition),
+                            onPanUpdate: (details) =>
+                                updateDrawingPosition(details.localPosition),
+                            onPanEnd: (details) => initializeDrawingPosition(),
+                            child: getCanvas(templateWidth, templateHeight))
+                        : getCanvas(templateWidth, templateHeight))
+                : const Padding(
+                    padding: EdgeInsets.all(100),
+                    child: CircularProgressIndicator()),
+          ),
+        ],
+      );
     }
 
     return Scaffold(
@@ -529,11 +564,12 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
                 context: context,
                 builder: (_) => PlatformAlertDialog(
                   title: const Text('알림'),
-                  content: Text('사진을 사진첩에 저장하시겠습니까?'),
+                  content: const Text('사진을 사진첩에 저장하시겠습니까?'),
                   actions: <Widget>[
                     PlatformDialogAction(
-                        onPressed: () {
-                          _capturePng();
+                        onPressed: () async {
+                          await _capturePng();
+                          if (!mounted) return;
                           Navigator.pop(context);
                           showPlatformDialog(
                               context: context,
@@ -574,49 +610,13 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
-                child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTap: setAllRoughyGestureTextWidgetChangToNotSelected,
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      Container(
-                        decoration:
-                            const BoxDecoration(color: Colors.transparent),
-                      ),
-                      FittedBox(
-                        fit: BoxFit.contain,
-                        alignment: Alignment.center,
-                        child: isImageLoaded
-                            ? Padding(
-                                padding: const EdgeInsets.all(35),
-                                child: isDrawingPanelVisible
-                                    ? GestureDetector(
-                                        /*
-                                    behavior: HitTestBehavior.opaque,*/
-                                        /*onPanCancel: () =>
-                                            initializeDrawingPosition(),*/
-                                        onScaleStart: (details) =>
-                                            updateDrawingPosition(
-                                                details.localFocalPoint),
-                                        /*onPanDown: (details) =>
-                                            updateDrawingPosition(
-                                                details.localPosition),*/
-                                        onScaleUpdate: (details) =>
-                                            updateDrawingPosition(
-                                                details.localFocalPoint),
-                                        onScaleEnd: (details) =>
-                                            initializeDrawingPosition(),
-                                        child: getCanvas(
-                                            templateWidth, templateHeight))
-                                    : getCanvas(templateWidth, templateHeight))
-                            : const Padding(
-                                padding: EdgeInsets.all(100),
-                                child: CircularProgressIndicator()),
-                      ),
-                    ],
-                  ),
-                ),
+                child: isTextEditPanelVisible
+                    ? GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        onTap: setAllRoughyGestureTextWidgetChangToNotSelected,
+                        child: buildMainStack(templateWidth, templateHeight),
+                      )
+                    : buildMainStack(templateWidth, templateHeight),
               ),
               if (isTextEditPanelVisible) getColorPanelWidgets() else Row(),
               if (isTextEditPanelVisible) getTextPanelWidgets() else Row(),
@@ -638,9 +638,6 @@ class _SelectedImageViewPageState extends State<SelectedImageViewPage> {
   }
 
   RoughyBottomAppbar buildRoughyBottomResizeAppbar() {
-    final double additionalBottomPadding =
-        MediaQuery.of(context).padding.bottom;
-    print("@@123123!!$additionalBottomPadding!!");
     return RoughyBottomAppbar(
         child: Row(children: <Widget>[
       const Expanded(child: SizedBox()),
