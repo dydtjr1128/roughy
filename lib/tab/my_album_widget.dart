@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:Roughy/component/album_container.dart';
 import 'package:Roughy/component/roughy_app_bar.dart';
+import 'package:Roughy/page/main_tabbed_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:gallery_saver/gallery_saver.dart';
@@ -10,16 +11,26 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
 class MyAlbumWidget extends StatefulWidget {
+  final AlbumTabController albumTabController;
+
+  const MyAlbumWidget({required this.albumTabController});
+
   @override
-  _MyAlbumWidgetState createState() => _MyAlbumWidgetState();
+  _MyAlbumWidgetState createState() => _MyAlbumWidgetState(albumTabController);
 }
 
 class _MyAlbumWidgetState extends State<MyAlbumWidget> {
   final LinkedHashMap<String, AlbumContainer> albumContainers =
       LinkedHashMap<String, AlbumContainer>();
 
+
+  _MyAlbumWidgetState(AlbumTabController albumTabController){
+    albumTabController.initializeImages = initializeTemplates;
+  }
+
   @override
   void initState() {
+    print("_MyAlbumWidgetState initstate!!@@");
     super.initState();
     initializeTemplates();
   }
@@ -29,6 +40,7 @@ class _MyAlbumWidgetState extends State<MyAlbumWidget> {
       final file = File(path);
       if (file.existsSync()) {
         await file.delete();
+        initializeTemplates();
       }
     } catch (e) {
       return false;
@@ -89,6 +101,7 @@ class _MyAlbumWidgetState extends State<MyAlbumWidget> {
 
   void initializeTemplates() async {
     //String dir = await getApplicationSupportDirectory().
+    albumContainers.clear();
     Directory directory = await getApplicationSupportDirectory();
     List<FileSystemEntity> contents = directory.listSync().toList();
     List<String> pathList = [];
@@ -123,14 +136,11 @@ class _MyAlbumWidgetState extends State<MyAlbumWidget> {
               child: container,
             ))
         .toList();
-    print("@@@@@${itemWidth / itemHeight}이에요~");
     return Scaffold(
         appBar: RoughyAppBar(
           titleText: "MY ALBUM",
         ),
         body: GridView.count(
-            crossAxisCount: 2,
-            childAspectRatio: 0.7,
-            children: gridTileList));
+            crossAxisCount: 2, childAspectRatio: 0.7, children: gridTileList));
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:Roughy/tab/my_album_widget.dart';
 import 'package:Roughy/tab/setting_widget.dart';
 import 'package:Roughy/tab/template_select_tab.dart';
@@ -12,6 +14,10 @@ class MainTabbedPage extends StatefulWidget {
 
   @override
   _MainTabbedPageState createState() => _MainTabbedPageState();
+}
+
+class AlbumTabController {
+  late void Function() initializeImages;
 }
 
 class _MainTabbedPageState extends State<MainTabbedPage> {
@@ -54,13 +60,16 @@ class _MainTabbedPageState extends State<MainTabbedPage> {
 
   @override
   Widget build(BuildContext context) {
+    final AlbumTabController albumTabController = AlbumTabController();
     final List<Widget> bodyWidgets = [
       TemplateSelectWidget((int index) {
         setState(() {
           _selectedIndex = index;
+          log("$_selectedIndex index select!");
+          //albumTabController.initializeImages();
         });
       }),
-      MyAlbumWidget(),
+      MyAlbumWidget(albumTabController: albumTabController),
       SettingWidget(),
     ];
     return Scaffold(
