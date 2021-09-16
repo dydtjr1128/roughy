@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:Roughy/component/roughy_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -12,10 +14,10 @@ class _TextInputPageState extends State<TextInputPage> {
   final TextEditingController _textController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  setThisText() {
+  void setThisText() {
     final form = _formKey.currentState;
     if (form!.validate()) {
-      print("@@@ ${_textController.text}");
+      log("@@@ ${_textController.text}");
       Navigator.pop(context, _textController.text);
     }
   }

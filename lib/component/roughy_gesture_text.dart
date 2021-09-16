@@ -34,7 +34,7 @@ class RoughyGestureText extends StatefulWidget {
       fontColor: fontColor,
       fontName: fontName,
       text: text,
-      _controller: roughyGestureTextController,
+      controller: roughyGestureTextController,
       isWidgetSelected: isWidgetSelected);
 }
 
@@ -54,14 +54,14 @@ class _RoughyGestureTextState extends State<RoughyGestureText> {
   Color fontColor;
 
   _RoughyGestureTextState(
-      {required RoughyGestureTextController _controller,
+      {required RoughyGestureTextController controller,
       required this.text,
       required this.fontName,
       required this.fontColor,
       required this.isWidgetSelected}) {
-    _controller.setWidgetSelected = setWidgetSelected;
-    _controller.setFont = setFont;
-    _controller.setFontColor = setFontColor;
+    controller.setWidgetSelected = setWidgetSelected;
+    controller.setFont = setFont;
+    controller.setFontColor = setFontColor;
   }
 
   @override
