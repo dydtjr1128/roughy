@@ -28,11 +28,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Used to demonstrate image picker plugin</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Used to capture audio for image picker plugin</string>
+	<string>roughy에서 카메라를 촬영해 템플릿에 적용시킬 수 있습니다. 카메라 사용을 허용하시겠습니까?</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Used to demonstrate image picker plugin</string>
+	<string>이미지를 앨범에서 불러와 템플릿에 적용시킬 수 있습니다. 이미지를 불러오시려면 허용해주세요.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

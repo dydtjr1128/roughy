@@ -40,7 +40,7 @@ class SettingWidget extends StatelessWidget {
                   "https://docs.google.com/forms/d/1dYwS5T_-CsumfTOQjWvrKBPiHH-5lDgWkps9OKoc_tg/edit?usp=sharing")),
           ListTile(
               title: const Text('공식 인스타그램'),
-              onTap: () { launchBrowser("https://www.instagram.com/vanila_people/");})
+              onTap: () { launchBrowser("https://www.instagram.com/the_vanila.co.kr/");})
         ]));
   }
 }
