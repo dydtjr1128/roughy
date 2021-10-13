@@ -153,6 +153,7 @@ class _TemplateSelectWidgetState extends State<TemplateSelectWidget> {
       body: Container(
         decoration: const BoxDecoration(color: Colors.white),
         child: GridView.count(
+            cacheExtent: 10000.0,
             crossAxisCount: 2, childAspectRatio: itemWidth / itemHeight, children: gridTileList),
       ),
     );
