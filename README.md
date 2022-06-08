@@ -1,16 +1,23 @@
 # roughy
 
 Roughy is camera template project.
+This project based by Flutter.
 
-## Getting Started
+<div style="text-align: center;">
+<img src="readme_imgs/main.jpg" width="30%">
+<img src="readme_imgs/pre decorating.jpg" width="30%">
+<img src="readme_imgs/decorating.jpg" width="30%">
+</div>
 
-This project is a starting point for a Flutter application.
+<div style="text-align: center;">
+<img src="readme_imgs/album.jpg" width="30%">
+<img src="readme_imgs/album select.jpg" width="30%">
+</div>
 
-A few resources to get you started if this is your first Flutter project:
+<div style="text-align">
+<a href='https://play.google.com/store/apps/details?id=io.github.dydtjr1128.roughy&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img width ="200" alt='다운로드하기 Google Play' src='readme_imgs/appstore/google.png'/></a>
+</div>
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<div style="text-align">
+<a href='https://apps.apple.com/us/app/roughy-%EB%9F%AC%ED%94%BC/id1584334429'><img width ="200" alt='다운로드하기 Google Play' src='readme_imgs/appstore/apple.png'/></a>
+</div>
